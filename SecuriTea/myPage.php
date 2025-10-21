@@ -23,15 +23,15 @@
                     <h2>個人情報</h2>
                     <div class="info-row">
                         <div class="info-label">名前</div>
-                        <div class="info-value">〇〇　◇◇</div>
+                        <div id="profile-name" class="info-value">〇〇　◇◇</div>
                     </div>
                     <div class="info-row">
-                        <div class="info-label">生年月日</div>
-                        <div class="info-value">2005年7月1日</div>
+                        <div  class="info-label">生年月日</div>
+                        <div id="profile-birthday" class="info-value">2005年7月1日</div>
                     </div>
                     <div class="info-row">
                         <div class="info-label">性別</div>
-                        <div class="info-value">男性</div>
+                        <div id="profile-gender" class="info-value">男性</div>
                     </div>
                 </div>
 
@@ -40,20 +40,24 @@
                     <h2>連絡先情報</h2>
                     <div class="info-row">
                         <div class="info-label">メール</div>
-                        <div class="info-value">
+                        <div id="profile-email" class="info-value">
                             aaa1234@gmail.com
                         </div>
                     </div>
                     <div class="info-row">
                         <div class="info-label">電話</div>
-                        <div class="info-value">090-1234-5678</div>
+                        <div id="profile-phone" class="info-value">090-1234-5678</div>
                     </div>
                     <div class="info-row">
                         <div class="info-label">住所</div>
                         <div class="info-value">〇〇県〇〇市〇〇町</div>
                     </div>
                 </div>
+                <button id="editProfileBtn">情報編集</button>
             </div>
+
+            <!-- 個人情報編集From -->
+            <?php include "./component/editProfileFrom.php"; ?>
 
 
             <!-- ご利用状態 -->
@@ -135,4 +139,5 @@
     </div>
 </div>
 <script src="./js/myPage.js"></script>
+<script src="./component/js/editProfileFrom.js"></script>
 <?php include "./component/footer.php"; ?>
