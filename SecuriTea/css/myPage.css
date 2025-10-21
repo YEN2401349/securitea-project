@@ -1,0 +1,92 @@
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* レイアウト全体 */
+.main {
+    min-height: 800px;
+    padding-top: 80px;
+}
+
+.main .container {
+    display: flex;
+    height: 100%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    gap: 2rem;
+}
+
+/* サイドバー */
+.sidebar {
+    flex: 0 0 250px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 1rem 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.sidebar li:hover,
+.sidebar li.active {
+    background: var(--bg-tertiary);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* メインコンテンツ */
+.content {
+    flex: 1;
+}
+
+.card {
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+}
+
+.card h2 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.info-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
