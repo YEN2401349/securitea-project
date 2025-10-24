@@ -10,17 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ 下載程式碼
+      # download file
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ 上傳到 Lolipop
+      # push Lolipop
       - name: Upload to Lolipop via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./          # 上傳整個專案根目錄
+          local-dir: ./         
           server-dir: ${{ secrets.FTP_REMOTE_DIR }}/
           protocol: ftp
