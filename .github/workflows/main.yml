@@ -22,5 +22,5 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./          # 上傳整個專案根目錄
-          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }}/
           protocol: ftp
