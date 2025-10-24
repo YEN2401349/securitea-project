@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="./css/products.css">
 <main class="main-content">
     <header class="main-header">
-        <div class="user-info"><span>管理者: 山田</span><a href="#">ログアウト</a></div>
+        <div class="user-info"><span>管理者: 山田太郎1</span><a href="#">ログアウト</a></div>
     </header>
     <section>
         <header class="flex items-center justify-between mb-4">
