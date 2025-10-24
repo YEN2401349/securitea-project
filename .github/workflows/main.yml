@@ -3,31 +3,24 @@ name: Deploy to Lolipop
 on:
   push:
     branches:
-      - main   # 當 main branch 有 push 時觸發
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ 把你的程式碼拉下來
+      # 1️⃣ 下載程式碼
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ （可選）如果你有建置步驟（例如 Vue、React）
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
-      # 3️⃣ 上傳到 Lolipop
-      - name: 📤 Upload to Lolipop via FTP
+      # 2️⃣ 上傳到 Lolipop
+      - name: Upload to Lolipop via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist     # 要上傳的本地資料夾（例如 Vue build 後的 dist）
+          local-dir: ./          # 上傳整個專案根目錄
           server-dir: ${{ secrets.FTP_REMOTE_DIR }}
           protocol: ftp
