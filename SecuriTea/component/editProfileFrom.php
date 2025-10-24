@@ -47,7 +47,7 @@
 
             <div class="formActions">
                 <button type="button" id="cancelBtn" class="btn cancel">キャンセル</button>
-                <button type="submit" class="btn save">保存</button>
+                <button type="submit" class="btn save" id="saveBtn">保存</button>
             </div>
         </form>
     </div>
