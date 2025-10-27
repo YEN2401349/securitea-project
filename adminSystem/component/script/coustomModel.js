@@ -27,12 +27,10 @@ fetch('component/get_coustom.php')
     .then(res => res.json())
     .then(data => {
         // 存到 localStorage
-        localStorage.setItem('User', JSON.stringify(data));
+        localStorage.setItem('products', JSON.stringify(data));
 
 
-        if (data.length > 0) {
-            console.log('第一個商品名稱:', data[0].name);
-        }
+        console.log('產品資料已更新:', data);
     })
     .catch(err => console.error('抓取產品資料失敗:', err));
 
