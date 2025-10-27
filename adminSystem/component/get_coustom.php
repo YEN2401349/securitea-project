@@ -5,7 +5,7 @@ try {
 
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode($users);
+    echo json_encode($products);
 } catch (PDOException $e) {
     echo json_encode(['error' => $e->getMessage()]);
 }
