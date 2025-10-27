@@ -1,5 +1,5 @@
 const storageKey = 'mgmt_demo_items_v2';
-let items = []; 
+let items = [];
 let page = 1;
 let pageSize = 10;
 let sortBy = 'createdAt_desc';
@@ -11,7 +11,6 @@ const pageSizeSelect = document.getElementById('pageSize');
 const pagination = document.getElementById('pagination');
 const currentPageEl = document.getElementById('currentPage');
 const tableWrapper = document.getElementById('tableWrapper');
-
 const sampleData = [
     {
         id: 'u_1',

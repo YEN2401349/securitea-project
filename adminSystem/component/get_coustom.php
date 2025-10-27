@@ -1,9 +1,9 @@
 <?php include("DBconnect.php");
 try {
-    $stmt = $db->prepare('SELECT * FROM User');
+    $stmt = $db->prepare('SELECT * FROM Products');
     $stmt->execute();
 
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode($users);
 } catch (PDOException $e) {
