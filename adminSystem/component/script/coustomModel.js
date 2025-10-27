@@ -24,29 +24,20 @@ const customForm = document.getElementById('customForm');
 const addCustomBtn = document.getElementById('addCustomBtn');
 const cancelBtn = document.getElementById('cancelBtn');
 
+fetch('component/get_users.php')
+    .then(res => res.json())
+    .then(data => {
+        // 存到 localStorage
+        localStorage.setItem('User', JSON.stringify(data));
+
+        
+        if (data.length > 0) {
+            console.log('第一個商品名稱:', data[0].name);
+        }
+    })
+    .catch(err => console.error('抓取產品資料失敗:', err));
 // Sample data
-const customSampleData = [
-    { id: 'u_1', name: 'ベーシックプラン', month: '300', year: '3300', permanent: '9300' },
-    { id: 'u_2', name: 'スタンダードプラン', month: '500', year: '5000', permanent: '12000' },
-    { id: 'u_3', name: 'プレミアムプラン', month: '800', year: '8000', permanent: '18000' },
-    { id: 'u_4', name: 'ビジネスプラン', month: '1000', year: '10000', permanent: '22000' },
-    { id: 'u_5', name: 'エンタープライズプラン', month: '1500', year: '15000', permanent: '30000' },
-    { id: 'u_6', name: 'プロフェッショナルプラン', month: '1200', year: '12000', permanent: '26000' },
-    { id: 'u_7', name: 'ライトプラン', month: '200', year: '2000', permanent: '6000' },
-    { id: 'u_8', name: 'エコノミープラン', month: '350', year: '3500', permanent: '9000' },
-    { id: 'u_9', name: 'アドバンスプラン', month: '900', year: '9000', permanent: '21000' },
-    { id: 'u_10', name: 'プラスプラン', month: '600', year: '6000', permanent: '14000' },
-    { id: 'u_11', name: 'スマートプラン', month: '450', year: '4500', permanent: '11000' },
-    { id: 'u_12', name: 'コンパクトプラン', month: '250', year: '2800', permanent: '7500' },
-    { id: 'u_13', name: 'エキスパートプラン', month: '1100', year: '11000', permanent: '24000' },
-    { id: 'u_14', name: 'アルティメットプラン', month: '1800', year: '18000', permanent: '40000' },
-    { id: 'u_15', name: 'ベーシック年間プラン', month: '320', year: '3500', permanent: '9500' },
-    { id: 'u_16', name: 'スタートアッププラン', month: '700', year: '7200', permanent: '17000' },
-    { id: 'u_17', name: 'リミテッドプラン', month: '400', year: '4200', permanent: '10000' },
-    { id: 'u_18', name: 'シンプルプラン', month: '280', year: '2900', permanent: '7000' },
-    { id: 'u_19', name: 'デラックスプラン', month: '950', year: '9500', permanent: '20500' },
-    { id: 'u_20', name: 'プレミアム年間プラン', month: '850', year: '8800', permanent: '19000' },
-];
+const customSampleData = localStorage.getItem('User') ? JSON.parse(localStorage.getItem('User')) : [];
 
 
 
