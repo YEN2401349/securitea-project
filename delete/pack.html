@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プラン詳細 - SecuriTea</title>
+    <link rel="stylesheet" href="soft.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="ロゴ2透過.png" alt="SecuriTea Logo">
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="login.html" class="nav-link">
+                            <i class="fas fa-user"></i>
+                            ログイン
+                        </a>
+                    </li>
+                     <li class="nav-item">
+                        <a href="test.html" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            ホーム
+                        </a>    
+                    </li>
+                    <li class="nav-item">
+                        <a href="account.html" class="nav-link">
+                            <i class="fas fa-cog"></i>
+                            アカウント情報
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-question-circle"></i>
+                            Q&A
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="details-container">
+                <div class="product-details">
+                    <h1 class="details-title">サブスクプラン</h1>
+                    <p class="details-subtitle">セキュリティソフトを試してみたいあなたへ</p>
+
+                    <form class="plan-form" action="cart2.html">
+                        <fieldset class="plan-options">
+                            <legend class="options-title">契約期間を選択してください</legend>
+                            
+                            <div class="option-item">
+                                <input type="radio" id="monthly" name="plan" value="monthly" checked>
+                                <label for="monthly">
+                                    <span class="plan-name">月間プラン</span>
+                                    <span class="plan-price">¥500 / 月</span>
+                                </label>
+                            </div>
+                            
+                            <div class="option-item">
+                                <input type="radio" id="yearly" name="plan" value="yearly">
+                                <label for="yearly">
+                                    <span class="plan-name">年間プラン</span>
+                                    <span class="plan-price">¥5,000 / 年</span>
+                                    <span class="plan-badge">おすすめ</span>
+                                </label>
+                            </div>
+
+                            <div class="option-item">
+                                <input type="radio" id="triennially" name="plan" value="triennially">
+                                <label for="triennially">
+                                    <span class="plan-name">3年プラン</span>
+                                    <span class="plan-price">¥13,000 / 3年</span>
+                                </label>
+                            </div>
+                        </fieldset>
+                        <button type="submit" class="purchase-btn">カートに追加する</button>
+                    </form>
+                </div>
+
+                <aside class="product-sidebar">
+                    <h2 class="sidebar-title">プランの主な機能</h2>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> ウイルス・スパイウェア対策</li>
+                        <li><i class="fas fa-check-circle"></i> 危険サイトへのアクセスブロック</li>
+                        <li><i class="fas fa-check-circle"></i> ファイアウォール</li>
+                        <li><i class="fas fa-shield-alt"></i> 保護者による使用制限 (ペアレンタルコントロール)</li>
+                        <li><i class="fas fa-life-ring"></i> 24時間365日サポート</li>
+                    </ul>
+                     <div class="sidebar-info">
+                        <h3><i class="fas fa-info-circle"></i> こんな方におすすめ</h3>
+                        <p>初めてセキュリティソフトを導入する方や、まずは手軽に試してみたい方に最適なプランです。</p>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#" class="footer-link">プライバシーポリシー</a>
+                    <a href="#" class="footer-link">利用規約</a>
+                    <a href="#" class="footer-link">お問い合わせ</a>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; 2025 SecuriTea. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

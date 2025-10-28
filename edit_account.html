@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アカウント情報の編集</title>
+  <link rel="stylesheet" href="account.css">
+</head>
+<body>
+  <header>
+    <a href="test.php">
+        <img src="ロゴ2透過.png" alt="SecuriTea Logo" width="15%" height="100%">
+    </a>
+    <h1>アカウント情報の編集</h1>
+  </header>
+
+  <div class="container">
+    <main class="content">
+      <div class="card">
+        <form action="account.html" method="post">
+          
+          <h2>個人情報</h2>
+          
+          <div class="form-group form-row">
+            <div class="form-group-half">
+              <label for="fname">姓</label>
+              <input type="text" id="fname" name="fname" value="〇〇" required>
+            </div>
+            <div class="form-group-half">
+              <label for="lname">名</label>
+              <input type="text" id="lname" name="lname" value="◇◇" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="birthdate">生年月日</label>
+            <input type="date" id="birthdate" name="birthdate" value="2005-07-01">
+          </div>
+
+          <div class="form-group">
+            <label for="gender">性別</label>
+            <select id="gender" name="gender">
+              <option value="male" selected>男性</option>
+              <option value="female">女性</option>
+              <option value="unanswered">無回答</option>
+            </select>
+          </div>
+
+          <hr class="form-divider">
+
+          <h2>連絡先情報</h2>
+
+          <div class="form-group">
+            <label for="email">メール</label>
+            <input type="email" id="email" name="email" value="aaa1234@gmail.com" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="tel">電話</label>
+            <input type="tel" id="tel" name="tel" value="090-1234-5678" required>
+          </div>
+
+          <div class="form-actions">
+            <a href="account.html" class="btn btn-secondary">キャンセル</a>
+            <button type="submit" class="btn btn-primary">変更を保存</button>
+          </div>
+
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
