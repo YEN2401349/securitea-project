@@ -2,9 +2,6 @@
 // Custom Plan Management
 // ------------------------------
 
-// LocalStorage key
-const customStorageKey = 'customSampleData';
-
 // State variables
 let customItems = [];
 let customEditingId = null;
@@ -23,44 +20,92 @@ const customModel = document.getElementById('customModel');
 const customForm = document.getElementById('customForm');
 const addCustomBtn = document.getElementById('addCustomBtn');
 const cancelBtn = document.getElementById('cancelBtn');
-fetch('component/get_coustom.php')
-    .then(res => res.json())
-    .then(json => {
-        if (!json.success) {
-            console.error('error:', json.error);
-            return;
-        }
 
-        const products = json.data;
+const plan_type = document.getElementById('plan_type');
+const duration_months = document.getElementById('duration_months');
 
-        localStorage.setItem('products', JSON.stringify(products));
+// ------------------------------
+// Fetch data from server
+// ------------------------------
+async function reloadFromServer() {
+    try {
+        const res = await fetch('component/api/get_coustom.php');
+        const json = await res.json();
+        if (!json.success) throw new Error(json.error);
 
-    })
-    .catch(err => console.error('fetch 失敗:', err));
+        customItems = json.data.map(p => ({
+            id: p.product_id || p.id,
+            name: p.name,
+            price: p.price,
+            plan_type: p.plan_type,
+            billing_cycle: p.billing_cycle,
+            duration_months: p.duration_months,
+            description: p.description
+        }));
 
-// Sample data
-const customSampleData = localStorage.getItem('products') ? JSON.parse(localStorage.getItem('products')) : [];
+        localStorage.setItem('products', JSON.stringify(customItems));
+        renderCustomTable();
+    } catch (err) {
+        console.error('Error:', err);
+    }
+}
 
+// ------------------------------
+// Save to server (Add / Edit)
+// ------------------------------
+async function saveToServer(data, isEdit = false) {
+    const url = isEdit
+        ? 'component/api/update_custom.php'
+        : 'component/api/add_custom.php';
+
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error);
+    return json.data;
+}
 
 // ------------------------------
 // Initialization
 // ------------------------------
 function customLoad() {
-    const raw = localStorage.getItem(customStorageKey);
-    if (raw) {
-        customItems = JSON.parse(raw);
-    } else {
-        customItems = customSampleData;
-        localStorage.setItem(customStorageKey, JSON.stringify(customItems));
-    }
+    const raw = localStorage.getItem('products');
+    if (raw) customItems = JSON.parse(raw);
     renderCustomTable();
 }
 
 // ------------------------------
-// Save to LocalStorage
+// Update duration_months options
 // ------------------------------
-function save() {
-    localStorage.setItem(customStorageKey, JSON.stringify(customItems));
+function updateDurationOptions() {
+    const options = duration_months.options;
+    for (let i = 0; i < options.length; i++) options[i].disabled = false;
+
+    switch (plan_type.value) {
+        case 'lifetime':
+            for (let o of options)
+                if (['1', '6', '12'].includes(o.value)) o.disabled = true;
+            duration_months.value = '999';
+            break;
+        case 'yearly':
+            for (let o of options)
+                if (['1', '6', '999'].includes(o.value)) o.disabled = true;
+            duration_months.value = '12';
+            break;
+        default: // monthly
+            for (let o of options)
+                if (['12', '999'].includes(o.value)) o.disabled = true;
+            for (let o of options)
+                if (!o.disabled) {
+                    duration_months.value = o.value;
+                    break;
+                }
+            break;
+    }
 }
 
 // ------------------------------
@@ -69,13 +114,14 @@ function save() {
 function openCustomModel(edit = false, item = null) {
     customModel.style.display = "flex";
     document.getElementById("modalTitle").textContent = edit ? "編集" : "追加";
-
-    // Populate form fields
+    console.log(item?.billing_cycle);
     customForm.name.value = item?.name || "";
-    customForm.month.value = item?.month || "";
-    customForm.year.value = item?.year || "";
-    customForm.permanent.value = item?.permanent || "";
+    customForm.price.value = item?.price || "";
+    customForm.plan_type.value = item?.billing_cycle || "monthly";
+    customForm.duration_months.value = item?.duration_months || "1";
     customForm.description.value = item?.description || "";
+
+    updateDurationOptions();
 }
 
 function closeCustomModel() {
@@ -86,47 +132,55 @@ function closeCustomModel() {
 // ------------------------------
 // Form Submission (Add / Edit)
 // ------------------------------
-customForm.onsubmit = e => {
+customForm.onsubmit = async e => {
     e.preventDefault();
 
     const data = {
         name: customForm.name.value.trim(),
-        month: customForm.month.value.trim(),
-        year: customForm.year.value.trim(),
-        permanent: customForm.permanent.value.trim(),
+        price: customForm.price.value.trim(),
+        billing_cycle: customForm.plan_type.value.trim(),
+        duration_months: customForm.duration_months.value.trim(),
         description: customForm.description.value.trim()
     };
 
-    if (customEditingId) {
-        // Edit existing item
-        const item = customItems.find(i => i.id === customEditingId);
-        if (item) Object.assign(item, data);
-    } else {
-        // Add new item
-        customItems.push({ id: "u_" + Math.random().toString(36).slice(2, 9), ...data });
-    }
+    try {
+        if (customEditingId) {
+            await saveToServer({ id: customEditingId, ...data }, true);
+        } else {
+            await saveToServer(data, false);
+        }
 
-    save();
-    closeCustomModel();
-    renderCustomTable();
-}
+        closeCustomModel();
+        await reloadFromServer(); 
+    } catch (err) {
+        alert("保存失敗：" + err.message);
+    }
+};
 
 // ------------------------------
 // Edit / Delete Functions
 // ------------------------------
-function editCustoms(id) {
-    const item = customItems.find(i => i.id === id);
+async function editCustoms(id) {
+    const item = customItems.find(i => i.id == id);
     if (!item) return;
     customEditingId = id;
     openCustomModel(true, item);
 }
 
-function deleteCustoms(id) {
-    if (!confirm("Are you sure you want to delete this item?")) return;
-    const item = customItems.find(i => i.id === id);
-    if (item) item._deleted = true;
-    save();
-    renderCustomTable();
+async function deleteCustoms(id) {
+    if (!confirm("削除する？")) return;
+    try {
+        const res = await fetch('component/api/delete_custom.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.error);
+        await reloadFromServer();
+    } catch (err) {
+        alert("削除失敗：" + err.message);
+    }
 }
 
 // ------------------------------
@@ -134,11 +188,8 @@ function deleteCustoms(id) {
 // ------------------------------
 function queryCustomData() {
     const q = (customSearch?.value || '').trim().toLowerCase();
-    let list = customItems.filter(i => !i._deleted);
-
-    if (q) {
-        list = list.filter(i => (i.name + i.month + i.year + i.permanent).toLowerCase().includes(q));
-    }
+    let list = customItems;
+    if (q) list = list.filter(i => i.name.toLowerCase().includes(q));
 
     const total = list.length;
     const start = (customPage - 1) * customPageSize;
@@ -148,24 +199,26 @@ function queryCustomData() {
 function renderCustomTable() {
     const { total, list } = queryCustomData();
 
-    // Render table rows
-    customTableBody.innerHTML = list.map((i, idx) => `
+    customTableBody.innerHTML = list.map(i => `
         <tr>
-            <td>${(customPage - 1) * customPageSize + idx + 1}</td>
+            <td>${i.id}</td>
             <td>${i.name}</td>
-            <td>¥${i.month}</td>
-            <td>¥${i.year}</td>
-            <td>¥${i.permanent}</td>
+            <td>¥${Number(i.price)}</td>
+            <td>${i.plan_type}</td>
+            <td>${i.description}</td>
             <td>
-                <button class="customEditBtn" data-id="${i.id}">編集</button>
-                <button class="customDeleteBtn" data-id="${i.id}">削除</button>
+                <button class="customEditBtn" data-product-id="${i.id}">編集</button>
+                <button class="customDeleteBtn" data-product-id="${i.id}">削除</button>
             </td>
         </tr>
     `).join('');
 
-    // Bind buttons
-    document.querySelectorAll('.customEditBtn').forEach(b => b.onclick = e => editCustoms(e.target.dataset.id));
-    document.querySelectorAll('.customDeleteBtn').forEach(b => b.onclick = e => deleteCustoms(e.target.dataset.id));
+    document.querySelectorAll('.customEditBtn').forEach(b =>
+        b.onclick = e => editCustoms(e.target.dataset.productId)
+    );
+    document.querySelectorAll('.customDeleteBtn').forEach(b =>
+        b.onclick = e => deleteCustoms(e.target.dataset.productId)
+    );
 
     renderCustomPagination(total);
     updateTableScroll();
@@ -209,8 +262,10 @@ customPageSizeSelect.addEventListener('change', () => {
     customPage = 1;
     renderCustomTable();
 });
+plan_type.addEventListener('change', updateDurationOptions);
 
 // ------------------------------
 // Initial Load
 // ------------------------------
-customLoad();
+reloadFromServer();
+updateDurationOptions();

@@ -8,20 +8,29 @@
                     <input name="name" required />
                 </div>
                 <div style="flex:1 1 45%;">
-                    <label>月間価格</label>
-                    <input name="month" type="number" required />
+                    <label>価格</label>
+                    <input  name="price" type="number" required />
                 </div>
                 <div style="flex:1 1 45%;">
-                    <label> 年間プラン</label>
-                    <input name="year" type="number" required />
+                    <label>サイクル</label>
+                    <select id="plan_type" name="plan_type" required>
+                        <option value="monthly">月付</option>
+                        <option value="yearly">年付</option>
+                        <option value="lifetime">買い切り</option>
+                    </select>
                 </div>
                 <div style="flex:1 1 45%;">
-                    <label> 買い切り料金</label>
-                    <input name="permanent" type="number" required />
+                    <label>期間（月数）</label>
+                    <select  id="duration_months" name="duration_months" required>
+                        <option value=1>1</option>
+                        <option value=6>6</option>
+                        <option value=12>12</option>
+                        <option value=999>買い切り</option>
+                    </select>
                 </div>
                 <div style="flex:1 1 45%;">
-                    <label>商品説明</label>
-                    <textarea name="description" cols="65" rows="10" required></textarea>
+                    <label>説明</label>
+                    <textarea name="description" cols="70" rows="10" required></textarea>
                 </div>
             </div>
             <div style="margin-top:1rem; text-align:right;">

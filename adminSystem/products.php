@@ -29,9 +29,9 @@
                     <tr>
                         <th>ID</th>
                         <th>商品名</th>
-                        <th>月間価格</th>
-                        <th>年間プラン</th>
-                        <th>買い切り料金</th>
+                        <th>価格</th>
+                        <th>サイクル</th>
+                        <th>説明</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -70,8 +70,9 @@
                     <tr>
                         <th>ID</th>
                         <th>商品名</th>
-                        <th>月間価格</th>
-                        <th>年間プラン</th>
+                        <th>価格</th>
+                        <th>サイクル</th>
+                        <th>説明</th>
                         <th>操作</th>
                     </tr>
                 </thead>
