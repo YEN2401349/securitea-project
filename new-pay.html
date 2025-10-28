@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お支払い方法の選択</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="new-pay.css">
+</head>
+<body>
+
+<div class="payment-container">
+    <h2>お支払い方法の選択</h2>
+    <p>ご希望のお支払い方法を選択してください。</p>
+
+    <form id="payment-form" action="account.html" method="post">
+        
+        <div class="payment-options">
+            
+            <div class="payment-option">
+                <input type="radio" id="credit-card" name="payment-method" value="credit" checked>
+                <label for="credit-card">
+                    <i class="fas fa-credit-card"></i>
+                    <span>クレジットカード</span>
+                </label>
+            </div>
+
+            <div id="credit-card-details" class="payment-details active">
+                <div class="form-group card-icons">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-amex"></i>
+                    <i class="fab fa-cc-jcb"></i>
+                </div>
+                <div class="form-group">
+                    <label for="card-number">カード番号</label>
+                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+                </div>
+                <div class="form-group">
+                    <label for="card-holder">カード名義人</label>
+                    <input type="text" id="card-holder" placeholder="TARO YAMADA" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group-half">
+                        <label for="card-expiry">有効期限</label>
+                        <input type="text" id="card-expiry" placeholder="MM / YY" required>
+                    </div>
+                    <div class="form-group-half">
+                        <label for="card-cvc">セキュリティコード</label>
+                        <input type="text" id="card-cvc" placeholder="123" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-option">
+                <input type="radio" id="paypal" name="payment-method" value="paypal">
+                <label for="paypal">
+                    <i class="fab fa-paypal"></i>
+                    <span>PayPal</span>
+                </label>
+            </div>
+            
+            <div id="paypal-details" class="payment-details">
+                <p>PayPalアカウントでお支払いいただけます。「支払いを確定する」ボタンを押すと、PayPalの公式サイトに移動します。</p>
+                <div class="paypal-button-placeholder">
+                    PayPalボタン
+                </div>
+            </div>
+
+            <div class="payment-option">
+                <input type="radio" id="bank-transfer" name="payment-method" value="bank">
+                <label for="bank-transfer">
+                    <i class="fas fa-university"></i>
+                    <span>銀行引き落とし</span>
+                </label>
+            </div>
+            
+            <div id="bank-transfer-details" class="payment-details">
+                <p>「支払いを確定する」ボタンを押した後、口座情報の登録手続きに進みます。ご利用可能な金融機関をご確認の上、お進みください。</p>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">支払いを確定する</button>
+        </div>
+        
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const paymentDetails = document.querySelectorAll('.payment-details');
+
+        paymentOptions.forEach(option => {
+            const radio = option.querySelector('input[name="payment-method"]');
+            radio.addEventListener('change', function() {
+                // すべての詳細を非表示にする
+                paymentDetails.forEach(detail => {
+                    detail.classList.remove('active');
+                });
+                
+                // 選択された支払い方法に対応する詳細を表示する
+                const targetId = this.id + '-details';
+                const targetDetail = document.getElementById(targetId);
+                if (targetDetail) {
+                    targetDetail.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+
+
+</body>
+</html>
