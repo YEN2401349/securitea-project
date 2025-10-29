@@ -104,5 +104,9 @@
   <footer class="footer">
     <p>&copy; 2025 SecuriTea. All rights reserved.</p>
   </footer>
+
 </body>
 </html>
+<?php
+ $pdo = null;   //DB切断
+ ?>
