@@ -1,7 +1,4 @@
-
 <?php
-    //※注意、別でヘッダーcssが必要※
-
     //SecuriTeaロゴ兼トップページリンク
     echo '<header class="header">',
             '<div class="container">',
