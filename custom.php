@@ -4,9 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecuriTea(セキュリティー)</title>
-    <link rel="stylesheet" href="style923.css">
-    <link rel="stylesheet" href="chatBot.css">
+    <title>SecuriTea(セキュリティー) - カスタムプラン</title>
+    
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <link rel="stylesheet" href="css/chatBot.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -15,7 +18,7 @@
     <header class="header">
         <div class="container">
             <div class="logo">
-                <img src="ロゴ2透過.png" alt="SecuriTea Logo">
+                <img src="images/ロゴ2透過.png" alt="SecuriTea Logo">
             </div>
             <nav class="nav">
                 <ul class="nav-list">
@@ -27,14 +30,12 @@
                     </li>
                     <li class="nav-item">
                         <a href="test.php" class="nav-link">
-                            <i class="fas fa-user"></i>
-                            ホーム
+                            <i class="fas fa-home"></i> ホーム
                         </a>    
                     </li>
                     <li class="nav-item">
                         <a href="account.html" class="nav-link">
-                            <i class="fas fa-question-circle"></i>
-                            アカウント情報
+                            <i class="fas fa-cog"></i> アカウント情報
                         </a>
                     </li>
                     <li class="nav-item">
@@ -81,7 +82,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">ライトプラン1: 基本的なセキュリティ監視を提供します。小規模サイト向けです。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品A">
+                        <img src="images/20200501_noimage.jpg" alt="商品A">
                         <p class="mini-product-title">オプション<br>ライトプラン1</p>
                     </div>
                     
@@ -91,7 +92,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">ライトプラン2: プラン1に加え、月次の簡易レポートが含まれます。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品B">
+                        <img src="images/20200501_noimage.jpg" alt="商品B">
                         <p class="mini-product-title">オプション<br>ライトプラン2</p>
                     </div>
                     
@@ -101,7 +102,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">ライトプラン3: リアルタイムのアラート通知機能が追加されます。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品C">
+                        <img src="images/20200501_noimage.jpg" alt="商品C">
                         <p class="mini-product-title">オプション<br>ライトプラン3</p>
                     </div>
                     
@@ -111,7 +112,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">ベーシックプラン1: 中規模サイト向けの標準的な監視と対応を提供します。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品D">
+                        <img src="images/20200501_noimage.jpg" alt="商品D">
                         <p class="mini-product-title">オプション<br>ベーシックプラン1</p>
                     </div>
                     
@@ -121,7 +122,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">ベーシックプラン2: 定期的な脆弱性スキャンとレポートが含まれます。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品E">
+                        <img src="images/20200501_noimage.jpg" alt="商品E">
                         <p class="mini-product-title">オプション<br>ベーシックプラン2</p>
                     </div>
                     
@@ -131,7 +132,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">エキスパートプラン1: 専門家による詳細な分析とコンサルティングを提供します。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品A">
+                        <img src="images/20200501_noimage.jpg" alt="商品A">
                         <p class="mini-product-title">オプション<br>エキスパートプラン1</p>
                     </div>
                     
@@ -141,7 +142,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">エキスパートプラン2: カスタマイズされたセキュリティポリシーの策定を支援します。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品B">
+                        <img src="images/20200501_noimage.jpg" alt="商品B">
                         <p class="mini-product-title">オプション<br>エキスパートプラン2</p>
                     </div>
                     
@@ -151,7 +152,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">エキスパートプラン3: インシデント発生時の即時対応サポートが含まれます。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品C">
+                        <img src="images/20200501_noimage.jpg" alt="商品C">
                         <p class="mini-product-title">オプション<br>エキスパートプラン3</p>
                     </div>
                     
@@ -161,7 +162,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">プロプラン1: 24時間365日のフルマネージドセキュリティサービスです。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品D">
+                        <img src="images/20200501_noimage.jpg" alt="商品D">
                         <p class="mini-product-title">オプション<br>プロプラン1</p>
                     </div>
                     
@@ -171,7 +172,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">プロプラン2: 高度な脅威インテリジェンスとフォレンジック分析を提供します。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品E">
+                        <img src="images/20200501_noimage.jpg" alt="商品E">
                         <p class="mini-product-title">オプション<br>プロプラン2</p>
                     </div>
                     
@@ -181,7 +182,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">プロプラン3: 専任のセキュリティアナリストが割り当てられます。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品E">
+                        <img src="images/20200501_noimage.jpg" alt="商品E">
                         <p class="mini-product-title">オプション<br>プロプラン3</p>
                     </div>
                     
@@ -191,7 +192,7 @@
                             <i class="fas fa-info-circle info-icon"></i>
                             <span class="tooltip-text">プロプラン4: すべてのセキュリティ運用を包括的にカバーする最上位プランです。</span>
                         </div>
-                        <img src="20200501_noimage.jpg" alt="商品E">
+                        <img src="images/20200501_noimage.jpg" alt="商品E">
                         <p class="mini-product-title">オプション<br>プロプラン4</p>
                     </div>
                     
@@ -243,10 +244,18 @@
 
         // --- レイアウト（マージンとサイドバー高）を調整する関数 ---
         function adjustLayout() { 
-            const marginValue = (SIDEBAR_WIDTH + SIDEBAR_MARGIN) + "px";
-            if (mainContent) {
-                mainContent.style.marginRight = marginValue;
+            // 992px より広い画面でのみサイドバー領域（マージン）を確保
+            if (window.innerWidth > 992) {
+                const marginValue = (SIDEBAR_WIDTH + SIDEBAR_MARGIN) + "px";
+                if (mainContent) {
+                    mainContent.style.marginRight = marginValue;
+                }
+            } else {
+                 if (mainContent) {
+                    mainContent.style.marginRight = "0"; // 狭い画面ではマージンをリセット
+                }
             }
+            
             const footerHeight = pageFooter ? pageFooter.offsetHeight : 0;
             if (selectedOptions) {
                 selectedOptions.style.height = `calc(100vh - ${SIDEBAR_TOP_OFFSET}px - ${footerHeight}px)`;

@@ -1,0 +1,503 @@
+/* ===== custom.css ===== */
+/* style923.css より custom.php 用のスタイルを抽出 */
+
+/* CSS Variables for consistent theming */
+:root {
+    --primary-color: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary-color: #64748b;
+    --accent-color: #06b6d4;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --bg-dark: #1e293b;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-light: #94a3b8;
+    --text-white: #ffffff;
+    
+    --border-color: #e2e8f0;
+    --border-light: #f1f5f9;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    
+    --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* ===== HEADER ===== */
+.header {
+    background: var(--bg-white);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+}
+
+.logo img {
+    height: 3rem;
+    width: auto;
+    transition: var(--transition);
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color:black;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    background: var(--bg-tertiary);
+    transform: translateY(-1px);
+}
+
+.nav-link i {
+    font-size: 1rem;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main {
+    min-height: calc(100vh - 200px);
+}
+
+/* ===== BUTTONS (style923.css より .product-btn を流用) ===== */
+.product-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary-color);
+    color: var(--text-white);
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition);
+    justify-content: center;
+    margin-top: auto; /* ★ custom.php のサイドバーボタンのために追加 */
+}
+
+.product-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.product-btn i {
+    transition: var(--transition);
+}
+
+.product-btn:hover i {
+    transform: translateX(4px);
+}
+
+
+/* ===== FOOTER ===== */
+.footer {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    padding: 3rem 0 2rem;
+    margin-top: 4rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.footer-link {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: var(--transition);
+}
+
+.footer-link:hover {
+    color: var(--text-white);
+    transform: translateY(-1px);
+}
+
+.footer-copyright p {
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+/* ===== MINI PRODUCTS SECTION (custom.php用) ===== */
+.mini-products {
+  padding: 3rem 0;
+  background: var(--bg-secondary);
+}
+
+.mini-products-grid {
+  display: grid;
+  /* 画面幅に合わせてフィットさせ、最小150px、最大1fr */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.mini-product-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  text-align: center;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+  position: relative; /* ツールチップとチェックボックスの基準点 */
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.mini-product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-color);
+}
+
+.mini-product-card img {
+  width: 100%;
+  height: auto;
+  max-height: 120px;
+  object-fit: contain;
+  margin-bottom: 0.75rem;
+}
+
+.mini-product-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* チェックボックスをカードに重ねるスタイル */
+.option-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transform: scale(1.3);
+  accent-color: var(--primary-color);
+  cursor: pointer;
+}
+
+/* ============================
+   カスタムプラン 右側固定エリア
+   ============================ */
+#selected-options {
+    position: fixed;
+    top: 85px; 
+    right: 1rem;  
+    width: 300px; 
+    background: var(--bg-tertiary, #f1f5f9);
+    border-left: 1px solid var(--border-color, #e2e8f0);
+    padding: 1.5rem;
+    box-shadow: -4px 0 6px rgba(0,0,0,0.05);
+    z-index: 99; 
+    overflow-y: auto; 
+    transition: transform 0.3s ease, height 0.3s ease, top 0.3s ease, right 0.3s ease;
+    border-radius: var(--radius-md, 0.5rem); 
+}
+#selected-options h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color, #2563eb);
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    margin-top: 0;
+}
+
+#selected-options ul {
+    display: flex;
+    flex-direction: column; /* オプションリストを縦並びに変更 */
+    gap: 0.5rem;
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+#selected-options li {
+    background: var(--primary-color, #2563eb);
+    color: var(--text-white, #fff);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-md, 0.5rem);
+    font-size: 0.875rem;
+}
+
+/* 金額・項目数・期間エリアのスタイル */
+.option-summary {
+    display: flex;
+    flex-direction: column; /* 縦並び */
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+
+.option-summary p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary, #64748b);
+}
+
+.option-summary p strong {
+    color: var(--text-primary, #1e293b);
+}
+
+/* 選択リストが空の時のメッセージ */
+#selected-list:empty::before {
+    content: "オプションが選択されていません";
+    color: var(--text-light, #94a3b8);
+    font-style: italic;
+    font-size: 0.875rem;
+}
+
+/* 右側固定エリアがメインコンテンツに被さるのを防ぐ */
+#main-content {
+    transition: margin-right 0.3s ease;
+    /* margin-right はJavaScriptで設定されます */
+}
+
+/* 請求サイクル ラジオボタンのスタイル（ボタン風・一列・丸み） */
+.billing-cycle {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0;
+}
+
+/* ラジオボタン本体を非表示にする */
+.billing-cycle input[type="radio"] {
+    display: none;
+}
+
+/* ボタン風のラベルスタイル */
+.billing-cycle label {
+    display: block;
+    padding: 0.6rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-secondary, #64748b);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    margin: 0;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: var(--radius-md, 0.5rem);
+    flex: 1;
+}
+
+/* ホバー時のスタイル（未選択のボタンのみ） */
+.billing-cycle input[type="radio"]:not(:checked) + label:hover {
+    background-color: var(--bg-tertiary, #f1f5f9);
+    border-color: var(--primary-color, #2563eb); 
+    color: var(--primary-color, #2563eb);
+}
+
+/* 選択中(checked)のボタンスタイル */
+.billing-cycle input[type="radio"]:checked + label {
+    background-color: var(--primary-color, #2563eb);
+    color: var(--text-white, #fff);
+    font-weight: 600;
+    border-color: var(--primary-color, #2563eb);
+}
+
+/* ============================
+   カスタムプラン ツールチップ
+   ============================ */
+
+/* ツールチップコンテナ（アイコンとテキストの親） */
+.tooltip-container {
+    position: absolute;
+    top: 10px; /* チェックボックスの近く */
+    left: 10px; /* チェックボックスの反対側 */
+    z-index: 101; /* サイドバー(99)やヘッダー(100)より手前に */
+}
+
+/* 情報アイコン (i) */
+.info-icon {
+    color: var(--secondary-color, #64748b);
+    font-size: 1.1rem; 
+    cursor: help; 
+    transition: color 0.3s ease;
+}
+
+/* アイコンホバーで色を変更 */
+.info-icon:hover {
+    color: var(--primary-color, #2563eb);
+}
+
+/* ツールチップテキスト (span) */
+.tooltip-text {
+    visibility: hidden; 
+    opacity: 0;
+    width: 250px;
+    background-color: var(--bg-dark, #1e293b);
+    color: var(--text-white, #ffffff);
+    text-align: left; 
+    border-radius: var(--radius-md, 0.5rem);
+    padding: 1rem;
+    box-shadow: var(--shadow-lg);
+    position: absolute;
+    z-index: 1; 
+    bottom: 125%; 
+    left: 50%;
+    margin-left: -125px;
+    transition: opacity 0.3s ease;
+}
+
+/* アイコンホバー時にツールチップを表示 */
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* ツールチップの吹き出し矢印（下向き） */
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%; 
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--bg-dark, #1e293b) transparent transparent transparent; 
+}
+
+
+/* ===== RESPONSIVE DESIGN (custom.php用) ===== */
+@media (max-width: 992px) {
+  .mini-products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* 画面が狭い場合 (992px以下) は右側メニューを隠す */
+  #selected-options {
+      transform: translateX(100%); /* 画面外に隠す */
+  }
+  #main-content {
+      margin-right: 0 !important; /* JSの設定を上書き */
+  }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .header .container {
+        padding: 1rem;
+    }
+    
+    .nav-list {
+        gap: 1rem;
+    }
+    
+    .nav-link {
+        padding: 0.5rem;
+    }
+    
+    .nav-link { /* 768px以下で「ログイン」などの文字を隠す */
+        /* style923.css では .nav-link span で指定されていましたが、 */
+        /* custom.php のHTML構造に合わせて .nav-link 自体の文字を隠します */
+        font-size: 0; /* 文字サイズを0に */
+    }
+    .nav-link i {
+        font-size: 1rem; /* アイコンサイズは維持 */
+        margin-right: 0; /* 文字が消えるのでマージン不要 */
+    }
+    /* もしHTML側で <span> で文字を囲む場合はこちらが有効
+    .nav-link span {
+        display: none;
+    }
+    */
+    
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .footer-links {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 600px) {
+  .mini-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

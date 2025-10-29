@@ -4,99 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecuriTea(セキュリティー)</title>
-    <link rel="stylesheet" href="style923.css">
-    <link rel="stylesheet" href="chatBot.css">
+    <title>SecuriTea(セキュリティー) - カート</title>
+    
+    <link rel="stylesheet" href="css/cart.css">
+    
+    <link rel="stylesheet" href="css/chatBot.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        /* 上部固定の選択オプション表示エリア */
-        #selected-options {
-            position: fixed;
-            top: 70px; /* ヘッダーの高さに合わせる */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 1200px;
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
-        #selected-options h2 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: #2563eb;
-        }
-        #selected-options ul {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            list-style: none;
-            padding-left: 0;
-            margin: 0;
-        }
-        #selected-options li {
-            background: #2563eb;
-            color: #fff;
-            padding: 0.25rem 0.75rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-        }
-
-        /* ▼▼▼ ここから追加 ▼▼▼ */
-        .cart-actions {
-            display: flex;
-            justify-content: center; /* ボタンを中央揃えに */
-            gap: 1rem; /* ボタンの間のスペース */
-            margin-top: 1.5rem; /* 上の要素とのスペース */
-        }
-
-        /* 「戻る」ボタン用のスタイル */
-        .secondary-btn {
-            background: var(--secondary-color); /* グレー系の色に */
-        }
-
-        .secondary-btn:hover {
-            background: #475569; /* ホバー時にもう少し濃いグレーに */
-        }
-        /* ▲▲▲ ここまで追加 ▲▲▲ */
-    </style>
-</head>
+    </head>
 
 <body>
     <header class="header">
         <div class="container">
             <div class="logo">
-                <img src="ロゴ2透過.png" alt="SecuriTea Logo">
+                <img src="images/ロゴ2透過.png" alt="SecuriTea Logo">
             </div>
             <nav class="nav">
                 <ul class="nav-list">
                     <li class="nav-item">
                         <a href="login.html" class="nav-link">
                             <i class="fas fa-user"></i>
-                            ログイン
+                            <span>ログイン</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="test.php" class="nav-link">
-                            <i class="fas fa-user"></i>
-                            ホーム
+                            <i class="fas fa-home"></i> <span>ホーム</span>
                         </a>    
                     </li>
                     <li class="nav-item">
                         <a href="account.html" class="nav-link">
-                            <i class="fas fa-question-circle"></i>
-                            アカウント情報
+                            <i class="fas fa-cog"></i> <span>アカウント情報</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="inquiry.html" class="nav-link">
                             <i class="fas fa-question-circle"></i>
-                            Q&A
+                            <span>Q&A</span>
                         </a>
                     </li>
                 </ul>

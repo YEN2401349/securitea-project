@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プラン詳細 - SecuriTea</title>
-    <link rel="stylesheet" href="soft.css">
-    <link rel="stylesheet" href="chatBot.css">
+    <link rel="stylesheet" href="css/soft.css">
+    <link rel="stylesheet" href="css/chatBot.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -15,7 +15,7 @@
         <div class="container">
             <div class="logo">
             <a href="test.php" class="logo">
-                <img src="ロゴ2透過.png" alt="Modern Securitea Logo">
+                <img src="images/ロゴ2透過.png" alt="Modern Securitea Logo">
             </a>
             </div>
             <nav class="nav">
