@@ -1,5 +1,5 @@
 // ------------------------------
-// Package Option Management (Server-based)
+// Package Plan Management
 // ------------------------------
 
 // State variables
@@ -19,7 +19,10 @@ const packageTableWrapper = document.getElementById('packageTableWrapper');
 const packageModel = document.getElementById('packageModel');
 const packageForm = document.getElementById('packageForm');
 const addPackageBtn = document.getElementById('addPackageBtn');
-const packgeModalCancelBtn = document.getElementById('packgeModalCancelBtn'); // ✅ Matches HTML id
+const cancelBtn = document.getElementById('cancelBtn');
+
+const package_plan_type = document.getElementById('package_plan_type');
+const package_duration_months = document.getElementById('package_duration_months');
 
 // ------------------------------
 // Fetch data from server
@@ -32,23 +35,23 @@ async function reloadPackageFromServer() {
 
         packageItems = json.data.map(p => ({
             id: p.product_id || p.id,
-            name: p.name,
-            price: p.price,
-            plan_type: p.plan_type,
-            billing_cycle: p.billing_cycle,
-            duration_months: p.duration_months,
-            description: p.description
+            package_name: p.name,
+            package_price: p.price,
+            package_plan_type: p.plan_type,
+            package_billing_cycle: p.billing_cycle,
+            package_duration_months: p.duration_months,
+            package_description: p.description
         }));
 
         localStorage.setItem('packages', JSON.stringify(packageItems));
         renderPackageTable();
     } catch (err) {
-        console.error('Failed to fetch package data:', err);
+        console.error('Error:', err);
     }
 }
 
 // ------------------------------
-// Add / Edit data (save to server)
+// Save to server (Add / Edit)
 // ------------------------------
 async function savePackageToServer(data, isEdit = false) {
     const url = isEdit
@@ -76,19 +79,49 @@ function packageLoad() {
 }
 
 // ------------------------------
+// Update package_duration_months options
+// ------------------------------
+function updateDurationPackageOptions() {
+    const options = package_duration_months.options;
+    for (let i = 0; i < options.length; i++) options[i].disabled = false;
+
+    switch (package_plan_type.value) {
+        case 'lifetime':
+            for (let o of options)
+                if (['1', '6', '12'].includes(o.value)) o.disabled = true;
+            package_duration_months.value = '999';
+            break;
+        case 'yearly':
+            for (let o of options)
+                if (['1', '6', '999'].includes(o.value)) o.disabled = true;
+            package_duration_months.value = '12';
+            break;
+        default: // monthly
+            for (let o of options)
+                if (['12', '999'].includes(o.value)) o.disabled = true;
+            for (let o of options)
+                if (!o.disabled) {
+                    package_duration_months.value = o.value;
+                    break;
+                }
+            break;
+    }
+}
+
+// ------------------------------
 // Open / Close Modal
 // ------------------------------
 function openPackageModel(edit = false, item = null) {
     packageModel.style.display = "flex";
-    document.getElementById("packageModalTitle").textContent = edit ? "編集" : "追加";
+    document.getElementById("modalTitle").textContent = edit ? "編集" : "追加";
+    console.log(item);
+    packageForm.package_name.value = item?.package_name || "";
+    packageForm.package_price.value = item?.package_price || "";
+    packageForm.package_plan_type.value = item?.package_billing_cycle || "monthly";
+    packageForm.package_duration_months.value = item?.package_duration_months;
+    packageForm.package_description.value = item?.package_description || "";
 
-    packageForm.name.value = item?.name || "";
-    packageForm.price.value = item?.price || "";
-    packageForm.plan_type.value = item?.billing_cycle || "monthly";
-    packageForm.duration_months.value = item?.duration_months || "1";
-    packageForm.description.value = item?.description || "";
-
-    updateDurationOptions();
+    if(!edit)updateDurationPackageOptions();
 }
 
 function closePackageModel() {
@@ -97,50 +130,17 @@ function closePackageModel() {
 }
 
 // ------------------------------
-// Update duration options based on plan_type
-// ------------------------------
-function updateDurationOptions() {
-    const planTypeEl = document.getElementById("package_plan_type");
-    const durationEl = document.getElementById("package_duration_months");
-
-    const options = durationEl.options;
-    for (let i = 0; i < options.length; i++) options[i].disabled = false;
-
-    switch (planTypeEl.value) {
-        case "lifetime":
-            for (let o of options)
-                if (["1", "6", "12"].includes(o.value)) o.disabled = true;
-            durationEl.value = "999";
-            break;
-        case "yearly":
-            for (let o of options)
-                if (["1", "6", "999"].includes(o.value)) o.disabled = true;
-            durationEl.value = "12";
-            break;
-        default: // monthly
-            for (let o of options)
-                if (["12", "999"].includes(o.value)) o.disabled = true;
-            for (let o of options)
-                if (!o.disabled) {
-                    durationEl.value = o.value;
-                    break;
-                }
-            break;
-    }
-}
-
-// ------------------------------
-// Form submission (Add / Edit)
+// Form Submission (Add / Edit)
 // ------------------------------
 packageForm.onsubmit = async e => {
     e.preventDefault();
 
     const data = {
-        name: packageForm.name.value.trim(),
-        price: packageForm.price.value.trim(),
-        billing_cycle: packageForm.plan_type.value.trim(),
-        duration_months: packageForm.duration_months.value.trim(),
-        description: packageForm.description.value.trim()
+        package_name: packageForm.package_name.value.trim(),
+        package_price: packageForm.package_price.value.trim(),
+        package_billing_cycle: packageForm.package_plan_type.value.trim(),
+        package_duration_months: packageForm.package_duration_months.value.trim(),
+        package_description: packageForm.package_description.value.trim()
     };
 
     try {
@@ -151,14 +151,14 @@ packageForm.onsubmit = async e => {
         }
 
         closePackageModel();
-        await reloadPackageFromServer(); // Reload updated data
+        await reloadPackageFromServer();
     } catch (err) {
-        alert("Save failed: " + err.message);
+        alert("保存失敗：" + err.message);
     }
 };
 
 // ------------------------------
-// Edit / Delete
+// Edit / Delete Functions
 // ------------------------------
 async function editPackage(id) {
     const item = packageItems.find(i => i.id == id);
@@ -179,17 +179,17 @@ async function deletePackage(id) {
         if (!json.success) throw new Error(json.error);
         await reloadPackageFromServer();
     } catch (err) {
-        alert("Delete failed: " + err.message);
+        alert("削除失敗：" + err.message);
     }
 }
 
 // ------------------------------
-// Table rendering & pagination
+// Table Rendering & Pagination
 // ------------------------------
 function queryPackageData() {
     const q = (packageSearch?.value || '').trim().toLowerCase();
     let list = packageItems;
-    if (q) list = list.filter(i => i.name.toLowerCase().includes(q));
+    if (q) list = list.filter(i => i.package_name.toLowerCase().includes(q));
 
     const total = list.length;
     const start = (packagePage - 1) * packagePageSize;
@@ -202,10 +202,10 @@ function renderPackageTable() {
     packageTableBody.innerHTML = list.map(i => `
         <tr>
             <td>${i.id}</td>
-            <td>${i.name}</td>
-            <td>¥${Number(i.price)}</td>
-            <td>${i.plan_type}</td>
-            <td>${i.description}</td>
+            <td>${i.package_name}</td>
+            <td>¥${Number(i.package_price)}</td>
+            <td>${i.package_plan_type}</td>
+            <td>${i.package_description}</td>
             <td>
                 <button class="packageEditBtn" data-package-id="${i.id}">編集</button>
                 <button class="packageDeleteBtn" data-package-id="${i.id}">削除</button>
@@ -221,11 +221,11 @@ function renderPackageTable() {
     );
 
     renderPackagePagination(total);
-    updatePackageTableScroll();
+    updateTableScroll();
 }
 
 // ------------------------------
-// Pagination rendering
+// Pagination Rendering
 // ------------------------------
 function renderPackagePagination(total) {
     const totalPages = Math.ceil(total / packagePageSize);
@@ -240,7 +240,10 @@ function renderPackagePagination(total) {
     packageCurrentPageEl.textContent = packagePage;
 }
 
-function updatePackageTableScroll() {
+// ------------------------------
+// Enable table scroll if page size large
+// ------------------------------
+function updateTableScroll() {
     if (packagePageSize >= 10) {
         packageTableWrapper.classList.add('scrollable');
     } else {
@@ -249,20 +252,20 @@ function updatePackageTableScroll() {
 }
 
 // ------------------------------
-// Event listeners
+// Event Listeners
 // ------------------------------
 addPackageBtn.onclick = () => openPackageModel();
-packgeModalCancelBtn.onclick = () => closePackageModel();
+cancelBtn.onclick = () => closePackageModel();
 packageSearch.addEventListener('input', () => { packagePage = 1; renderPackageTable(); });
 packagePageSizeSelect.addEventListener('change', () => {
     packagePageSize = parseInt(packagePageSizeSelect.value);
     packagePage = 1;
     renderPackageTable();
 });
-document.getElementById('plan_type').addEventListener('change', updateDurationOptions);
+package_plan_type.addEventListener('change', updateDurationPackageOptions);
 
 // ------------------------------
-// Initial load
+// Initial Load
 // ------------------------------
 reloadPackageFromServer();
-updateDurationOptions();
+updateDurationPackageOptions();

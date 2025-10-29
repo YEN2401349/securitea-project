@@ -16,7 +16,7 @@ try {
     created_date,
     updated_date
 FROM Products
-WHERE category_id = 1
+WHERE category_id = 2
 ORDER BY product_id;");
     $stmt->execute();
 
@@ -27,3 +27,5 @@ ORDER BY product_id;");
     echo json_encode(['error' => $e->getMessage()]);
 }
 ?>
+
+
