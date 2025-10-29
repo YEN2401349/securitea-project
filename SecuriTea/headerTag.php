@@ -13,7 +13,7 @@
     //ログイン状態の確認
     //ログインしていればユーザー情報ページのリンク表示
     //ログインして無ければログインページのリンク表示
-                if(!isset($_SESSION['customer'])){
+                if(isset($_SESSION['customer'])){
                     echo '<li class="nav-item">',
                             '<a href="account.html" class="nav-link">',
                                 '<i class="fas fa-question-circle"></i>アカウント情報',
