@@ -1,15 +1,15 @@
 <div id="packageModel" class="packageModelHidden">
     <div>
-        <h3 id="packageModalTitle">オプション追加</h3>
+        <h3 id="modalTitle">ユーザー追加</h3>
         <form id="packageForm">
             <div class="formContainer">
                 <div style="flex:1 1 45%;">
                     <label>商品名</label>
-                    <input name="name" required />
+                    <input name="package_name" required />
                 </div>
                 <div style="flex:1 1 45%;">
                     <label>価格</label>
-                    <input name="price" type="number" required />
+                    <input name="package_price" type="number" required />
                 </div>
                 <div style="flex:1 1 45%;">
                     <label>サイクル</label>
@@ -30,11 +30,11 @@
                 </div>
                 <div style="flex:1 1 45%;">
                     <label>説明</label>
-                    <textarea name="description" cols="70" rows="10" required></textarea>
+                    <textarea name="package_description" cols="70" rows="10" required></textarea>
                 </div>
             </div>
             <div style="margin-top:1rem; text-align:right;">
-                <button type="button" id="packgeModalCancelBtn" class="border">キャンセル</button>
+                <button type="button" id="cancelBtn" class="border">キャンセル</button>
                 <button type="submit" class="bg-blue">保存</button>
             </div>
         </form>
