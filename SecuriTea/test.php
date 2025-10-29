@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecuriTea(セキュリティー)</title>
-    <link rel="stylesheet" href="css/soft.css">
-    <link rel="stylesheet" href="css/chatBot.css">
+    <link rel="stylesheet" href="css/top-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -16,7 +15,7 @@
         <div class="container">
             <div class="logo">
                 <a href="test.php" class="logo">
-                    <img src="ロゴ2透過.png" alt="Modern Securitea Logo">
+                    <img src="images/ロゴ2透過.png" alt="Modern Securitea Logo">
                 </a>
             </div>
             <nav class="nav">
@@ -28,10 +27,10 @@
                         </a>
                     </li>
                      <li class="nav-item">
-                        <a href="test.php" class="nav-link">
+                        <a href="software.php" class="nav-link">
                             <i class="fas fa-user"></i>
-                            ホーム
-                        </a>    
+                            商品一覧
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a href="account.html" class="nav-link">
@@ -42,7 +41,7 @@
                     <li class="nav-item">
                         <a href="inquiry.html" class="nav-link">
                             <i class="fas fa-question-circle"></i>
-                            Q&A
+                            お問い合わせフォーム
                         </a>
                     </li>
                 </ul>
@@ -52,6 +51,15 @@
 
     <main class="main">
         <div class="container">
+            <section class="hero">
+                <h1 class="hero-title">
+                    <span class="hero-title-main">パソコン初心者の</span>
+                    <span class="hero-title-sub">あなたへ</span>
+                </h1>
+                <p class="hero-description">
+                    最先端のセキュリティソフトが、あなたのパソコンを守ります
+                </p>
+
                 <div class="search-section">
                     <div class="search-container">
                         <div class="search-bar">
@@ -63,13 +71,14 @@
                         </div>
                     </div>
                 </div>
+            </section>
 
             <section class="products">
                 <h2 class="section-title">商品一覧</h2>
                 <div class="products-grid">
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="20200501_noimage.jpg" alt="商品画像1">
+                            <img src="images/20200501_noimage.jpg" alt="商品画像1">
                             <div class="product-badge">人気</div>
                         </div>
                         <div class="product-content">
@@ -88,7 +97,7 @@
 
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="20200501_noimage.jpg" alt="商品画像2">
+                            <img src="images/20200501_noimage.jpg" alt="商品画像2">
                             <div class="product-badge new">おすすめ</div>
                         </div>
                         <div class="product-content">
@@ -107,7 +116,7 @@
 
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="20200501_noimage.jpg" alt="商品画像3">
+                            <img src="images/20200501_noimage.jpg" alt="商品画像3">
                         </div>
                         <div class="product-content">
                             <h3 class="product-title">エキスパート</h3>
@@ -125,14 +134,14 @@
 
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="20200501_noimage.jpg" alt="商品画像1">
+                            <img src="images/20200501_noimage.jpg" alt="商品画像3">
                         </div>
                         <div class="product-content">
                             <h3 class="product-title">カスタム</h3>
                             <p class="product-description">必要な分だけ</p>
                             <div class="product-tags">
-                                <span class="tag">#玄人向け</span>
-                                <span class="tag">#必要最低限</span>
+                                <span class="tag">#表示最低限</span>
+                                <span class="tag">#お好み</span>
                             </div>
                             <a href="custom.php" class="product-btn">
                                 <span>詳細を見る</span>
@@ -142,7 +151,6 @@
                     </div>
                 </div>
             </section>
-
         </div>
     </main>
 
@@ -160,7 +168,7 @@
             </div>
         </div>
     </footer>
-    <?php include 'chatBot.php'; ?>
+    <?php include './component/chatBot.php'; ?>
 </body>
 
 </html>
