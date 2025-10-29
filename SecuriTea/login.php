@@ -1,3 +1,6 @@
+<?php session_start(); ?>
+<?php include("component/header.php"); ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -62,6 +65,28 @@
       </p>
     </div>
   </main>
+
+<!-- ログイン処理 -->
+<?php
+unset($_SESSION['costomer']);
+$pdo = new PDO($connect,USER,PASS);
+$sql = $pdo->prepare('select * from customer where login = ?');
+$sql->execute([$_POST['login']]);
+foreach($sql as $row){
+    if(password_verify($_POST['input_password'],$row['password']) == true){
+    $_SESSION['customer'] = [
+        'id' => $row['id'],'name' => $row['name'],
+        'address' => $row['address'],'login' => $row['login'],
+        'password' => $row['password']];
+    }
+}
+
+if(isset($_SESSION['customer'])){
+    echo 'いらっしゃいませ、',$_SESSION['customer']['name'],'さん。';
+}else{
+    echo 'ログイン名またはパスワードが違います。';
+}
+?>
 
   <!-- フッター -->
   <footer class="footer">
