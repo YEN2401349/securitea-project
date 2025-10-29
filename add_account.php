@@ -1,3 +1,4 @@
+<?php include("component/header.php"); ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
