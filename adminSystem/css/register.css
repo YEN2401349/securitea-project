@@ -3,7 +3,6 @@ body {
     padding: 0;
     font-family: sans-serif;
     background: #f3f8ff;
-
 }
 
 .wrap {
@@ -20,7 +19,7 @@ body {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     width: 500px;
     margin: 80px auto;
-    height: 500px;
+    height: auto;
 }
 
 .brand {
@@ -39,7 +38,7 @@ body {
 }
 
 .field {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 label {
@@ -70,13 +69,14 @@ input:focus {
     border-radius: 6px;
     cursor: pointer;
     font-size: 15px;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .btn:hover {
     background: #084c9e;
 }
-.signup{
+
+.backBtn {
     width: 100%;
     padding: 10px;
     background: #28a745;
@@ -85,25 +85,16 @@ input:focus {
     border-radius: 6px;
     cursor: pointer;
     font-size: 15px;
-    margin-top: 30px;
+    margin-top: 20px;
 }
-.signup:hover {
+
+.backBtn:hover {
     background: #218838;
 }
+
 .error {
     color: red;
     font-size: 12px;
     display: none;
     margin-top: 4px;
 }
-
-.forget {
-    text-align: left;
-    margin-top: -20px;
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #0b3b6f;
-}
-.forget a{
-    text-decoration: none;
-    }
