@@ -26,7 +26,7 @@
                 <p class="hero-description">
                     最先端のセキュリティソフトが、あなたのパソコンを守ります
                 </p>
-
+                <!--検索機能（未完成）-->
                 <div class="search-section">
                     <div class="search-container">
                         <div class="search-bar">
@@ -39,7 +39,7 @@
                     </div>
                 </div>
             </section>
-
+            <!hero-title-sub商品項目パッケージ３つ表示（未完成）-->
             <section class="products">
                 <h2 class="section-title">商品一覧</h2>
                 <div class="products-grid">
@@ -98,7 +98,7 @@
                             </a>
                         </div>
                     </div>
-
+                    <!--カスタムページに遷移-->
                     <div class="product-card">
                         <div class="product-image">
                             <img src="images/costomIcon.png" alt="商品画像3">
