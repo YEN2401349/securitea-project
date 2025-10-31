@@ -156,7 +156,7 @@
 
     
     <?php require 'footer.php'; ?>
-    <?php include 'chatBot.php'; ?>
+    <?php include 'component/chatBot.php'; ?>
 </body>
 
 </html>
