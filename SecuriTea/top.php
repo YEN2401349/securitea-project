@@ -45,7 +45,7 @@
                 <div class="products-grid">
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="images/lightsPlanIcon.png" alt="商品画像1">
+                            <img src="images/lightPlanIcon.png" alt="商品画像1">
                             <div class="product-badge">人気</div>
                         </div>
                         <div class="product-content">
