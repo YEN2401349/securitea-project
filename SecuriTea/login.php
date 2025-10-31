@@ -10,32 +10,7 @@
   <link rel="stylesheet" href="css/login-style.css">
 </head>
 <body>
-  <?php require '../headerTag.php' ?>
-  <!-- ヘッダー
-  <header class="header">
-        <div class="container">
-            <div class="logo">
-                <a href="test.php"><img src="images/ロゴ2透過.png" alt="SecuriTea Logo"></a>  
-            </div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="software.php" class="nav-link">
-                            <i class="fas fa-user"></i>
-                            商品一覧
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="inquiry.html" class="nav-link">
-                            <i class="fas fa-question-circle"></i>
-                            お問い合わせフォーム
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    -->
+  <?php require 'headerTag.php' ?>
 
   <!-- ログインカード -->
   <main class="login-container">
