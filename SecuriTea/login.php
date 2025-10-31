@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php include("component/header.php"); ?>
+<?php require 'DBconnect.php' ?>
 
 <!DOCTYPE html>
 <html lang="ja">
