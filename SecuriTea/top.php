@@ -1,3 +1,4 @@
+<?php //require "DBconnect.php"; ?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -98,7 +99,7 @@
 
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="images/20200501_noimage.jpg" alt="商品画像3">
+                            <img src="images/costomIcon.png" alt="商品画像3">
                         </div>
                         <div class="product-content">
                             <h3 class="product-title">カスタム</h3>
@@ -118,20 +119,7 @@
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="#" class="footer-link">プライバシーポリシー</a>
-                    <a href="#" class="footer-link">利用規約</a>
-                    <a href="#" class="footer-link">お問い合わせ</a>
-                </div>
-                <div class="footer-copyright">
-                    <p>&copy; 2025 SecuriTea. All rights reserved.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php require "footer.php"; ?>
     <?php include './component/chatBot.php'; ?>
 </body>
 
