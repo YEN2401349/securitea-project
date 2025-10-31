@@ -3,7 +3,7 @@
     echo '<header class="header">',
             '<div class="container">',
                 '<div class="logo">',
-                    '<a href="test.php" class="logo">',
+                    '<a href="top.php" class="logo">',
                         '<img src="images/ロゴ2透過.png" alt="Modern Securitea Logo">',
                     '</a>',
                 '</div>',
