@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php include("component/header.php"); ?>
+<?php require 'DBconnect.php' ?>
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -10,7 +10,8 @@
   <link rel="stylesheet" href="css/login-style.css">
 </head>
 <body>
-  <!-- ヘッダー -->
+  <?php require '../headerTag.php' ?>
+  <!-- ヘッダー
   <header class="header">
         <div class="container">
             <div class="logo">
@@ -34,6 +35,7 @@
             </nav>
         </div>
     </header>
+    -->
 
   <!-- ログインカード -->
   <main class="login-container">
