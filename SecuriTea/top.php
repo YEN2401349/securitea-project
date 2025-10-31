@@ -13,6 +13,7 @@
 </head>
 
 <body>
+    <!--ヘッダータグ -->
     <?PHP require 'headerTag.php'?>
 
     <main class="main">
@@ -119,7 +120,7 @@
             </section>
         </div>
     </main>
-
+    <!--フッターとチャットボット-->
     <?php require "footer.php"; ?>
     <?php include './component/chatBot.php'; ?>
 </body>
