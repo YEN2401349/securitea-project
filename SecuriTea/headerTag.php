@@ -29,7 +29,7 @@
                 }
 
                     echo '<li class="nav-item">',
-                            '<a href="software.php" class="nav-link">',
+                            '<a href="product.php" class="nav-link">',
                                 '<i class="fas fa-user"></i>商品一覧',
                             '</a>',
                         '</li>',
