@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php //require 'DBconnect.php' ?>
+<?php require 'DBconnect.php'; ?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -28,17 +28,41 @@
                         </div>
                     </div>
                 </div>
-
+            <!--商品項目-->
             <section class="products">
                 <h2 class="section-title">商品一覧</h2>
                 <div class="products-grid">
+
+                    <?php
+                        $data=$db->query("select * FROM Products");
+                        foreach($data as $value){
+                            if($value["category_id"]==1){
+                                echo "<div class='product-card'>",
+                                        "<div class='product-image'>",
+                                            "<img src='images/20200501_noimage.jpg'>",
+                                        "</div>",
+                                        "<div class='product-content'>",
+                                            "<h3 class='product-title'>",$value["name"],"</h3>",
+                                            "<p class='product-description'>",$value["description"],"</p>",
+                                            "<p>DB出力</p>",
+                                            "<a href='pack.php' class='product-btn'>",
+                                                "<span>詳細を見る</span>",
+                                                "<i class='fas fa-arrow-right'></i>",
+                                            "</a>",
+                                        "</div>",
+                                     "</div>";
+                            }
+                        }
+
+                    ?>
+                    <!--
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="20200501_noimage.jpg" alt="商品画像1">
+                            <img src="images/lightPlanIcon.png" alt="商品画像1">
                             <div class="product-badge">人気</div>
                         </div>
                         <div class="product-content">
-                            <h3 class="product-title">サブスク</h3>
+                            <h3 class="product-title">ライトプラン</h3>
                             <p class="product-description">セキュリティソフトを試してみたいあなたへ</p>
                             <div class="product-tags">
                                 <span class="tag">#サブスク</span>
@@ -53,7 +77,7 @@
 
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="20200501_noimage.jpg" alt="商品画像2">
+                            <img src="images/standardPlanIcon.png" alt="商品画像2">
                             <div class="product-badge new">おすすめ</div>
                         </div>
                         <div class="product-content">
@@ -72,7 +96,7 @@
 
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="20200501_noimage.jpg" alt="商品画像3">
+                            <img src="images/expertPlanIcon.png" alt="商品画像3">
                         </div>
                         <div class="product-content">
                             <h3 class="product-title">エキスパート</h3>
@@ -88,6 +112,25 @@
                         </div>
                     </div>
 
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="images/premiumPlanIcon.png" alt="商品画像3">
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-title">プレミアムプラン</h3>
+                            <p class="product-description">万全なセキュリティが欲しいあなたへ</p>
+                            <div class="product-tags">
+                                <span class="tag">#プレミアム</span>
+                                <span class="tag">#全て</span>
+                            </div>
+                            <a href="pack.php" class="product-btn">
+                                <span>詳細を見る</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    -->
+                    <!--カスタムだけ直接遷移-->
                     <div class="product-card">
                         <div class="product-image">
                             <img src="images/costomIcon.png" alt="商品画像1">
