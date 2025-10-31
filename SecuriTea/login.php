@@ -46,7 +46,7 @@
 <!-- ログイン処理 -->
 <?php
 unset($_SESSION['costomer']);
-$pdo = new PDO($connect,USER,PASS);
+$pdo = new PDO($db,DB_USER,DB_PASS);
 $sql = $pdo->prepare('select * from customer where login = ?');
 $sql->execute([$_POST['login']]);
 foreach($sql as $row){
