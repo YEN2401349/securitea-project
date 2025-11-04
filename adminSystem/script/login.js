@@ -1,3 +1,5 @@
+import { SignJWT } from 'https://cdn.skypack.dev/jose';
+
 document.getElementById('loginForm').addEventListener('submit', async function (event) {
     event.preventDefault();
 
@@ -17,13 +19,24 @@ document.getElementById('loginForm').addEventListener('submit', async function (
             body: formData,
         });
 
-
         const data = await response.json();
-        console.log(data);
+        console.log(data.data);
         if (data.data) {
+            const user = data.data;
+
+            const secret = new TextEncoder().encode('mySuperSecretKey'); 
+            const token = await new SignJWT({ email: user.user_email, full_name: user.full_name ,role: user.role}) 
+                .setProtectedHeader({ alg: 'HS256' })
+                .setIssuedAt() 
+                .setExpirationTime('1h') 
+                .sign(secret); 
+
+
+            localStorage.setItem('token', token);
+
+
             window.location.href = 'dashboard.php';
         } else {
-
             emailError.style.display = 'block';
         }
     } catch (error) {

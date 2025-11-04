@@ -17,7 +17,7 @@ if (empty($email)) {
     exit;
 }
 
-$stmt = $db->prepare("SELECT 1 FROM Users WHERE user_email = ? AND role = 'admin'");
+$stmt = $db->prepare("SELECT * FROM Users WHERE user_email = ? AND role = 'admin'");
 $stmt->execute([$email]);
 $user = $stmt->fetch();
 
@@ -25,7 +25,11 @@ if (!$user) {
     echo json_encode(["success" => false, "message" => "該当する管理者が見つかりません。"]);
     exit;
 }
-
+$user_id = $user['user_id'];
+$stmt = $db->prepare("SELECT full_name FROM Profiles WHERE user_id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch();
+$full_name = $user['full_name'];
 $token = bin2hex(random_bytes(16));
 $expire = date("Y-m-d H:i:s", strtotime("+1 hour"));
 
@@ -38,7 +42,7 @@ $mail = new PHPMailer(true);
 
 try {
     $message = <<<EOT
-{$email} 様
+{$full_name} 様
 
 パスワード再設定をご希望いただきありがとうございます。
 以下のリンクをクリックして、新しいパスワードを設定してください。
