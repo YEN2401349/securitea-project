@@ -1,6 +1,6 @@
 <?php
 const DB_HOST = 'mysql326.phy.lolipop.lan';
-const DB_NAME = 'LAA1607550';
+const DB_NAME = 'LAA1607550-securitea';
 const DB_CHARSET = 'utf8';
 const DB_USER = 'LAA1607550';
 const DB_PASS = '0000';
