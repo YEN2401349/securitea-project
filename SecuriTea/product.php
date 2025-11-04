@@ -36,7 +36,7 @@
                     <?php
                         $data=$db->query("select * FROM Products");
                         foreach($data as $value){
-                            if($value["category_id"]==2){
+                            if($value["category_id"]==1){
                                 echo "<div class='product-card'>",
                                         "<div class='product-image'>",
                                             "<img src='images/20200501_noimage.jpg'>",
