@@ -1,23 +1,8 @@
 <?php include("component/header.php"); ?>
 <link rel="stylesheet" href="./css/mail.css">
 
-<!DOCTYPE html>
-<html lang="ja">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>メール - 管理者ダッシュボード</title>
-    <link rel="stylesheet" href="../管理者トップページ/dashboard.css">
-</head>
 
-<body>
-    <div class="dashboard">
-
-        <main class="main-content">
-            <header class="main-header">
-                <div class="user-info"><span>管理者: 山田太郎</span><a href="#">ログアウト</a></div>
-            </header>
 
             <header class="flex  mb-4">
                 <h1>ダッシュボード</h1>
@@ -79,46 +64,7 @@
 
             </div>
         </main>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const mailItems = document.querySelectorAll('.mail-item');
-            const mailDetailView = document.getElementById('mail-detail-view');
-            const initialContent = mailDetailView.innerHTML;
-
-            mailItems.forEach(item => {
-                item.addEventListener('click', function () {
-                    // 他の選択状態を解除
-                    mailItems.forEach(i => i.classList.remove('active'));
-
-                    // クリックされたアイテムを選択状態にする
-                    this.classList.add('active');
-
-                    // 詳細ビューにコンテンツを表示 (ダミーデータ)
-                    const sender = this.querySelector('.mail-sender').textContent;
-                    const subject = this.querySelector('.mail-subject').textContent;
-                    const date = this.querySelector('.mail-date').textContent;
-
-                    mailDetailView.innerHTML = `
-        <div class="detail-header">
-          <h2>${subject}</h2>
-          <div class="detail-meta">
-            <p><strong>差出人:</strong> ${sender}</p>
-            <p><strong>受信日時:</strong> ${date}</p>
-          </div>
-        </div>
-        <div class="detail-body">
-          <p>これはメール本文のサンプルです。</p>
-          <p>${sender}さんからの「${subject}」に関するメールの詳細内容がここに表示されます。</p>
-          <br>
-          <p>よろしくお願いいたします。</p>
-        </div>
-      `;
-                });
-            });
-        });
-    </script>
+    <script src="./script/mail.js"></script>
 </body>
 
 </html>

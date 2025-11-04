@@ -1,9 +1,6 @@
 <?php include("component/header.php"); ?>
 <link rel="stylesheet" href="./css/sales.css">
-<main class="main-content">
-    <header class="main-header">
-        <div class="user-info"><span>管理者: 山田太郎</span><a href="#">ログアウト</a></div>
-    </header>
+
 
     <header class="flex  mb-4">
         <h1>売上照会</h1>
@@ -525,4 +522,5 @@
         </div>
     </section>
 </main>
+<script src="./script/sales.js"></script>
 <?php include("component/footer.php"); ?>
