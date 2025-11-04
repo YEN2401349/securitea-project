@@ -42,7 +42,7 @@
             <section class="mini-products">
                 <div class="mini-products-grid">
                     <?php
-                        //$Data=$db->query("select * FROM Products");
+                        $data=$db->query("select * FROM Products");
                         foreach($data as $value){
                             if($value["category_id"]==2){
                                 echo "<div class='mini-product-card'>",
