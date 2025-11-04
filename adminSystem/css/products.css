@@ -1,19 +1,5 @@
-/* header */
-.main-header {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #f3f4f6;
-    color: #1e293b;
-    line-height: 1.5;
-}
 
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+
 
 /* layout */
 .flex {
@@ -166,7 +152,7 @@ tr:nth-child(even) {
     background: #fff;
     border-radius: 0.5rem;
     padding: 1.5rem;
-    max-width: 32rem;
+    max-width: 33rem;
     width: 100%;
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
@@ -226,11 +212,6 @@ tr:nth-child(even) {
         flex-wrap: wrap;
     }
 
-    .user-info {
-        flex-direction: row;
-        gap: 0.25rem;
-        font-size: 0.875rem;
-    }
 
     .main-content {
         padding: 1rem;

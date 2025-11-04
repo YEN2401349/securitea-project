@@ -1,3 +1,5 @@
+<? session_start();?>
+<? require 'DBconnect.php'; ?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -13,39 +15,7 @@
 </head>
 
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <img src="images/ロゴ2透過.png" alt="SecuriTea Logo">
-            </div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="login.html" class="nav-link">
-                            <i class="fas fa-user"></i>
-                            ログイン
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="test.php" class="nav-link">
-                            <i class="fas fa-home"></i> ホーム
-                        </a>    
-                    </li>
-                    <li class="nav-item">
-                        <a href="account.html" class="nav-link">
-                            <i class="fas fa-cog"></i> アカウント情報
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="inquiry.html" class="nav-link">
-                            <i class="fas fa-question-circle"></i>
-                            Q&A
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <? require 'headerTag.php'; ?>
 <div id="selected-options">
         <h2>選択中のオプション</h2>
         
@@ -198,23 +168,8 @@
             </section>
         </div>
     </main>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="#" class="footer-link">プライバシーポリシー</a>
-                    <a href="#" class="footer-link">利用規約</a>
-                    <a href="#" class="footer-link">お問い合わせ</a>
-                </div>
-                <div class="footer-copyright">
-                    <p>&copy; 2025 SecuriTea. All rights reserved.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <?php include './component/chatBot.php'; ?>
+    <?php require 'footer.php'; ?>
+    <?php include 'chatBot.php'; ?>
 
    <script>
     document.addEventListener("DOMContentLoaded", function() {

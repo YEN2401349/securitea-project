@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php include("component/header.php"); ?>
+<?php require 'DBconnect.php' ?>
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -10,30 +10,7 @@
   <link rel="stylesheet" href="css/login-style.css">
 </head>
 <body>
-  <!-- ヘッダー -->
-  <header class="header">
-        <div class="container">
-            <div class="logo">
-                <a href="test.php"><img src="images/ロゴ2透過.png" alt="SecuriTea Logo"></a>  
-            </div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="software.php" class="nav-link">
-                            <i class="fas fa-user"></i>
-                            商品一覧
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="inquiry.html" class="nav-link">
-                            <i class="fas fa-question-circle"></i>
-                            お問い合わせフォーム
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+  <?php require 'headerTag.php' ?>
 
   <!-- ログインカード -->
   <main class="login-container">
@@ -69,7 +46,7 @@
 <!-- ログイン処理 -->
 <?php
 unset($_SESSION['costomer']);
-$pdo = new PDO($connect,USER,PASS);
+$pdo = new PDO($db,DB_USER,DB_PASS);
 $sql = $pdo->prepare('select * from customer where login = ?');
 $sql->execute([$_POST['login']]);
 foreach($sql as $row){

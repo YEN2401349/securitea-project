@@ -2,10 +2,7 @@
 <link rel="stylesheet" href="./css/users.css">
 
 
-<main class="main-content">
-    <header class="main-header">
-        <div class="user-info"><span>管理者: 山田太郎</span><a href="#">ログアウト</a></div>
-    </header>
+
     <section>
         <header class="flex items-center justify-between mb-4">
             <h1>利用者確認</h1>

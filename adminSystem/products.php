@@ -1,9 +1,5 @@
 <?php include("component/header.php"); ?>
 <link rel="stylesheet" href="./css/products.css">
-<main class="main-content">
-    <header class="main-header">
-        <div class="user-info"><span>管理者: 山田太郎</span><a href="#">ログアウト</a></div>
-    </header>
     <section>
         <header class="flex items-center justify-between mb-4">
             <h1>基本プラン一覧</h1>
@@ -91,4 +87,5 @@
 <?php include("component/packageModel.php"); ?>
 <script src="component/script/customModel.js"></script>
 <script src="component/script/packageModel.js"></script>
+<script src="./script/products.js"></script>
 <?php include("component/footer.php"); ?>
