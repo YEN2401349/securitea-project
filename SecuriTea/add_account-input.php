@@ -27,14 +27,6 @@
   </style>
 </head>
 <body>
-  <header class="header">
-      <div class="container">
-          <div class="logo">
-              <a href="top.php"><img src="../images\ロゴ2透過.png" alt="SecuriTea Logo"></a>  
-          </div>
-      </div>
-  </header>
-
   <main class="login-container">
     <div class="login-card">
       <h2 class="section-title">アカウント登録</h2>
