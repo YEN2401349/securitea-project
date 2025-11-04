@@ -55,7 +55,7 @@
                                             "<p class='mini-product-title'>",$value["name"],"</p>",
                                      "</div>";
                             }
-                        }*/
+                        }
                     ?>
                     <!--
                     <div class="mini-product-card">
