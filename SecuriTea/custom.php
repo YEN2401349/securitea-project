@@ -6,8 +6,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecuriTea(セキュリティー) - カスタムプラン</title> 
+    <title>SecuriTea(セキュリティー) - カスタムプラン</title>
+    
     <link rel="stylesheet" href="css/custom.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -41,7 +43,7 @@
         <div class="container">
             <section class="mini-products">
                 <div class="mini-products-grid">
-                    <!--
+                    
                     <div class="mini-product-card">
                         <input type="checkbox" class="option-check">
                         <div class="tooltip-container">
@@ -161,13 +163,13 @@
                         <img src="images/20200501_noimage.jpg" alt="商品E">
                         <p class="mini-product-title">オプション<br>プロプラン4</p>
                     </div>
-                    -->
+                    
                 </div>
             </section>
         </div>
     </main>
     <?php require 'footer.php'; ?>
-    <?php include 'component/chatBot.php'; ?>
+    <?php include 'chatBot.php'; ?>
 
    <script>
     document.addEventListener("DOMContentLoaded", function() {
