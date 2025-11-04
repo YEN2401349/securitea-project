@@ -1,5 +1,5 @@
-<? session_start();?>
-<? require_once 'DBconnect.php'; ?>
+<?PHP session_start();?>
+<?PHP require_once 'DBconnect.php'; ?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <? require 'headerTag.php'; ?>
+    <?PHP require 'headerTag.php'; ?>
 <div id="selected-options">
         <h2>選択中のオプション</h2>
         
