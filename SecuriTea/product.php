@@ -45,7 +45,7 @@
                                             "<h3 class='product-title'>",$value["name"],"</h3>",
                                             "<p class='product-description'>",$value["description"],"</p>",
                                             "<p>DB出力</p>",
-                                            "<a href='pack.php' class='product-btn'>",
+                                            "<a href='pack.php?id=",$value["product_id"],"' class='product-btn'>",
                                                 "<span>詳細を見る</span>",
                                                 "<i class='fas fa-arrow-right'></i>",
                                             "</a>",

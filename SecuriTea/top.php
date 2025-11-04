@@ -41,63 +41,28 @@
             </section>
             <!--hero-title-sub商品項目パッケージ３つ表示（未完成）-->
             <section class="products">
-                <h2 class="section-title">商品一覧</h2>
+                <h2 class="section-title">商品一例</h2>
                 <div class="products-grid">
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="images/lightPlanIcon.png" alt="商品画像1">
-                            <div class="product-badge">人気</div>
-                        </div>
-                        <div class="product-content">
-                            <h3 class="product-title">サブスク</h3>
-                            <p class="product-description">セキュリティソフトを試してみたいあなたへ</p>
-                            <div class="product-tags">
-                                <span class="tag">#サブスク</span>
-                                <span class="tag">#保護者機能</span>
-                            </div>
-                            <a href="pack.php" class="product-btn">
-                                <span>詳細を見る</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="images/standardPlanIcon.png" alt="商品画像2">
-                            <div class="product-badge new">おすすめ</div>
-                        </div>
-                        <div class="product-content">
-                            <h3 class="product-title">スタンダード</h3>
-                            <p class="product-description">パソコンを使い始めたばかりのあなたへ</p>
-                            <div class="product-tags">
-                                <span class="tag">#スタンダード</span>
-                                <span class="tag">#パスワード管理</span>
-                            </div>
-                            <a href="pack.php" class="product-btn">
-                                <span>詳細を見る</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="images/expertPlanIcon.png" alt="商品画像3">
-                        </div>
-                        <div class="product-content">
-                            <h3 class="product-title">エキスパート</h3>
-                            <p class="product-description">普段のセキュリティソフトにプラスアルファしたいあなたへ</p>
-                            <div class="product-tags">
-                                <span class="tag">#エキスパート</span>
-                                <span class="tag">#クラウドバックアップ</span>
-                            </div>
-                            <a href="pack.php" class="product-btn">
-                                <span>詳細を見る</span>
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
+                    <?php
+                        $count = 0;
+                        $data=$db->query("select * FROM Products where category_id = 1 ORDER BY RAND() LIMIT 3");
+                        foreach($data as $value){
+                                echo "<div class='product-card'>",
+                                        "<div class='product-image'>",
+                                            "<img src='images/20200501_noimage.jpg'>",
+                                        "</div>",
+                                        "<div class='product-content'>",
+                                            "<h3 class='product-title'>",$value["name"],"</h3>",
+                                            "<p class='product-description'>",$value["description"],"</p>",
+                                            "<p>DB出力</p>",
+                                            "<a href='product.php' class='product-btn'>",
+                                                "<span>詳細を見る</span>",
+                                                "<i class='fas fa-arrow-right'></i>",
+                                            "</a>",
+                                        "</div>",
+                                     "</div>";
+                        }
+                    ?>
                     <!--カスタムページに遷移-->
                     <div class="product-card">
                         <div class="product-image">
