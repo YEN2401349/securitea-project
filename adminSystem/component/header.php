@@ -16,7 +16,7 @@
     <main class="main-content">
 
         <header class="main-header">
-            <div class="user-info"><span id="admin_name"></span><button class="logout-btn">
+            <div class="user-info"><span id="admin_name"></span><button id="logout_btn" class="logout-btn">
                     <ion-icon name="log-out-outline"></ion-icon>
                     ログアウト
                 </button></div>
