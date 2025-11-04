@@ -21,7 +21,13 @@
         アカウントにログインしてください。
       </p>
 
-      <form action="test.html" method="post" class="login-form">
+    <?php
+    if (isset($_GET['error'])) {
+        echo '<p style="color: red;">メールアドレスまたはパスワードが違います。</p>';
+    }
+    ?>
+
+      <form action="login_check.php" method="post" class="login-form">
         <div class="form-group">
           <label for="email">メールアドレス</label>
           <input type="email" id="email" name="email" required placeholder="メールアドレス">
@@ -32,38 +38,16 @@
           <input type="password" id="password" name="password" required placeholder="パスワード">
         </div>
 
-        <a href="remindPass.html" class="forgot-password">パスワードをお忘れですか？</a>
+        <a href="remindPass.php" class="forgot-password">パスワードをお忘れですか？</a>
 
         <button type="submit" class="product-btn">続ける</button>
       </form>
 
       <p class="register">
-        アカウントが未登録ですか？ <a href="add_account.html">アカウントの作成</a>
+        アカウントが未登録ですか？ <a href="add_account-input.php">アカウントの作成</a>
       </p>
     </div>
   </main>
-
-<!-- ログイン処理 -->
-<?php
-unset($_SESSION['costomer']);
-$pdo = new PDO($db,DB_USER,DB_PASS);
-$sql = $pdo->prepare('select * from customer where login = ?');
-$sql->execute([$_POST['login']]);
-foreach($sql as $row){
-    if(password_verify($_POST['input_password'],$row['password']) == true){
-    $_SESSION['customer'] = [
-        'id' => $row['id'],'name' => $row['name'],
-        'address' => $row['address'],'login' => $row['login'],
-        'password' => $row['password']];
-    }
-}
-
-if(isset($_SESSION['customer'])){
-    echo 'いらっしゃいませ、',$_SESSION['customer']['name'],'さん。';
-}else{
-    echo 'ログイン名またはパスワードが違います。';
-}
-?>
 
   <!-- フッター -->
   <footer class="footer">
