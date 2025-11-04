@@ -186,7 +186,7 @@
     <?php include 'component/chatBot.php'; ?>
 
    <script>
-    /*document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
         // --- 要素を取得 ---
         const checkboxes = document.querySelectorAll(".option-check");
         const selectedList = document.getElementById("selected-list");
