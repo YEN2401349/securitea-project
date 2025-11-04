@@ -21,7 +21,7 @@
         アカウントにログインしてください。
       </p>
 
-      <form action="top.html" method="post" class="login-form">
+      <form action="top.php" method="post" class="login-form">
         <div class="form-group">
           <label for="email">メールアドレス</label>
           <input type="email" id="email" name="email" required placeholder="メールアドレス">
