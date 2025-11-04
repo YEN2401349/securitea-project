@@ -42,8 +42,8 @@
             <section class="mini-products">
                 <div class="mini-products-grid">
                     <?php
-                        $Data=$db->query("select * FROM Products");
-                        foreach($Data as $value){
+                        //$Data=$db->query("select * FROM Products");
+                        foreach($data as $value){
                             if($value["category_id"]==2){
                                 echo "<div class='mini-product-card'>",
                                         "<input type='checkbox' class='option-check'>",
