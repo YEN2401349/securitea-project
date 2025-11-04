@@ -56,6 +56,19 @@
                                      "</div>";
                             }
                         }
+                        /*foreach($data as $value){
+                            if($value["category_id"]==2){
+                                echo "<div class='mini-product-card'>",
+                                        "<input type='checkbox' class='option-check'>",
+                                        "<div class='tooltip-container'>",
+                                            "<i class='fas fa-info-circle info-icon'></i>",
+                                            "<span class='tooltip-text'>",$value["description"],"</span>",
+                                        "</div>",
+                                        "<img src='images/20200501_noimage.jpg' alt='",$value["name"],"'>",
+                                            "<p class='mini-product-title'>",$value["name"],"</p>",
+                                     "</div>";
+                            }
+                        }*/
                     ?>
                     <!--
                     <div class="mini-product-card">
