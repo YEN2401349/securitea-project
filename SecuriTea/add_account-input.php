@@ -1,4 +1,4 @@
-<?php include("component/header.php"); ?>
+<?php require 'headerTag.php' ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -27,28 +27,10 @@
   </style>
 </head>
 <body>
-  <header class="header">
-      <div class="container">
-          <div class="logo">
-              <a href="test.html"><img src="ロゴ2透過.png" alt="SecuriTea Logo"></a>  
-          </div>
-          <nav class="nav">
-              <ul class="nav-list">
-                  <li class="nav-item">
-                      <a href="software.php" class="nav-link">商品一覧</a>
-                  </li>
-                  <li class="nav-item">
-                      <a href="inquiry.html" class="nav-link">お問い合わせフォーム</a>
-                  </li>
-              </ul>
-          </nav>
-      </div>
-  </header>
-
   <main class="login-container">
     <div class="login-card">
       <h2 class="section-title">アカウント登録</h2>
-      <form action="login.html" method="post" class="login-form">
+      <form action="add_account-output.php" method="post" class="login-form">
         
         <div class="form-group form-row">
           <div class="form-group-half">
@@ -107,6 +89,3 @@
 
 </body>
 </html>
-<?php
- $pdo = null;   //DB切断
- ?>
