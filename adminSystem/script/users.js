@@ -33,6 +33,11 @@ async function reloadFromServer() {
             name: p.full_name,
             email: p.user_email,
             update_date: p.update_date,
+            period: p.subscription_period,
+            product: p.subscription_product_name,
+            price: p.tatle_price,
+            custom: p.custom_product_names,
+            id: p.id
         }));
 
         localStorage.setItem('users', JSON.stringify(userItems));
@@ -85,8 +90,8 @@ function render() {
             <td>${it.email}</td>
             <td>${new Date(it.update_date).toLocaleDateString()}</td>
             <td>${it.period || ''}</td>
-            <td>${it.role}</td>
-            <td>${it.price || ''}</td>
+            <td>${it.product || ''}</td>
+            <td>${"￥"+it.price+"円" || ''}</td>
             <td>${it.custom || ''}</td>
             <td><button data-id="${it.id}" class="deleteBtn border">削除</button></td>
         </tr>

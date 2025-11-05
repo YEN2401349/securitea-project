@@ -9,7 +9,7 @@
     <section class="cards">
         <div class="card">
             <h3>ユーザー数</h3>
-            <p>1,234 人</p>
+            <p id="userCount"></p>
         </div>
         <div class="card">
             <h3>総売上</h3>
