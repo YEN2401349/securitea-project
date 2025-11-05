@@ -1,0 +1,96 @@
+<?php
+require 'DBconnect.php'; // データベース接続ファイルを読み込む
+
+$msg = '';
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $name = $_POST["name"];
+    $email = $_POST["email"];
+    $product = $_POST["product"];
+    $subject = $_POST["subject"];
+    $message = $_POST["message"];
+
+    // 件名に製品名を付け加える（見やすく）
+    $full_subject = $subject . ' ' . $product;
+
+    // SQLでデータベースに保存
+    $sql = "INSERT INTO Inquiries (name, email, subject, message, created_at)
+            VALUES (?, ?, ?, ?, NOW())";
+    $stmt = $db->prepare($sql);
+    $success = $stmt->execute([$name, $email, $full_subject, $message]);
+
+    if ($success) {
+        // 再送信防止のためリダイレクト
+        header("Location: " . $_SERVER['PHP_SELF'] . "?success=1");
+        exit;
+    } else {
+        $msg = "送信に失敗しました。もう一度お試しください。";
+    }
+}
+
+// 成功メッセージの表示
+if (isset($_GET['success'])) {
+    $msg = "お問い合わせを受け付けました。ありがとうございます。";
+}
+?>
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お問い合わせ</title>
+    <link rel="stylesheet" href="css/login-style.css">
+</head>
+<body>
+    <?php require 'headerTag.php' ?>
+
+<main>
+    <div class="login-container">
+        <div class="login-card">
+            <h1 class="section-title">お問い合わせ</h1>
+
+            <?php if (!empty($msg)): ?>
+                <p style="color:green; text-align:center;"><?= htmlspecialchars($msg) ?></p>
+            <?php endif; ?>
+
+            <form class="login-form" action="" method="POST">
+                <div class="form-group">
+                    <label for="name">お名前</label>
+                    <input type="text" id="name" name="name" placeholder="山田 太郎" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">メールアドレス</label>
+                    <input type="email" id="email" name="email" placeholder="example@securitea.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product">製品</label>
+                    <input type="text" id="product" name="product" placeholder="パッケージA" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">件名</label>
+                    <input type="text" id="subject" name="subject" placeholder="製品に関するご質問" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">お問い合わせ内容</label>
+                    <textarea id="message" name="message" rows="6" placeholder="お問い合わせ内容をこちらにご記入ください。" required></textarea>
+                </div>
+
+                <button type="submit" class="product-btn">送信する</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 Modern Securitea. All Rights Reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>
