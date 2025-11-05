@@ -17,6 +17,28 @@ if ($password !== $password_confirm) {
     exit();
 }
 
+// メールアドレス重複チェック
+$sql = $pdo->prepare("SELECT COUNT(*) FROM Users WHERE user_email = ?");
+$sql->execute([$email]);
+$count = $sql->fetchColumn();
+
+if ($count > 0) {
+    // すでに登録されている場合
+    echo '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">';
+    echo '<title>登録エラー</title>';
+    echo '<link rel="stylesheet" href="css/login-style.css">';
+    echo '</head><body>';
+    echo '<main class="login-container">';
+    echo '<div class="login-card">';
+    echo '<h2 class="section-title">登録エラー</h2>';
+    echo '<p>このメールアドレスはすでに登録されています。</p>';
+    echo '<p><a href="add_account-input.php" class="product-btn">戻る</a></p>';
+    echo '</div>';
+    echo '</main>';
+    echo '</body></html>';
+    exit();
+}
+
 // パスワードをハッシュ化
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
