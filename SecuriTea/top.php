@@ -49,7 +49,7 @@
                         foreach($data as $value){
                                 echo "<div class='product-card'>",
                                         "<div class='product-image'>",
-                                            "<img src='images/20200501_noimage.jpg'>",
+                                            "<img src='images/PackIcon/",$value["image_path"],"' alt='",$value["name"],"'>",
                                         "</div>",
                                         "<div class='product-content'>",
                                             "<h3 class='product-title'>",$value["name"],"</h3>",
@@ -66,7 +66,7 @@
                     <!--カスタムページに遷移-->
                     <div class="product-card">
                         <div class="product-image">
-                            <img src="images/costomIcon.png" alt="商品画像3">
+                            <img src="images/CostomIcon/costomIcon.png" alt="商品画像3">
                         </div>
                         <div class="product-content">
                             <h3 class="product-title">カスタム</h3>
