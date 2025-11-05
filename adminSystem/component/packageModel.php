@@ -29,7 +29,13 @@
                     </select>
                 </div>
                 <div style="flex:1 1 45%;">
-                    <label>説明</label>
+                    <label>商品画像</label>
+                    <input type="file" name="image" accept="image/*" required><br>
+                    <div id="package_preview">
+                    </div>
+                </div>
+                <div style="flex:1 1 45%;">
+                    <label>説明</label><br>
                     <textarea name="package_description" cols="70" rows="10" required></textarea>
                 </div>
             </div>
