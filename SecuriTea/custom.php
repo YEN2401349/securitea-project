@@ -27,7 +27,7 @@
             <p><strong>金額：</strong><span id="total-price">0</span>円<span id="billing-cycle-label">/月</span></p>
             <p><strong>項目数：</strong><span id="total-count">0</span>項目</p>
             <p><strong>期間：</strong> 年 月 日 ～ 年 月 日</p>
-            <a href="cart.html" class="product-btn">
+            <a href="account_check" class="product-btn">
                 <span>確認画面へ</span>
             <i class="fas fa-arrow-right"></i>
             </a>

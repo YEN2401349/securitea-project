@@ -21,7 +21,7 @@ try {
         exit;
     }
 
-} catch (PDOException $e) {
+} catch (PDOExceptiona $e) {
     echo "エラー: " . $e->getMessage();
     exit;
 }
