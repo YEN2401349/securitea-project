@@ -13,6 +13,7 @@ try {
     END AS plan_type,
     duration_months,
     category_id,
+    image_path,
     created_date,
     updated_date
 FROM Products
