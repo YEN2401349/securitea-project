@@ -50,7 +50,7 @@
                                             "<i class='fas fa-info-circle info-icon'></i>",
                                             "<span class='tooltip-text'>",$value["description"],"</span>",
                                         "</div>",
-                                        "<img src='images/CostomIcon/",$value["image_path"],"' alt='",$value["name"],"'>",
+                                        "<img src='../adminSystem/",$value["image_path"],"' alt='",$value["name"],"'>",
                                             "<p class='mini-product-title'>",$value["name"],"</p>",
                                      "</div>";
                         }
