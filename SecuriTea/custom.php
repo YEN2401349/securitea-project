@@ -27,7 +27,7 @@
             <p><strong>金額：</strong><span id="total-price">0</span>円<span id="billing-cycle-label">/月</span></p>
             <p><strong>項目数：</strong><span id="total-count">0</span>項目</p>
             <p><strong>期間：</strong> 年 月 日 ～ 年 月 日</p>
-            <a href="account_check" class="product-btn">
+            <a href="account_check.php" class="product-btn">
                 <span>確認画面へ</span>
             <i class="fas fa-arrow-right"></i>
             </a>
@@ -42,16 +42,25 @@
             <section class="mini-products">
                 <div class="mini-products-grid">
                     <?php
-                        $data=$db->query("select * FROM Products where category_id = 2");
+                        $data=$db->query("select product_id, name, description, image_path, price FROM Products where category_id = 2");
                         foreach($data as $value){
+                                $monthly_price = (int)$value["price"];
+                                $yearly_price = $monthly_price * 10; 
+                                $name_escaped = htmlspecialchars($value["name"], ENT_QUOTES);
+                                $desc_escaped = htmlspecialchars($value["description"], ENT_QUOTES);
                                 echo "<div class='mini-product-card'>",
-                                        "<input type='checkbox' class='option-check'>",
+                                        "<input type='checkbox' class='option-check'",
+                                               " data-price-monthly='", $monthly_price, "'",
+                                               " data-price-yearly='", $yearly_price, "'",
+                                               " data-label='", $name_escaped, "'>",
                                         "<div class='tooltip-container'>",
                                             "<i class='fas fa-info-circle info-icon'></i>",
-                                            "<span class='tooltip-text'>",$value["description"],"</span>",
+                                            "<span class='tooltip-text'>",$desc_escaped,"</span>",
                                         "</div>",
-                                        "<img src='../adminSystem/",$value["image_path"],"' alt='",$value["name"],"'>",
-                                            "<p class='mini-product-title'>",$value["name"],"</p>",
+                                        "<img src='../adminSystem/",$img_path_escaped,"' alt='",$name_escaped,"'>",
+                                        "<p class='mini-product-title'>",$name_escaped,"</p>",
+                                        "<p class='card-price-display price-monthly'>月/",$monthly_price,"円</p>",
+                                        "<p class='card-price-display price-yearly' style='display:none;'>年/",$yearly_price,"円</p>",
                                      "</div>";
                         }
                     ?>
@@ -74,14 +83,12 @@
         const mainContent = document.getElementById("main-content");
         const pageFooter = document.querySelector(".footer"); 
 
-        // ★ ラジオボタン関連の要素を取得
         const billingCycleRadios = document.querySelectorAll('input[name="billing-cycle"]');
         const billingCycleLabel = document.getElementById("billing-cycle-label");
-
-        // --- 設定値 ---
-        // ★ 項目ごとの金額を仮設定
-        const OPTION_PRICE_MONTHLY = 250; // 1項目あたりの月額
-        const OPTION_PRICE_YEARLY = 2500; // 1項目あたりの年額 (月額の10ヶ月分など)
+        
+        // ★ 修正点 3: カード内の価格表示Pタグを取得
+        const priceDisplaysMonthly = document.querySelectorAll(".card-price-display.price-monthly");
+        const priceDisplaysYearly = document.querySelectorAll(".card-price-display.price-yearly");
         
         const SIDEBAR_WIDTH = 300; 
         const SIDEBAR_MARGIN = 20;
@@ -89,7 +96,6 @@
 
         // --- レイアウト（マージンとサイドバー高）を調整する関数 ---
         function adjustLayout() { 
-            // 992px より広い画面でのみサイドバー領域（マージン）を確保
             if (window.innerWidth > 992) {
                 const marginValue = (SIDEBAR_WIDTH + SIDEBAR_MARGIN) + "px";
                 if (mainContent) {
@@ -97,7 +103,7 @@
                 }
             } else {
                  if (mainContent) {
-                    mainContent.style.marginRight = "0"; // 狭い画面ではマージンをリセット
+                    mainContent.style.marginRight = "0"; 
                 }
             }
             
@@ -107,57 +113,65 @@
             }
         }
 
-        // --- ★ 選択状態（金額・項目数）を更新する関数（ロジック変更） ---
+        // --- 選択状態（金額・項目数）を更新する関数 ---
         function updateSelection() {
-            // 1. チェックされた項目数をカウント
-            const count = selectedList.children.length;
+            let totalCount = 0;
+            let totalPrice = 0;
             
-            // 2. 選択されている請求サイクル（月間/年間）を取得
+            // 1. 選択されている請求サイクル（月間/年間）を取得
             const selectedCycle = document.querySelector('input[name="billing-cycle"]:checked').value;
+            // 2. 読み取るべき data-* 属性を決定
+            const priceAttribute = (selectedCycle === "yearly") ? "data-price-yearly" : "data-price-monthly";
+            const label = (selectedCycle === "yearly") ? "/年" : "/月";
 
-            let price = 0;
-            let label = "";
-
-            // 3. サイクルに応じて金額とラベルを決定
+            // ★ 修正点 4: 請求サイクルに合わせてカード内の価格表示を切り替える
             if (selectedCycle === "yearly") {
-                price = count * OPTION_PRICE_YEARLY;
-                label = "/年";
-            } else { // "monthly"
-                price = count * OPTION_PRICE_MONTHLY;
-                label = "/月";
+                priceDisplaysMonthly.forEach(el => el.style.display = "none");
+                priceDisplaysYearly.forEach(el => el.style.display = "block");
+            } else { // 'monthly'
+                priceDisplaysMonthly.forEach(el => el.style.display = "block");
+                priceDisplaysYearly.forEach(el => el.style.display = "none");
             }
 
-            // 4. 画面表示を更新
+            // 3. チェックされている全てのチェックボックスをループ
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    totalCount++;
+                    // 4. data属性から該当サイクルの価格を取得して加算
+                    const price = parseFloat(checkbox.getAttribute(priceAttribute)) || 0;
+                    totalPrice += price;
+                }
+            });
+
+            // 5. 画面表示を更新
             if (totalCountEl) {
-                totalCountEl.textContent = count;
+                totalCountEl.textContent = totalCount;
             }
             if (totalPriceEl) {
-                totalPriceEl.textContent = price;
+                totalPriceEl.textContent = totalPrice; 
             }
             if (billingCycleLabel) {
-                billingCycleLabel.textContent = label;
+                billingCycleLabel.textContent = label; 
             }
         }
 
-        // --- チェックボックスにイベントを設定 ---
+        // --- チェックボックスのイベント設定 ---
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener("change", function() {
-                const titleEl = this.parentElement.querySelector(".mini-product-title");
-                if (!titleEl) return; 
-
-                const label = titleEl.textContent.trim();
+                // (変更なし)
+                const label = this.getAttribute("data-label");
+                if (!label) return; 
 
                 if (this.checked) {
                     const li = document.createElement("li");
                     li.textContent = label;
-                    li.setAttribute("data-option", label);
+                    li.setAttribute("data-option", label); 
                     selectedList.appendChild(li);
                 } else {
                     const li = selectedList.querySelector(`li[data-option='${label}']`);
                     if (li) li.remove();
                 }
                 
-                // ★ チェックボックス変更時も金額計算を呼ぶ
                 updateSelection();
             });
         });
@@ -167,11 +181,11 @@
             radio.addEventListener("change", updateSelection);
         });
 
-        // --- 初期ロード時とウィンドウリサイズ時にもレイアウトを調整 ---
+        // --- 初期ロード時とウィンドウリサイズ時にもレイアウトを調整
         adjustLayout(); 
         window.addEventListener("resize", adjustLayout); 
         
-        // --- 初期ロード時にも金額・項目数を計算 ---
+        // --- 初期ロード時にも金額・項目数を計算 (カード価格の表示切替も実行される)
         updateSelection();
     });
     </script>
