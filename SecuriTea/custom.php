@@ -26,7 +26,9 @@
             </div>
             <p><strong>金額：</strong><span id="total-price">0</span>円<span id="billing-cycle-label">/月</span></p>
             <p><strong>項目数：</strong><span id="total-count">0</span>項目</p>
-            <p><strong>期間：</strong> 年 月 日 ～ 年 月 日</p>
+            
+            <p id="term-display"><strong>期間：</strong> 年 月 日 ～ 年 月 日</p>
+            
             <a href="account_check.php" class="product-btn">
                 <span>確認画面へ</span>
             <i class="fas fa-arrow-right"></i>
@@ -86,16 +88,29 @@
         const billingCycleRadios = document.querySelectorAll('input[name="billing-cycle"]');
         const billingCycleLabel = document.getElementById("billing-cycle-label");
         
-        // ★ 修正点 3: カード内の価格表示Pタグを取得
         const priceDisplaysMonthly = document.querySelectorAll(".card-price-display.price-monthly");
         const priceDisplaysYearly = document.querySelectorAll(".card-price-display.price-yearly");
+        
+        // ★ 修正点 2: 期間表示用の要素を取得
+        const termDisplayEl = document.getElementById("term-display");
         
         const SIDEBAR_WIDTH = 300; 
         const SIDEBAR_MARGIN = 20;
         const SIDEBAR_TOP_OFFSET = 85; 
 
+        // ★ 修正点 3: 日付を日本語形式（yyyy年mm月dd日(曜日)）にフォーマットする関数 ---
+        function formatDateJP(date) {
+            const year = date.getFullYear();
+            // getMonth()は0から始まるため +1
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const weekDay = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
+            return `${year}年${month}月${day}日(${weekDay})`;
+        }
+
         // --- レイアウト（マージンとサイドバー高）を調整する関数 ---
         function adjustLayout() { 
+            // (変更なし)
             if (window.innerWidth > 992) {
                 const marginValue = (SIDEBAR_WIDTH + SIDEBAR_MARGIN) + "px";
                 if (mainContent) {
@@ -118,13 +133,12 @@
             let totalCount = 0;
             let totalPrice = 0;
             
-            // 1. 選択されている請求サイクル（月間/年間）を取得
+            // 1. 請求サイクルの取得
             const selectedCycle = document.querySelector('input[name="billing-cycle"]:checked').value;
-            // 2. 読み取るべき data-* 属性を決定
             const priceAttribute = (selectedCycle === "yearly") ? "data-price-yearly" : "data-price-monthly";
             const label = (selectedCycle === "yearly") ? "/年" : "/月";
 
-            // ★ 修正点 4: 請求サイクルに合わせてカード内の価格表示を切り替える
+            // 2. カード価格表示の切り替え
             if (selectedCycle === "yearly") {
                 priceDisplaysMonthly.forEach(el => el.style.display = "none");
                 priceDisplaysYearly.forEach(el => el.style.display = "block");
@@ -133,25 +147,33 @@
                 priceDisplaysYearly.forEach(el => el.style.display = "none");
             }
 
-            // 3. チェックされている全てのチェックボックスをループ
+            // 3. 合計金額の計算
             checkboxes.forEach(checkbox => {
                 if (checkbox.checked) {
                     totalCount++;
-                    // 4. data属性から該当サイクルの価格を取得して加算
                     const price = parseFloat(checkbox.getAttribute(priceAttribute)) || 0;
                     totalPrice += price;
                 }
             });
 
-            // 5. 画面表示を更新
-            if (totalCountEl) {
-                totalCountEl.textContent = totalCount;
+            // 4. 合計・項目数の表示更新
+            if (totalCountEl) totalCountEl.textContent = totalCount;
+            if (totalPriceEl) totalPriceEl.textContent = totalPrice; 
+            if (billingCycleLabel) billingCycleLabel.textContent = label; 
+            
+            // ★ 修正点 4: 期間の計算と表示更新
+            const today = new Date();
+            const endDate = new Date(today); // endDateをtodayで初期化
+
+            if (selectedCycle === "yearly") {
+                endDate.setFullYear(today.getFullYear() + 1); // 1年後に設定
+            } else { // 'monthly'
+                endDate.setMonth(today.getMonth() + 1); // 1ヶ月後に設定
             }
-            if (totalPriceEl) {
-                totalPriceEl.textContent = totalPrice; 
-            }
-            if (billingCycleLabel) {
-                billingCycleLabel.textContent = label; 
+
+            if (termDisplayEl) {
+                // innerHTML を使って <strong> タグも維持する
+                termDisplayEl.innerHTML = `<strong>期間：</strong> ${formatDateJP(today)} ～ ${formatDateJP(endDate)}`;
             }
         }
 
@@ -176,16 +198,16 @@
             });
         });
         
-        // ★ ラジオボタン変更時にも金額計算を呼ぶ
+        // --- ラジオボタンのイベント設定 ---
         billingCycleRadios.forEach(radio => {
             radio.addEventListener("change", updateSelection);
         });
 
-        // --- 初期ロード時とウィンドウリサイズ時にもレイアウトを調整
+        // --- 初期ロード・リサイズ時のレイアウト調整 ---
         adjustLayout(); 
         window.addEventListener("resize", adjustLayout); 
         
-        // --- 初期ロード時にも金額・項目数を計算 (カード価格の表示切替も実行される)
+        // --- 初期ロード時の計算実行 ---
         updateSelection();
     });
     </script>
