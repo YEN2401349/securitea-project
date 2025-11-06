@@ -28,11 +28,11 @@
             </div>
         </div>
 
-        <div class="rounded shadow overflow-x-auto" id="tableWrapper">
+        <div class="rounded shadow overflow-x-auto table-wrapper" id="tableWrapper">
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th >ID</th>
                         <th>名前</th>
                         <th>メール</th>
                         <th>登録日</th>

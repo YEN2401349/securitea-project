@@ -20,6 +20,7 @@ const packageModel = document.getElementById('packageModel');
 const packageForm = document.getElementById('packageForm');
 const addPackageBtn = document.getElementById('addPackageBtn');
 const cancelBtn = document.getElementById('cancelBtn');
+const package_preview = document.getElementById('package_preview');
 
 const package_plan_type = document.getElementById('package_plan_type');
 const package_duration_months = document.getElementById('package_duration_months');
@@ -40,7 +41,8 @@ async function reloadPackageFromServer() {
             package_plan_type: p.plan_type,
             package_billing_cycle: p.billing_cycle,
             package_duration_months: p.duration_months,
-            package_description: p.description
+            package_description: p.description,
+            image_path: p.image_path
         }));
 
         localStorage.setItem('packages', JSON.stringify(packageItems));
@@ -114,13 +116,15 @@ function updateDurationPackageOptions() {
 function openPackageModel(edit = false, item = null) {
     packageModel.style.display = "flex";
     document.getElementById("modalTitle").textContent = edit ? "編集" : "追加";
-    console.log(item);
     packageForm.package_name.value = item?.package_name || "";
     packageForm.package_price.value = item?.package_price || "";
     packageForm.package_plan_type.value = item?.package_billing_cycle || "monthly";
+    packageForm.image.value = "";
     packageForm.package_duration_months.value = item?.package_duration_months;
     packageForm.package_description.value = item?.package_description || "";
-
+    package_preview.innerHTML = item?.image_path
+        ? `<img src="${item.image_path}" alt="預覽" style="max-width:200px;">`
+        : "";
     if(!edit)updateDurationPackageOptions();
 }
 
@@ -139,6 +143,12 @@ packageForm.onsubmit = async e => {
         package_name: packageForm.package_name.value.trim(),
         package_price: packageForm.package_price.value.trim(),
         package_billing_cycle: packageForm.package_plan_type.value.trim(),
+        package_image: packageForm.image.files[0] ? await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error("画像の読み込みに失敗しました"));
+            reader.readAsDataURL(packageForm.image.files[0]);
+        }) : null,
         package_duration_months: packageForm.package_duration_months.value.trim(),
         package_description: packageForm.package_description.value.trim()
     };
@@ -263,6 +273,16 @@ packagePageSizeSelect.addEventListener('change', () => {
     renderPackageTable();
 });
 package_plan_type.addEventListener('change', updateDurationPackageOptions);
+
+packageForm.image.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        package_preview.innerHTML = `<img src="${reader.result}" alt="預覽" style="max-width:200px;">`;
+    };
+    reader.readAsDataURL(file);
+});
 
 // ------------------------------
 // Initial Load

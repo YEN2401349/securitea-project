@@ -19,6 +19,7 @@ const customTableWrapper = document.getElementById('customTableWrapper');
 const customModel = document.getElementById('customModel');
 const customForm = document.getElementById('customForm');
 const addCustomBtn = document.getElementById('addCustomBtn');
+const custom_preview = document.getElementById('custom_preview');
 const customModalCancelBtn = document.getElementById('customModalCancelBtn'); // ✅ Matches HTML id
 
 // ------------------------------
@@ -37,6 +38,7 @@ async function reloadCustomFromServer() {
             custom_plan_type: p.plan_type,
             custom_billing_cycle: p.billing_cycle,
             custom_duration_months: p.duration_months,
+            image_path: p.image_path,
             custom_description: p.description
         }));
 
@@ -87,8 +89,11 @@ function openCustomModel(edit = false, item = null) {
     customForm.custom_plan_type.value = item?.custom_billing_cycle || "monthly";
     customForm.custom_duration_months.value = item?.custom_duration_months || "1";
     customForm.custom_description.value = item?.custom_description || "";
-
-    if(!edit)updateDurationCustomOptions();
+    customForm.image.value = "";
+    custom_preview.innerHTML = item?.image_path
+        ? `<img src="${item.image_path}" alt="預覽" style="max-width:200px;">`
+        : "";
+    if (!edit) updateDurationCustomOptions();
 }
 
 function closeCustomModel() {
@@ -140,6 +145,12 @@ customForm.onsubmit = async e => {
         custom_price: customForm.custom_price.value.trim(),
         custom_billing_cycle: customForm.custom_plan_type.value.trim(),
         custom_duration_months: customForm.duration_months.value.trim(),
+        custom_image: customForm.image.files[0] ? await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error("画像の読み込みに失敗しました"));
+            reader.readAsDataURL(customForm.image.files[0]);
+        }) : null,
         custom_description: customForm.custom_description.value.trim()
     };
 
@@ -261,6 +272,16 @@ customPageSizeSelect.addEventListener('change', () => {
 });
 document.getElementById('custom_plan_type').addEventListener('change', updateDurationCustomOptions);
 
+
+customForm.image.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        custom_preview.innerHTML = `<img src="${reader.result}" alt="預覽" style="max-width:200px;">`;
+    };
+    reader.readAsDataURL(file);
+});
 // ------------------------------
 // Initial load
 // ------------------------------
