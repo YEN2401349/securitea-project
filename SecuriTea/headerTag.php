@@ -35,7 +35,7 @@
                         '</li>',
 
                         '<li class="nav-item">',
-                            '<a href="inquiry.html" class="nav-link">',
+                            '<a href="inquiry.php" class="nav-link">',
                                 '<i class="fas fa-question-circle"></i>お問い合わせフォーム',
                             '</a>',
                         '</li>',
