@@ -3,7 +3,7 @@ try {
     $stmt = $db->prepare("SELECT 
     p.full_name AS full_name,
     u.user_email AS user_email,
-    DATE_FORMAT(u.update_date, '%Y-%m-%d') AS update_date, 
+    DATE_FORMAT(u.create_date, '%Y-%m-%d') AS create_date, 
     CONCAT(s.start_date, ' ~ ', s.end_date) AS subscription_period,
     d.name AS subscription_product_name, 
     CAST(

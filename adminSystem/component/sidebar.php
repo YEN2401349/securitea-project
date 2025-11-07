@@ -10,7 +10,7 @@
         <a href="./sales.php">売上照会</a>
         <a href="./users.php">利用者確認</a>
         <a href="./products.php">商品一覧</a>
-        <a href="./mail.php">メール</a>
+        <a href="./mail.php">お問い合わせ管理</a>
     </nav>
 </aside>
 
