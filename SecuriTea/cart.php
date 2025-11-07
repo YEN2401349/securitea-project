@@ -67,7 +67,7 @@
                     <i class="fas fa-arrow-left"></i>
                     <span>プランを変更する</span>
                 </a>
-                <a href="new-pay.html" class="product-btn">
+                <a href="new-pay.php" class="product-btn">
                     <span>購入手続きへ</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>

@@ -13,7 +13,7 @@
     <h2>お支払い方法の選択</h2>
     <p>ご希望のお支払い方法を選択してください。</p>
 
-    <form id="payment-form" action="account.html" method="post">
+   <form id="payment-form" action="process_payment.php" method="post">
         
         <div class="payment-options">
             
