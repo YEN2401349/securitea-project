@@ -32,7 +32,7 @@ async function reloadFromServer() {
         userItems = json.data.map(p => ({
             name: p.full_name,
             email: p.user_email,
-            update_date: p.update_date,
+            create_date: p.create_date,
             period: p.subscription_period,
             product: p.subscription_product_name,
             price: p.tatle_price,
@@ -59,7 +59,7 @@ function updateTableScroll() {
 // Load / save
 function load() {
     const raw = localStorage.getItem('users');
-    if (raw) usersItems = JSON.parse(raw);
+    if (raw) userItems = JSON.parse(raw);
     render();
 }
 
@@ -72,8 +72,8 @@ function queryData() {
             (it.name + it.email).toLowerCase().includes(q)
         );
     }
-    if (sortBy === 'createdAt_desc') list.sort((a, b) => b.createdAt - a.createdAt);
-    if (sortBy === 'createdAt_asc') list.sort((a, b) => a.createdAt - b.createdAt);
+    if (sortBy === 'createdAt_desc') list.sort((a, b) => new Date(b.create_date) - new Date(a.create_date));
+    if (sortBy === 'createdAt_asc') list.sort((a, b) => new Date(a.create_date) - new Date(b.create_date));
     const total = list.length;
     const start = (page - 1) * pageSize;
     return { total, list: list.slice(start, start + pageSize) };
@@ -88,10 +88,10 @@ function render() {
             <td>${(page - 1) * pageSize + i + 1}</td>
             <td>${it.name}</td>
             <td>${it.email}</td>
-            <td>${new Date(it.update_date).toLocaleDateString()}</td>
+            <td>${new Date(it.create_date).toLocaleDateString()}</td>
             <td>${it.period || ''}</td>
             <td>${it.product || ''}</td>
-            <td>${"￥"+it.price+"円" || ''}</td>
+            <td>${"￥" + it.price + "円" || ''}</td>
             <td>${it.custom || ''}</td>
             <td><button data-id="${it.id}" class="deleteBtn border">削除</button></td>
         </tr>
@@ -120,7 +120,7 @@ function renderPagination(total) {
 function onDelete(e) {
     if (!confirm('削除してもよろしいですか？')) return;
     userItems.find(x => x.id === e.target.dataset.id)._deleted = true;
-    localStorage.setItem(storageKey, JSON.stringify(userItems));
+    localStorage.setItem(users, JSON.stringify(userItems));
     render();
 }
 
