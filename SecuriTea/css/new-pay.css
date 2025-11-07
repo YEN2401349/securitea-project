@@ -169,10 +169,14 @@ body {
 /* --- 送信ボタン --- */
 .form-actions {
     margin-top: 2rem;
+    /* ★ 修正: 横並びにする */
+    display: flex;
+    gap: 1rem;
 }
 
 .submit-btn {
-    width: 100%;
+    /* ★ 修正: width: 100% を削除し、flex: 1 を追加 */
+    flex: 1; 
     background-color: var(--primary-color);
     color: var(--bg-white);
     font-size: 1rem;
@@ -188,20 +192,19 @@ body {
     background-color: #1d4ed8; /* 少し暗い青 */
 }
 
-/* ★★★ ここから追加 (戻るボタンのスタイル) ★★★ */
+/* (戻るボタンのスタイル) */
 .submit-btn.secondary-btn {
     background-color: #6b7280; /* グレー */
     text-align: center;
     text-decoration: none;
-    display: inline-flex; /* <a> タグのため */
+    display: inline-flex; 
     align-items: center;
     justify-content: center;
-    gap: 0.5rem; /* アイコンとテキストの間隔 */
-    margin-bottom: 1rem; /* 送信ボタンとの間隔 */
-    box-sizing: border-box; /* 念のため */
+    gap: 0.5rem; 
+    /* ★ 修正: margin-bottom を削除 (gapで制御) */
+    box-sizing: border-box; 
 }
 
 .submit-btn.secondary-btn:hover {
     background-color: #4b5563; /* ホバー時の濃いグレー */
 }
-/* ★★★ ここまで追加 ★★★ */
