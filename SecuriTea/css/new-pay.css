@@ -187,3 +187,21 @@ body {
 .submit-btn:hover {
     background-color: #1d4ed8; /* 少し暗い青 */
 }
+
+/* --- ★ここから追加 (戻るボタンのスタイル) --- */
+.submit-btn.secondary-btn {
+    background-color: #6b7280; /* グレー */
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex; /* <a> タグのため */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* アイコンとテキストの間隔 */
+    margin-bottom: 1rem; /* 送信ボタンとの間隔 */
+    box-sizing: border-box; /* 念のため */
+}
+
+.submit-btn.secondary-btn:hover {
+    background-color: #4b5563; /* ホバー時の濃いグレー */
+}
+/* --- ★ここまで追加 --- */
