@@ -82,6 +82,10 @@
         </div>
 
         <div class="form-actions">
+            <a href="cart.php" class="submit-btn secondary-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span>カートに戻る</span>
+            </a>
             <button type="submit" class="submit-btn">支払いを確定する</button>
         </div>
         
