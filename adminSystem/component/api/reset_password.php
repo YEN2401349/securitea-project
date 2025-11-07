@@ -33,8 +33,9 @@ try {
     }
 
     $password = $data['newPassword'] ?? '';
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $db->prepare("UPDATE Users SET reset_token = NULL, reset_token_expire = NULL,user_password = ? WHERE user_email = ?");
-    $stmt->execute([$password,$email]);
+    $stmt->execute([$hashedPassword,$email]);
     echo json_encode(['success' => true, 'message' => 'パスワードが更新されました']);
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
