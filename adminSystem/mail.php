@@ -17,11 +17,13 @@
         <div class="mail-header">
             <h2 class="title is-6">受信ボックス</h2>
         </div>
-        <ul class="mail-list" id="inquiryList">
-            <li class="mail-item">
-                <div class="mail-sender">読み込み中...</div>
-            </li>
-        </ul>
+        <div class="mail-list-wrapper" id="inquiryListWrapper">
+            <ul class="mail-list" id="inquiryList">
+                <li class="mail-item">
+                    <div class="mail-sender">読み込み中...</div>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="mail-detail card" id="mail-detail-view">

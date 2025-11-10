@@ -1,526 +1,63 @@
 <?php include("component/header.php"); ?>
-<link rel="stylesheet" href="./css/sales.css">
+<link rel="stylesheet" href="css/sales.css">
+<section class="section">
+    <div class="container my-container">
+        <h1 class="title">📊 売上照会</h1>
 
-
-    <header class="flex  mb-4">
-        <h1>売上照会</h1>
-    </header>
-
-    <section>
-        <div class="table-container">
-            <table border="2px" solid black>
-                <tr>
-                    <th>日付</th>
-                    <th colspan="3">packageA</th>
-                    <th colspan="3">packageB</th>
-                    <th colspan="3">packageC</th>
-                    <th colspan="2">カスタム基本</th>
-                    <th colspan="2">option1</th>
-                    <th colspan="2">option2</th>
-                    <th colspan="2">option3</th>
-                    <th colspan="2">option4</th>
-                    <th colspan="2">option5</th>
-                    <th colspan="2">option6</th>
-                    <th colspan="2">option7</th>
-                    <th colspan="2">option8</th>
-                    <th colspan="2">option9</th>
-                    <th colspan="2">option10</option>
-                    </th>
-                    <th>売上金額</th>
-                </tr>
-                <tr>
-                    <th>契約数</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>3年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>3年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>3年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>月</th>
-                    <th>年</th>
-                    <th>合計</th>
-                </tr>
-                <tr>
-                    <td>2024-01</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>3</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>10</td>
-                    <td>8</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>10</td>
-                    <td>2</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td>3</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>4</td>
-                    <td>6</td>
-                    <td>2</td>
-                    <td>2</td>
-                    <td>5</td>
-                    <td>¥79,720</td>
-                </tr>
-                <tr>
-                    <td>2024-02</td>
-                    <td>4</td>
-                    <td>2</td>
-                    <td>0</td>
-                    <td>5</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>16</td>
-                    <td>12</td>
-                    <td>6</td>
-                    <td>1</td>
-                    <td>4</td>
-                    <td>3</td>
-                    <td>2</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>13</td>
-                    <td>4</td>
-                    <td>3</td>
-                    <td>0</td>
-                    <td>5</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>10</td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>2</td>
-                    <td>¥104,275</td>
-                </tr>
-                <tr>
-                    <td>2024-03</td>
-                    <td>6</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>5</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>30</td>
-                    <td>10</td>
-                    <td>9</td>
-                    <td>2</td>
-                    <td>7</td>
-                    <td>1</td>
-                    <td>5</td>
-                    <td>3</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>15</td>
-                    <td>5</td>
-                    <td>3</td>
-                    <td>1</td>
-                    <td>9</td>
-                    <td>2</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>17</td>
-                    <td>3</td>
-                    <td>6</td>
-                    <td>1</td>
-                    <td>¥145,850</td>
-                </tr>
-                <tr>
-                    <td>2024-04</td>
-                    <td>10</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>13</td>
-                    <td>5</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>0</td>
-                    <td>5</td>
-                    <td>49</td>
-                    <td>6</td>
-                    <td>15</td>
-                    <td>2</td>
-                    <td>10</td>
-                    <td>10</td>
-                    <td>4</td>
-                    <td>4</td>
-                    <td>2</td>
-                    <td>0</td>
-                    <td>20</td>
-                    <td>2</td>
-                    <td>6</td>
-                    <td>1</td>
-                    <td>15</td>
-                    <td>2</td>
-                    <td>5</td>
-                    <td>0</td>
-                    <td>30</td>
-                    <td>6</td>
-                    <td>10</td>
-                    <td>2</td>
-                    <td>¥263,285</td>
-                </tr>
-                <tr>
-                    <td>2024-05</td>
-                    <td>9</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>15</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>5</td>
-                    <td>0</td>
-                    <td>6</td>
-                    <td>58</td>
-                    <td>7</td>
-                    <td>16</td>
-                    <td>2</td>
-                    <td>14</td>
-                    <td>1</td>
-                    <td>10</td>
-                    <td>6</td>
-                    <td>5</td>
-                    <td>0</td>
-                    <td>27</td>
-                    <td>7</td>
-                    <td>5</td>
-                    <td>2</td>
-                    <td>30</td>
-                    <td>5</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>35</td>
-                    <td>4</td>
-                    <td>11</td>
-                    <td>4</td>
-                    <td>¥246,130</td>
-                </tr>
-                <tr>
-                    <td>2024-06</td>
-                    <td>14</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>20</td>
-                    <td>0</td>
-                    <td>1</td>
-                    <td>9</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>60</td>
-                    <td>11</td>
-                    <td>25</td>
-                    <td>0</td>
-                    <td>15</td>
-                    <td>1</td>
-                    <td>15</td>
-                    <td>2</td>
-                    <td>5</td>
-                    <td>2</td>
-                    <td>38</td>
-                    <td>1</td>
-                    <td>7</td>
-                    <td>0</td>
-                    <td>31</td>
-                    <td>8</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>59</td>
-                    <td>10</td>
-                    <td>15</td>
-                    <td>4</td>
-                    <td>¥157,905</td>
-                </tr>
-                <tr>
-                    <td>2024-07</td>
-                    <td>16</td>
-                    <td>2</td>
-                    <td>0</td>
-                    <td>22</td>
-                    <td>10</td>
-                    <td>2</td>
-                    <td>10</td>
-                    <td>0</td>
-                    <td>6</td>
-                    <td>78</td>
-                    <td>12</td>
-                    <td>34</td>
-                    <td>1</td>
-                    <td>20</td>
-                    <td>2</td>
-                    <td>20</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>0</td>
-                    <td>50</td>
-                    <td>3</td>
-                    <td>9</td>
-                    <td>0</td>
-                    <td>30</td>
-                    <td>10</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>71</td>
-                    <td>2</td>
-                    <td>20</td>
-                    <td>2</td>
-                    <td>¥339,035</td>
-                </tr>
-                <tr>
-                    <td>2024-08</td>
-                    <td>28</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>24</td>
-                    <td>2</td>
-                    <td>0</td>
-                    <td>10</td>
-                    <td>1</td>
-                    <td>6</td>
-                    <td>99</td>
-                    <td>5</td>
-                    <td>40</td>
-                    <td>0</td>
-                    <td>21</td>
-                    <td>4</td>
-                    <td>22</td>
-                    <td>2</td>
-                    <td>8</td>
-                    <td>0</td>
-                    <td>59</td>
-                    <td>1</td>
-                    <td>10</td>
-                    <td>2</td>
-                    <td>43</td>
-                    <td>11</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>88</td>
-                    <td>4</td>
-                    <td>27</td>
-                    <td>1</td>
-                    <td>¥266,785</td>
-                </tr>
-                <tr>
-                    <td>2024-09</td>
-                    <td>30</td>
-                    <td>3</td>
-                    <td>0</td>
-                    <td>28</td>
-                    <td>2</td>
-                    <td>2</td>
-                    <td>14</td>
-                    <td>0</td>
-                    <td>7</td>
-                    <td>120</td>
-                    <td>15</td>
-                    <td>45</td>
-                    <td>0</td>
-                    <td>24</td>
-                    <td>1</td>
-                    <td>25</td>
-                    <td>2</td>
-                    <td>10</td>
-                    <td>1</td>
-                    <td>66</td>
-                    <td>9</td>
-                    <td>15</td>
-                    <td>0</td>
-                    <td>60</td>
-                    <td>13</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>102</td>
-                    <td>4</td>
-                    <td>35</td>
-                    <td>1</td>
-                    <td>¥358,505</td>
-                </tr>
-                <tr>
-                    <td>2024-10</td>
-                    <td>29</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>35</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>15</td>
-                    <td>2</td>
-                    <td>6</td>
-                    <td>132</td>
-                    <td>11</td>
-                    <td>49</td>
-                    <td>1</td>
-                    <td>26</td>
-                    <td>4</td>
-                    <td>28</td>
-                    <td>1</td>
-                    <td>11</td>
-                    <td>3</td>
-                    <td>79</td>
-                    <td>6</td>
-                    <td>16</td>
-                    <td>1</td>
-                    <td>65</td>
-                    <td>15</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>130</td>
-                    <td>9</td>
-                    <td>40</td>
-                    <td>4</td>
-                    <td>¥327,370</td>
-                </tr>
-                <tr>
-                    <td>2024-11</td>
-                    <td>34</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>45</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>17</td>
-                    <td>5</td>
-                    <td>8</td>
-                    <td>150</td>
-                    <td>9</td>
-                    <td>55</td>
-                    <td>4</td>
-                    <td>36</td>
-                    <td>8</td>
-                    <td>34</td>
-                    <td>5</td>
-                    <td>12</td>
-                    <td>5</td>
-                    <td>82</td>
-                    <td>2</td>
-                    <td>18</td>
-                    <td>3</td>
-                    <td>74</td>
-                    <td>20</td>
-                    <td>1</td>
-                    <td>0</td>
-                    <td>150</td>
-                    <td>0</td>
-                    <td>49</td>
-                    <td>2</td>
-                    <td>¥454,835</td>
-                </tr>
-                <tr>
-                    <td>2024-12</td>
-                    <td>35</td>
-                    <td>5</td>
-                    <td>4</td>
-                    <td>49</td>
-                    <td>3</td>
-                    <td>5</td>
-                    <td>19</td>
-                    <td>3</td>
-                    <td>14</td>
-                    <td>192</td>
-                    <td>25</td>
-                    <td>60</td>
-                    <td>4</td>
-                    <td>50</td>
-                    <td>5</td>
-                    <td>50</td>
-                    <td>10</td>
-                    <td>15</td>
-                    <td>0</td>
-                    <td>112</td>
-                    <td>20</td>
-                    <td>31</td>
-                    <td>4</td>
-                    <td>91</td>
-                    <td>25</td>
-                    <td>3</td>
-                    <td>0</td>
-                    <td>284</td>
-                    <td>23</td>
-                    <td>69</td>
-                    <td>8</td>
-                    <td>¥788,565</td>
-                </tr>
-                <tr>
-                    <th>合計</th>
-                    <td>216</td>
-                    <td>15</td>
-                    <td>9</td>
-                    <td>264</td>
-                    <td>27</td>
-                    <td>15</td>
-                    <td>106</td>
-                    <td>15</td>
-                    <td>64</td>
-                    <td>994</td>
-                    <td>131</td>
-                    <td>355</td>
-                    <td>18</td>
-                    <td>228</td>
-                    <td>41</td>
-                    <td>217</td>
-                    <td>40</td>
-                    <td>72</td>
-                    <td>12</td>
-                    <td>571</td>
-                    <td>62</td>
-                    <td>125</td>
-                    <td>15</td>
-                    <td>456</td>
-                    <td>111</td>
-                    <td>11</td>
-                    <td>4</td>
-                    <td>982</td>
-                    <td>71</td>
-                    <td>289</td>
-                    <td>36</td>
-                    <td>¥3,532,260</td>
-                </tr>
-            </table>
+        <div class="box">
+            <div class="form-grid">
+                <div class="form-item">
+                    <label for="startDate">開始日</label>
+                    <input type="date" class="input" id="startDate">
+                </div>
+                <div class="form-item">
+                    <label for="endDate">終了日</label>
+                    <input type="date" class="input" id="endDate">
+                </div>
+                <div class="form-item">
+                    <label for="category">商品分類</label>
+                    <select name="category" class="select" id="category">
+                        <option value="0">全て</option>
+                        <option value="1">プラン</option>
+                        <option value="2">カスタムオプション</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label for="keyword">商品名</label>
+                    <input type="text" class="input" placeholder="商品名を入力" id="keyword">
+                </div>
+                <div class="form-item">
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="searchBtn">検索</button>
+                        <button class="btn btn-light" id="resetBtn">リセット</button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
-</main>
-<script src="./script/sales.js"></script>
+
+        <div class="box table-container">
+            <div class="table-wrapper" id="tableWrapper">
+                <table class="table" id="salesTable">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>商品</th>
+                            <th>數量</th>
+                            <th>單價</th>
+                            <th>小計</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="total-amount">
+                <strong>合計金額：</strong> <span id="totalAmount">¥0</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="script/sales.js"></script>
 <?php include("component/footer.php"); ?>

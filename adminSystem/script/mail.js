@@ -32,35 +32,44 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderInquiries() {
+    const inquiryListWrapper = document.getElementById("inquiryListWrapper");
     inquiryList.innerHTML = "";
 
-
     const filtered = showUnhandledCheckbox.checked
-      ? allInquiries.filter((mail) => mail.status === "未対応")
+      ? allInquiries.filter(mail => mail.status === "未対応")
       : allInquiries;
-    console.log(filtered);
+    console.log(filtered.length, inquiryListWrapper.scrollHeight);
+    if (filtered.length > 6) {
+      inquiryListWrapper.style.maxHeight = "400px";
+      inquiryListWrapper.style.overflowY = "auto";
+    } else {
+      inquiryListWrapper.style.maxHeight = "none";
+      inquiryListWrapper.style.overflowY = "visible";
+    }
+
     if (filtered.length === 0) {
       inquiryList.innerHTML = `<li class="mail-item"><div class="mail-sender">データがありません</div></li>`;
       return;
     }
 
-    filtered.forEach((mail) => {
+    filtered.forEach(mail => {
       const li = document.createElement("li");
       li.className = "mail-item";
       li.innerHTML = `
-        <div class="flex" style="justify-content: space-between; align-items:center;">
-          <span class="mail-status" data-status="${mail.status}">${mail.status}</span>
-          <div>
-            <div class="mail-sender">${mail.name || "不明"}</div>
-            <div class="mail-subject">${mail.subject || "(件名なし)"}</div>
-          </div>
-          <div class="mail-date">${mail.created_at}</div>
-        </div>
-      `;
+            <div class="flex" style="justify-content: space-between; align-items:center;">
+                <span class="mail-status" data-status="${mail.status}">${mail.status}</span>
+                <div>
+                    <div class="mail-sender">${mail.name || "不明"}</div>
+                    <div class="mail-subject">${mail.subject || "(件名なし)"}</div>
+                </div>
+                <div class="mail-date">${mail.created_at}</div>
+            </div>
+        `;
       li.addEventListener("click", () => showDetail(mail.inquiry_id));
       inquiryList.appendChild(li);
     });
   }
+
 
 
   async function showDetail(id) {
