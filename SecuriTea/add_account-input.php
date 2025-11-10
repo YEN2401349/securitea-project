@@ -1,4 +1,4 @@
-<?php require 'headerTag.php' ?>
+<?php require "headerTag.php"; ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
