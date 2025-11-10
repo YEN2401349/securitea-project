@@ -213,7 +213,7 @@ function renderPackageTable() {
         <tr>
             <td>${i.id}</td>
             <td>${i.package_name}</td>
-            <td>¥${Number(i.package_price)}</td>
+            <td>¥${parseInt(i.package_price, 10).toLocaleString()}</td>
             <td>${i.package_plan_type}</td>
             <td>${i.package_description}</td>
             <td>
