@@ -42,7 +42,6 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-light);
 }
 
@@ -57,10 +56,6 @@ body {
     height: 3rem;
     width: auto;
     transition: var(--transition);
-}
-
-.logo img:hover {
-    transform: scale(1.05);
 }
 
 .nav-list {
@@ -92,6 +87,7 @@ body {
 .nav-link i {
     font-size: 1rem;
 }
+
 
 /* ===== FOOTER ===== */
 .footer {
