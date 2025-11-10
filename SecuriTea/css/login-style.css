@@ -37,7 +37,7 @@ body {
 
 /* ===== HEADER ===== */
 .header {
-    background: var(--bg-primary);
+    background: var(--bg-primary); /* var(--bg-white)から修正 */
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
@@ -45,27 +45,52 @@ body {
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-light);
 }
+
 .header .container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.5rem;
 }
+
 .logo img {
     height: 3rem;
+    width: auto;
+    transition: var(--transition);
 }
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
 .nav-list {
     display: flex;
     list-style: none;
     gap: 2rem;
 }
+
 .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     text-decoration: none;
-    color:black;
+    color: black;
     font-weight: 500;
+    font-size: 0.875rem;
     padding: 0.5rem 1rem;
     border-radius: var(--radius-md);
     transition: var(--transition);
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    background: var(--bg-tertiary);
+    transform: translateY(-1px);
+}
+
+.nav-link i {
+    font-size: 1rem;
 }
 
 /* ===== FOOTER ===== */
