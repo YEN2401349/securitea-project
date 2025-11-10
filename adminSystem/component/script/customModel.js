@@ -91,7 +91,7 @@ function openCustomModel(edit = false, item = null) {
     customForm.custom_description.value = item?.custom_description || "";
     customForm.image.value = "";
     custom_preview.innerHTML = item?.image_path
-        ? `<img src="${item.image_path}" alt="預覽" style="max-width:200px;">`
+        ? `<img src="${item.image_path}" alt="預覽" style="max-width:90px;">`
         : "";
     if (!edit) updateDurationCustomOptions();
 }
@@ -278,7 +278,7 @@ customForm.image.addEventListener('change', (e) => {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-        custom_preview.innerHTML = `<img src="${reader.result}" alt="預覽" style="max-width:200px;">`;
+        custom_preview.innerHTML = `<img src="${reader.result}" alt="預覽" style="max-width:90px;">`;
     };
     reader.readAsDataURL(file);
 });

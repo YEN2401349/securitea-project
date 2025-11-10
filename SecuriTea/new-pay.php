@@ -13,7 +13,7 @@
     <h2>お支払い方法の選択</h2>
     <p>ご希望のお支払い方法を選択してください。</p>
 
-    <form id="payment-form" action="account.html" method="post">
+   <form id="payment-form" action="process_payment.php" method="post">
         
         <div class="payment-options">
             
@@ -82,6 +82,11 @@
         </div>
 
         <div class="form-actions">
+        
+            <a href="cart.php" class="submit-btn secondary-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span>カートに戻る</span>
+            </a>
             <button type="submit" class="submit-btn">支払いを確定する</button>
         </div>
         

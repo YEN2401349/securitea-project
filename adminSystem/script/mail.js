@@ -1,47 +1,156 @@
 if (localStorage.getItem('token') == null) {
-    window.location.href = 'login.php'
+  window.location.href = 'login.php'
 }
 window.onload = function () {
-    window.history.forward();
+  window.history.forward();
 };
 window.onpageshow = function (event) {
-    if (event.persisted) {
-        window.location.reload();
-    }
+  if (event.persisted) {
+    window.location.reload();
+  }
 };
-document.addEventListener('DOMContentLoaded', function () {
-    const mailItems = document.querySelectorAll('.mail-item');
-    const mailDetailView = document.getElementById('mail-detail-view');
-    const initialContent = mailDetailView.innerHTML;
 
-    mailItems.forEach(item => {
-        item.addEventListener('click', function () {
-            // 他の選択状態を解除
-            mailItems.forEach(i => i.classList.remove('active'));
 
-            // クリックされたアイテムを選択状態にする
-            this.classList.add('active');
+document.addEventListener("DOMContentLoaded", () => {
+  const inquiryList = document.getElementById("inquiryList");
+  const mailDetailView = document.getElementById("mail-detail-view");
+  const refreshBtn = document.getElementById("refreshBtn");
+  const showUnhandledCheckbox = document.getElementById("showUnhandled");
 
-            // 詳細ビューにコンテンツを表示 (ダミーデータ)
-            const sender = this.querySelector('.mail-sender').textContent;
-            const subject = this.querySelector('.mail-subject').textContent;
-            const date = this.querySelector('.mail-date').textContent;
 
-            mailDetailView.innerHTML = `
-        <div class="detail-header">
-          <h2>${subject}</h2>
-          <div class="detail-meta">
-            <p><strong>差出人:</strong> ${sender}</p>
-            <p><strong>受信日時:</strong> ${date}</p>
+  async function loadInquiries() {
+    inquiryList.innerHTML = `<li class="mail-item"><div class="mail-sender">読み込み中...</div></li>`;
+    try {
+      const res = await fetch("./component/api/get_inquiries.php");
+      const data = await res.json();
+
+      allInquiries = data;
+      renderInquiries();
+    } catch (err) {
+      inquiryList.innerHTML = `<li class="mail-item"><div class="mail-sender">エラーが発生しました</div></li>`;
+    }
+  }
+
+  function renderInquiries() {
+    inquiryList.innerHTML = "";
+
+
+    const filtered = showUnhandledCheckbox.checked
+      ? allInquiries.filter((mail) => mail.status === "未対応")
+      : allInquiries;
+    console.log(filtered);
+    if (filtered.length === 0) {
+      inquiryList.innerHTML = `<li class="mail-item"><div class="mail-sender">データがありません</div></li>`;
+      return;
+    }
+
+    filtered.forEach((mail) => {
+      const li = document.createElement("li");
+      li.className = "mail-item";
+      li.innerHTML = `
+        <div class="flex" style="justify-content: space-between; align-items:center;">
+          <span class="mail-status" data-status="${mail.status}">${mail.status}</span>
+          <div>
+            <div class="mail-sender">${mail.name || "不明"}</div>
+            <div class="mail-subject">${mail.subject || "(件名なし)"}</div>
           </div>
-        </div>
-        <div class="detail-body">
-          <p>これはメール本文のサンプルです。</p>
-          <p>${sender}さんからの「${subject}」に関するメールの詳細内容がここに表示されます。</p>
-          <br>
-          <p>よろしくお願いいたします。</p>
+          <div class="mail-date">${mail.created_at}</div>
         </div>
       `;
-        });
+      li.addEventListener("click", () => showDetail(mail.inquiry_id));
+      inquiryList.appendChild(li);
     });
+  }
+
+
+  async function showDetail(id) {
+    const res = await fetch(`./component/api/get_inquiries.php?id=${id}`);
+    const mail = await res.json();
+    mailDetailView.innerHTML = mail.status == "未対応" ? `
+      <div class="detail-header">
+        <h2>${mail.subject}</h2>
+        <div class="detail-meta">
+          <p>差出人：${mail.name}（${mail.email}）</p>
+          <p>日付：${mail.created_at}</p>
+          <p>現在のステータス：
+            <span class="mail-status" data-status="${mail.status}">${mail.status}</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <p>${mail.message.replace(/\n/g, "<br>")}</p>
+      </div>
+
+      <div class="reply-list" id="replyList"></div>
+
+      <div class="reply-box">
+        <textarea id="replyText" rows="4" placeholder="返信内容を入力..."></textarea>
+        <button onclick="sendReply('${mail.inquiry_id}', '${mail.name}', '${mail.email}', '${mail.subject}')">返信を送信</button>
+      </div>
+    `: `
+      <div class="detail-header">
+        <h2>${mail.subject}</h2>
+        <div class="detail-meta">
+          <p>差出人：${mail.name}（${mail.email}）</p>
+          <p>日付：${mail.created_at}</p>
+          <p>現在のステータス：
+            <span class="mail-status" data-status="${mail.status}">${mail.status}</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <p>${mail.message.replace(/\n/g, "<br>")}</p>
+      </div>
+
+      <div class="reply-list" id="replyList"></div>
+    `;
+
+    loadReplies(mail.inquiry_id);
+  }
+
+
+  async function loadReplies(mailId) {
+    const res = await fetch(`./component/api/get_inquiries.php?inquiry_id=${mailId}`);
+    const replies = await res.json();
+    const replyList = document.getElementById("replyList");
+    replyList.innerHTML = replies
+      .map(
+        (r) => `
+        <div class="reply-item">
+          <p><b>${r.name}</b> (${r.created_at})</p>
+          <p>${r.message.replace(/\n/g, "<br>")}</p>
+        </div>
+      `
+      )
+      .join("");
+  }
+
+  window.sendReply = async (mailId, name, email, subject) => {
+    const text = document.getElementById("replyText").value.trim();
+    const decoded = jwt_decode(token);
+    const adminName = decoded.full_name;
+    if (!text) return alert("返信内容を入力してください");
+
+    const res = await fetch("./component/api/send_reply.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ inquiry_id: mailId, message: text, userName: name, userEmail: email, adminName: adminName, subject: subject }),
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      alert("返信を送信しました");
+      document.getElementById("replyText").value = "";
+      await loadInquiries();
+
+      await showDetail(mailId);
+    } else {
+      alert("送信に失敗しました");
+    }
+  };
+  showUnhandledCheckbox.addEventListener("change", renderInquiries);
+  refreshBtn.addEventListener("click", loadInquiries);
+  loadInquiries();
 });
