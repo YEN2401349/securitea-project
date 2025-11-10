@@ -133,8 +133,10 @@ try {
           <form action="software.php">
             <button class="btn btn-primary">プラン変更</button>
           </form>
-          <button class="btn btn-danger">契約解除</button>
-        </div>
+          
+          <form action="confirm_cancel.php" method="post">
+            <button type="submit" class="btn btn-danger">契約解除</button>
+          </form>
 
       </div>
     </main>

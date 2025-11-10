@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/login-style.css">
 </head>
 <body>
-  <?php require 'headerTag.php' ?>
+  <?PHP require 'headerTag.php'?>
 
   <!-- ログインカード -->
   <main class="login-container">
