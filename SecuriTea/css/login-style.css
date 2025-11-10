@@ -42,23 +42,26 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-light);
 }
+
 .header .container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.5rem;
 }
+
 .logo img {
     height: 3rem;
 }
+
 .nav-list {
     display: flex;
     list-style: none;
     gap: 2rem;
 }
+
 .nav-link {
     text-decoration: none;
     color:black;
@@ -67,6 +70,7 @@ body {
     border-radius: var(--radius-md);
     transition: var(--transition);
 }
+
 
 /* ===== FOOTER ===== */
 .footer {
