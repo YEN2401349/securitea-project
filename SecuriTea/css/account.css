@@ -30,6 +30,10 @@ body {
     transition: var(--transition);
 }
 
+.logo img:hover {
+    transform: scale(1.05);
+}
+
 .nav-list {
     display: flex;
     list-style: none;
