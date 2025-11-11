@@ -28,8 +28,50 @@ try {
 
     // 3. 取得したデータを変数に格納
     $product_name = htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8');
-    // nl2br() でDB内の改行を <br> タグに変換
-    $description = nl2br(htmlspecialchars($product['description'], ENT_QUOTES, 'UTF-8'));
+
+    // --- ▼ 説明文のパース処理 (ここから変更) ---
+    $raw_description = $product['description'];
+    
+    // 変数の初期化
+    $subtitle = '';
+    $features_array = [];
+    $description_text = '';
+    $recommend_text = '';
+
+    // 正規表現でパース
+    // 例: お試し...[項目1,項目2]"商品説明"{おすすめ文}
+    // { は全角 ｛ の可能性も考慮
+    $pattern = '/^([^\[]+)\[([^\]]+)\]"([^"]+)"[｛\{]([^\}｝]+)[\}｝]$/u';
+    
+    if (preg_match($pattern, $raw_description, $matches)) {
+        // パース成功時
+        
+        // 1. サブタイトル
+        $subtitle = htmlspecialchars(trim($matches[1]), ENT_QUOTES, 'UTF-8');
+        
+        // 2. 機能リスト (カンマ区切りを配列に)
+        $features_string = $matches[2];
+        $raw_features = explode(',', $features_string); // カンマで分割
+        foreach ($raw_features as $feature) {
+            $trimmed_feature = trim($feature);
+            if (!empty($trimmed_feature)) { // 空の項目を無視
+                $features_array[] = htmlspecialchars($trimmed_feature, ENT_QUOTES, 'UTF-8');
+            }
+        }
+        
+        // 3. 商品説明
+        $description_text = nl2br(htmlspecialchars(trim($matches[3]), ENT_QUOTES, 'UTF-8'));
+        
+        // 4. おすすめ
+        $recommend_text = nl2br(htmlspecialchars(trim($matches[4]), ENT_QUOTES, 'UTF-8'));
+        
+    } else {
+        // パース失敗した場合 (想定外のフォーマット)
+        // 元の説明文全体を「商品説明」に入れておく
+        $description_text = nl2br(htmlspecialchars($raw_description, ENT_QUOTES, 'UTF-8'));
+        // (他は空のまま)
+    }
+    // --- ▲ 説明文のパース処理 終わり ---
     
     // 4. 価格計算
     $monthly_price = (int)$product['price'];
@@ -65,7 +107,7 @@ try {
                     
                     <h1 class="details-title"><?php echo $product_name; ?></h1>
                     
-                    <p class="details-subtitle">セキュリティソフトを試してみたいあなたへ</p>
+                    <p class="details-subtitle"><?php echo $subtitle; ?></p>
 
                     <form class="plan-form" action="add_pack.php" method="POST">
                         
@@ -107,21 +149,24 @@ try {
 
                 <aside class="product-sidebar">
                     <h2 class="sidebar-title">プランの主な機能</h2>
+                    
                     <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i> ウイルス・スパイウェア対策</li>
-                        <li><i class="fas fa-check-circle"></i> 危険サイトへのアクセスブロック</li>
-                        <li><i class="fas fa-check-circle"></i> ファイアウォール</li>
-                        <li><i class="fas fa-shield-alt"></i> 保護者による使用制限 (ペアレンタルコントロール)</li>
-                        <li><i class="fas fa-life-ring"></i> 24時間365日サポート</li>
+                        <?php if (!empty($features_array)): ?>
+                            <?php foreach ($features_array as $feature): ?>
+                                <li><i class="fas fa-check-circle"></i> <?php echo $feature; ?></li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li><i class="fas fa-info-circle"></i> 機能の詳細は商品説明をご覧ください。</li>
+                        <?php endif; ?>
                     </ul>
                     
                     <div class="sidebar-info">
                         <h3><i class="fas fa-file-alt"></i> 商品説明</h3>
-                        <p><?php echo $description; ?></p>
+                        <p><?php echo $description_text; ?></p>
                     </div>
                     <div class="sidebar-info">
                         <h3><i class="fas fa-info-circle"></i> こんな方におすすめ</h3>
-                        <p>初めてセキュリティソフトを導入する方や、まずは手軽に試してみたい方に最適なプランです。</p>
+                        <p><?php echo $recommend_text; ?></p>
                     </div>
                 </aside>
             </div>
