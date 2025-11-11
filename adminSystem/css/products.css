@@ -123,6 +123,40 @@ tr:nth-child(even) {
 .overflow-x-auto {
     overflow-x: auto;
 }
+.customEditBtn{
+    background-color: #3273dc;
+    color: #fff;
+}
+.customEditBtn:hover{
+    background-color: #3273dc;
+    color: #fff;
+}
+
+.customDeleteBtn{
+    background-color: #dc3545;
+    color: #fff;
+}
+.customDeleteBtn:hover{
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.packageEditBtn{
+    background-color: #3273dc;
+    color: #fff;
+}
+.packageEditBtn:hover{
+    background-color: #3273dc;
+    color: #fff;
+}
+.packageDeleteBtn{
+    background-color: #dc3545;
+    color: #fff;
+}
+.packageDeleteBtn:hover{
+    background-color: #dc3545;
+    color: #fff;
+}
 
 /* modal */
 .formContainer {

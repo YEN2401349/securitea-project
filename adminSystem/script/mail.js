@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
       ? allInquiries.filter(mail => mail.status === "未対応")
       : allInquiries;
     console.log(filtered.length, inquiryListWrapper.scrollHeight);
-    if (filtered.length > 6) {
-      inquiryListWrapper.style.maxHeight = "400px";
+    if (filtered.length >= 6) {
+      inquiryListWrapper.style.maxHeight = "500px";
       inquiryListWrapper.style.overflowY = "auto";
     } else {
       inquiryListWrapper.style.maxHeight = "none";

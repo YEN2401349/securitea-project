@@ -107,4 +107,5 @@ resetBtn.addEventListener('click', () => {
     renderTable(salesData);
 });
 
+
 reloadFromServer();
