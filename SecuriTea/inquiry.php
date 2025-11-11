@@ -1,5 +1,6 @@
 <?php
 require 'DBconnect.php'; // データベース接続ファイルを読み込む
+session_start();
 
 $msg = '';
 
