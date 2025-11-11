@@ -40,7 +40,7 @@
                         <th>プラン／商品</th>
                         <th>料金</th>
                         <th>カスタム設定</th>
-                        <th>操作</th>
+                        <!-- <th>操作</th> -->
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
