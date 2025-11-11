@@ -140,6 +140,7 @@ try {
                                 <label for="triennially">
                                     <span class="plan-name">3年プラン</span>
                                     <span class="plan-price">¥<?php echo number_format($tri_price); ?> / 3年</span>
+                                    <span class="plan-badge">11ヶ月分お得</span>
                                 </label>
                             </div>
                         </fieldset>
