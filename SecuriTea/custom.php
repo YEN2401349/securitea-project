@@ -47,11 +47,18 @@ $yearly_checked = ($existing_cycle === 'yearly') ? 'checked' : '';
             
             <p id="term-display"><strong>期間：</strong> 年 月 日 ～ 年 月 日</p>
             
-            <a href="account_check.php" class="product-btn" id="confirm-button">
-                <span>確認画面へ</span>
-            <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
+            <div class="summary-actions">
+                <a href="product.php" class="product-btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>戻る</span>
+                </a>
+                
+                <a href="account_check.php" class="product-btn btn-primary" id="confirm-button">
+                    <span>確認画面へ</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            </div>
 
         <ul id="selected-list"></ul>
     </div>
