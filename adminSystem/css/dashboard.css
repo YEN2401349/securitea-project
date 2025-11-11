@@ -47,3 +47,15 @@
 .mb-4 {
     margin-bottom: 1rem;
 }
+
+.yearSelect{
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.yearSelect:focus {
+    outline: none;
+    border-color: #3273dc;
+}
