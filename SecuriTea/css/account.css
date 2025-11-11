@@ -1,8 +1,9 @@
 body {
-  margin: 0;
-  font-family: "Segoe UI", Roboto, sans-serif;
-  background: #f8f9fa;
-  color: #202124;
+    font-family: var(--font-family);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
 /* ヘッダー */
