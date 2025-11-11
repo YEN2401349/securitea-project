@@ -4,6 +4,7 @@
 :root {
     --primary-color: #2563eb;
     --primary-dark: #1d4ed8;
+    --accent-color: #2563eb;
     --bg-primary: #ffffff;
     --bg-secondary: #f8fafc;
     --text-primary: #1e293b;
@@ -27,7 +28,6 @@ body {
     background: var(--bg-secondary);
     color: var(--text-primary);
     line-height: 1.6;
-    overflow-x: hidden;
 }
 
 .container {
@@ -43,7 +43,6 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-light);
 }
 
@@ -61,7 +60,7 @@ body {
 }
 
 .logo img:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .nav-list {
@@ -70,39 +69,43 @@ body {
     gap: 2rem;
 }
 
-/* =============================
-   ヘッダーリンクのホバーアニメーション
-============================= */
 .nav-link {
-    position: relative;
-    display: inline-block;
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: color 0.3s ease, transform 0.3s ease;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-/* ホバー時の動きと色変化 */
 .nav-link:hover {
-    color: #007bff; /* 青に変化（お好みで） */
-    transform: translateY(-3px); /* 少し上に動く */
+    color: var(--accent-color);
+    transform: translateY(-3px);
 }
 
-/* 下線アニメーション（オプション） */
 .nav-link::after {
-    content: "";
-    position: absolute;
-    bottom: -3px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: #007bff;
-    transition: width 0.3s ease;
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-color);
+  transition: width 0.3s ease;
 }
 
 .nav-link:hover::after {
-    width: 100%;
+  width: 100%;
 }
 
+.nav-link i {
+    font-size: 1rem;
+}
 
 
 /* ===== FOOTER ===== */
@@ -245,37 +248,7 @@ body {
     padding: 0 1.5rem;
 }
 
-/* ===== HEADER ===== */
-.header {
-    background: var(--bg-primary);
-    box-shadow: var(--shadow-sm);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1px solid var(--border-light);
-}
-.header .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.5rem;
-}
-.logo img {
-    height: 3rem;
-}
-.nav-list {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-}
-.nav-link {
-    text-decoration: none;
-    color:black;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    transition: var(--transition);
-}
+
 
 /* ===== FOOTER ===== */
 .footer {
