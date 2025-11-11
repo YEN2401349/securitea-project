@@ -137,7 +137,7 @@ try {
           <form action="confirm_cancel.php" method="post">
             <button type="submit" class="btn btn-danger">契約解除</button>
           </form>
-
+        </div>
       </div>
     </main>
   </div>
