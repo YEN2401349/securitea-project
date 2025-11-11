@@ -70,29 +70,39 @@ body {
     gap: 2rem;
 }
 
+/* =============================
+   ヘッダーリンクのホバーアニメーション
+============================= */
 .nav-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    color: black;
-    font-weight: 500;
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    transition: var(--transition);
     position: relative;
+    display: inline-block;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
 }
 
+/* ホバー時の動きと色変化 */
 .nav-link:hover {
-    color: var(--primary-color);
-    background: var(--bg-tertiary);
-    transform: translateY(-1px);
+    color: #007bff; /* 青に変化（お好みで） */
+    transform: translateY(-3px); /* 少し上に動く */
 }
 
-.nav-link i {
-    font-size: 1rem;
+/* 下線アニメーション（オプション） */
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #007bff;
+    transition: width 0.3s ease;
 }
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
 
 
 /* ===== FOOTER ===== */
