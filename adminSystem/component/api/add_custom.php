@@ -32,18 +32,20 @@ if (!empty($input['custom_image'])) {
 
 try {
     $stmt = $db->prepare("
-        INSERT INTO Products (name, price, billing_cycle, duration_months, category_id, description, image_path)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Products (name, price, billing_cycle, security_features,eye_catch, duration_months, category_id, description, image_path)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     $stmt->execute([
         $input['custom_name'],
         $input['custom_price'],
         $input['custom_billing_cycle'],
+        $input['custom_security_features'],
+        $input['custom_eye_catch'],
         $input['custom_duration_months'],
-        2, 
+        2,
         $input['custom_description'],
-        $imagePath 
+        $imagePath
     ]);
 
     echo json_encode([

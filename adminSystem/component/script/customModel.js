@@ -37,6 +37,8 @@ async function reloadCustomFromServer() {
             custom_price: p.price,
             custom_plan_type: p.plan_type,
             custom_billing_cycle: p.billing_cycle,
+            custom_security_features: p.security_features,
+            custom_eye_catch: p.eye_catch,
             custom_duration_months: p.duration_months,
             image_path: p.image_path,
             custom_description: p.description
@@ -88,11 +90,14 @@ function openCustomModel(edit = false, item = null) {
     customForm.custom_price.value = item?.custom_price || "";
     customForm.custom_plan_type.value = item?.custom_billing_cycle || "monthly";
     customForm.custom_duration_months.value = item?.custom_duration_months || "1";
+    customForm.custom_eye_catch.value = item?.custom_eye_catch || "";
+    customForm.custom_security_features.value = item?.custom_security_features || "";
     customForm.custom_description.value = item?.custom_description || "";
     customForm.image.value = "";
     custom_preview.innerHTML = item?.image_path
         ? `<img src="${item.image_path}" alt="預覽" style="max-width:200px;">`
         : "";
+    custom_existingImagePath = item?.image_path || null;
     if (!edit) updateDurationCustomOptions();
 }
 
@@ -144,6 +149,8 @@ customForm.onsubmit = async e => {
         custom_name: customForm.custom_name.value.trim(),
         custom_price: customForm.custom_price.value.trim(),
         custom_billing_cycle: customForm.custom_plan_type.value.trim(),
+        custom_security_features: customForm.custom_security_features.value.trim(),
+        custom_eye_catch: customForm.custom_eye_catch.value.trim(),
         custom_duration_months: customForm.duration_months.value.trim(),
         custom_image: customForm.image.files[0] ? await new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -151,6 +158,7 @@ customForm.onsubmit = async e => {
             reader.onerror = () => reject(new Error("画像の読み込みに失敗しました"));
             reader.readAsDataURL(customForm.image.files[0]);
         }) : null,
+        custom_existingImagePath,
         custom_description: customForm.custom_description.value.trim()
     };
 
