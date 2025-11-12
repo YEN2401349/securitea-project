@@ -140,16 +140,10 @@ try {
                                 <label for="triennially">
                                     <span class="plan-name">3年プラン</span>
                                     <span class="plan-price">¥<?php echo number_format($tri_price); ?> / 3年</span>
-                                    <span class="plan-badge">11ヶ月分お得</span>
                                 </label>
                             </div>
                         </fieldset>
-                        <div class="button-wrapper">
-                            <a href="javascript:history.back()" class="back-btn">一つ前に戻る</a>
-                            <button type="submit" class="purchase-btn">カートに追加する</button>
-                        </div>
-                        </form>
-                </div>
+                        <button type="submit" class="purchase-btn">カートに追加する</button>
                     </form>
                 </div>
 
