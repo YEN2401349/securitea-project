@@ -633,3 +633,62 @@ body {
         flex-direction: column; /* 縦並びにする */
     }
 }
+/* ===== ボタンラッパーと戻るボタン (ここから追加) ===== */
+
+/* 2つのボタンを横並びにするためのラッパー */
+.button-wrapper {
+    display: flex;
+    gap: 1rem; /* ボタン間の隙間 */
+}
+
+/* 戻るボタン (比率 1) */
+.back-btn {
+    flex: 1; /* 比率の「1」 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    padding: 1rem;
+    font-size: 1.125rem;
+    background: var(--bg-tertiary); /* 目立たない色 */
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    text-decoration: none; /* aタグの下線を消す */
+}
+
+.back-btn:hover {
+    background: var(--border-light); /* ホバー色 */
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ===== 既存のカートボタンのスタイルを調整 ===== */
+
+/* .purchase-btn (600行目あたり) の width: 100% を解除し、flex: 2 を指定 */
+.purchase-btn {
+    flex: 2; /* 比率の「2」 */
+    width: auto; /* width: 100% を上書き解除 */
+    
+    /* 以下は既存のスタイル (変更なし) */
+    padding: 1rem;
+    font-size: 1.125rem;
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.purchase-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
