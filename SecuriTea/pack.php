@@ -144,12 +144,15 @@ try {
                                 </label>
                             </div>
                         </fieldset>
-                        <div class="button-wrapper">
-                            <a href="javascript:history.back()" class="back-btn">一つ前に戻る</a>
+
+                        <div class="form-buttons-container">
+                            <a href="javascript:history.back()" class="back-btn">
+                                <i class="fas fa-arrow-left"></i> 前のページに戻る
+                            </a>
+                            
                             <button type="submit" class="purchase-btn">カートに追加する</button>
                         </div>
-                        </form>
-                </div>
+                        
                     </form>
                 </div>
 

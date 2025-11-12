@@ -1,69 +1,31 @@
 body {
-    font-family: var(--font-family);
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    line-height: 1.6;
-    overflow-x: hidden;
+  margin: 0;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: #f8f9fa;
+  color: #202124;
 }
 
 /* ヘッダー */
-.header {
-    background: var(--bg-primary); /* var(--bg-white)から修正 */
-    box-shadow: var(--shadow-sm);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-light);
+header {
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.header .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.5rem;
+header h1 {
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
-.logo img {
-    height: 3rem;
-    width: auto;
-    transition: var(--transition);
+.profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
-
-.logo img:hover {
-    transform: scale(1.05);
-}
-
-.nav-list {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    color: black;
-    font-weight: 500;
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    transition: var(--transition);
-    position: relative;
-}
-
-.nav-link:hover {
-    color: var(--primary-color);
-    background: var(--bg-tertiary);
-    transform: translateY(-1px);
-}
-
-.nav-link i {
-    font-size: 1rem;
-}
-
 
 /* レイアウト全体 */
 .container {

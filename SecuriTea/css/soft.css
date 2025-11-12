@@ -1,4 +1,6 @@
-
+/* ===================================
+   software.html に必要なCSSスタイル
+   =================================== */
 
 /* ===== CSS変数 ===== */
 :root {
@@ -557,7 +559,7 @@ body {
 }
 
 .purchase-btn {
-    flex-grow: 2;
+    width: 100%;
     padding: 1rem;
     font-size: 1.125rem;
     background: var(--primary-color);
@@ -633,37 +635,3 @@ body {
         flex-direction: column; /* 縦並びにする */
     }
 }
-/* ===== フォームボタンのコンテナ (ここから追加) ===== */
-.form-buttons-container {
-    display: flex;
-    gap: 1rem; /* ボタン間の隙間 */
-    align-items: stretch; /* ボタンの高さを揃える */
-}
-
-/* 「戻る」ボタンのスタイル */
-.back-btn {
-    flex-grow: 1; /* 幅の割合 (カートボタンより小さめ) */
-    padding: 1rem;
-    font-size: 1.125rem;
-    background: var(--bg-tertiary); /* 背景色 */
-    color: var(--text-secondary); /* テキスト色 */
-    border: 1px solid var(--border-color); /* 枠線 */
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    text-align: center;
-    text-decoration: none; /* リンクの下線を消す */
-    display: inline-flex; /* アイコンとテキストを中央揃え */
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem; /* アイコンとテキストの隙間 */
-}
-
-.back-btn:hover {
-    background: var(--border-color);
-    color: var(--text-primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-/* ===== (ここまで追加) ===== */
