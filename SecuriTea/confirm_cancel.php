@@ -7,6 +7,13 @@ if (!isset($_SESSION['customer']['user_id'])) {
   header("Location: login.php");
   exit();
 }
+
+if (isset($_SESSION['customer']['user_type']) && $_SESSION['customer']['user_type'] == 'custom') {
+  $back_url = 'account_custom.php';
+} else {
+  $back_url = 'account_normal.php';
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -16,8 +23,6 @@ if (!isset($_SESSION['customer']['user_id'])) {
   <link rel="stylesheet" href="css/account.css">
 </head>
 <body>
-  <?php require "headerTag.php"; ?>
-
   <div class="container">
     <main class="content">
       <div class="card" style="text-align:center;">
@@ -28,8 +33,8 @@ if (!isset($_SESSION['customer']['user_id'])) {
           <form action="cancel_process.php" method="post" style="display:inline;">
             <button type="submit" class="btn btn-danger">はい、解除します</button>
           </form>
-
-          <a href="account.php" class="btn btn-secondary">いいえ、戻る</a>
+          
+          <?php echo'<a href= "',$back_url,'" class="btn btn-secondary">いいえ、戻る</a>';?>
         </div>
       </div>
     </main>
