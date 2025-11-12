@@ -1,8 +1,6 @@
 <?php
-require 'DBconnect.php'; // データベース接続ファイルを読み込む
+require 'DBconnect.php';
 session_start();
-
-$msg = '';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $name = $_POST["name"];
@@ -11,29 +9,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $subject = $_POST["subject"];
     $message = $_POST["message"];
 
-    // 件名に製品名を付け加える（見やすく）
     $full_subject = $subject . ' ' . $product;
 
-    // SQLでデータベースに保存
     $sql = "INSERT INTO Inquiries (name, email, subject, message, created_at)
             VALUES (?, ?, ?, ?, NOW())";
     $stmt = $db->prepare($sql);
     $success = $stmt->execute([$name, $email, $full_subject, $message]);
 
     if ($success) {
-        // 再送信防止のためリダイレクト
-        header("Location: " . $_SERVER['PHP_SELF'] . "?success=1");
+        // ✅ 完了ページへリダイレクト
+        header("Location: inquiry_done.php");
         exit;
     } else {
         $msg = "送信に失敗しました。もう一度お試しください。";
     }
 }
-
-// 成功メッセージの表示
-if (isset($_GET['success'])) {
-    $msg = "お問い合わせを受け付けました。ありがとうございます。";
-}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ja">
