@@ -40,6 +40,8 @@ async function reloadPackageFromServer() {
             package_price: p.price,
             package_plan_type: p.plan_type,
             package_billing_cycle: p.billing_cycle,
+            package_security_features: p.security_features,
+            package_eye_catch: p.eye_catch,
             package_duration_months: p.duration_months,
             package_description: p.description,
             image_path: p.image_path
@@ -118,6 +120,8 @@ function openPackageModel(edit = false, item = null) {
     document.getElementById("modalTitle").textContent = edit ? "編集" : "追加";
     packageForm.package_name.value = item?.package_name || "";
     packageForm.package_price.value = item?.package_price || "";
+    packageForm.package_eye_catch.value = item?.package_eye_catch || "";
+    packageForm.package_security_features.value = item?.package_security_features || "";
     packageForm.package_plan_type.value = item?.package_billing_cycle || "monthly";
     packageForm.image.value = "";
     packageForm.package_duration_months.value = item?.package_duration_months;
@@ -125,7 +129,8 @@ function openPackageModel(edit = false, item = null) {
     package_preview.innerHTML = item?.image_path
         ? `<img src="${item.image_path}" alt="預覽" style="max-width:200px;">`
         : "";
-    if(!edit)updateDurationPackageOptions();
+    package_existingImagePath = item?.image_path || null;
+    if (!edit) updateDurationPackageOptions();
 }
 
 function closePackageModel() {
@@ -138,17 +143,19 @@ function closePackageModel() {
 // ------------------------------
 packageForm.onsubmit = async e => {
     e.preventDefault();
-
     const data = {
         package_name: packageForm.package_name.value.trim(),
         package_price: packageForm.package_price.value.trim(),
         package_billing_cycle: packageForm.package_plan_type.value.trim(),
+        package_security_features: packageForm.package_security_features.value.trim(),
+        package_eye_catch: packageForm.package_eye_catch.value.trim(),
         package_image: packageForm.image.files[0] ? await new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result);
             reader.onerror = () => reject(new Error("画像の読み込みに失敗しました"));
             reader.readAsDataURL(packageForm.image.files[0]);
         }) : null,
+        package_existingImagePath,
         package_duration_months: packageForm.package_duration_months.value.trim(),
         package_description: packageForm.package_description.value.trim()
     };
