@@ -669,12 +669,11 @@ body {
 
 /* ===== 既存のカートボタンのスタイルを調整 ===== */
 
-/* .purchase-btn (600行目あたり) の width: 100% を解除し、flex: 2 を指定 */
+
+/* purchase-btn の width: 100% を解除し、flex: 2 を指定 */
 .purchase-btn {
     flex: 2; /* 比率の「2」 */
     width: auto; /* width: 100% を上書き解除 */
-    
-    /* 以下は既存のスタイル (変更なし) */
     padding: 1rem;
     font-size: 1.125rem;
     background: var(--primary-color);

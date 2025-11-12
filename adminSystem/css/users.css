@@ -92,6 +92,7 @@ select {
 
 /* table */
 section {
+    margin: auto;
     width: 1170px;
 }
 
@@ -190,3 +191,4 @@ tr:nth-child(even) {
     max-height: 70%;
     overflow-y: auto;
 }
+
