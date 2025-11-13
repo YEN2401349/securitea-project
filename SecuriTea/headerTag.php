@@ -15,7 +15,7 @@
     //ログインして無ければログインページのリンク表示
                 if(isset($_SESSION['customer'])){
                     echo '<li class="nav-item">',
-                            '<a href="account_plan_check.php" class="nav-link">',
+                            '<a href="account.php" class="nav-link">',
                                 '<i class="fas fa-question-circle"></i>アカウント情報',
                             '</a>',
                         '</li>';
