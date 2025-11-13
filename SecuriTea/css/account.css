@@ -11,7 +11,7 @@
   --font-family: 'Inter', sans-serif;
 }
 
-/* ✅ body の設定（ここで閉じる） */
+/* ✅ body の設定 */
 body {
   font-family: var(--font-family);
   background: var(--bg-secondary);
@@ -72,7 +72,7 @@ body {
   position: relative;
 }
 
-/* ホバー時に青く光って少し浮く */
+/* ホバー時の演出 */
 .nav-link:hover {
   color: var(--primary-color);
   background: var(--bg-tertiary);
@@ -85,35 +85,7 @@ body {
 
 /* =========================
    🧭 レイアウト全体
-  margin: 0;
-  font-family: "Segoe UI", Roboto, sans-serif;
-  background: #f8f9fa;
-  color: #202124;
-}
-
-/* ヘッダー */
-header {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-header h1 {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.profile-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-/* レイアウト全体 */
+========================= */
 .container {
   display: flex;
   max-width: 1200px;
