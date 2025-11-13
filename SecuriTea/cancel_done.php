@@ -7,12 +7,6 @@ if (!isset($_SESSION['customer']['user_id'])) {
   exit();
 }
 
-if (isset($_SESSION['customer']['user_type']) && $_SESSION['customer']['user_type'] == 'custom') {
-  $back_url = 'account_custom.php';
-} else {
-  $back_url = 'account_normal.php';
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -68,7 +62,7 @@ if (isset($_SESSION['customer']['user_type']) && $_SESSION['customer']['user_typ
       <p>ご利用ありがとうございました。<br>
          アカウント情報ページから契約内容を確認できます。</p>
 
-      <?php echo'<a href= "',$back_url,'" class="btn">アカウント情報へ戻る</a>';?>
+      <a href= "account.php" class="btn">アカウント情報へ戻る</a>
     </div>
   </div>
 
