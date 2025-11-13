@@ -4,6 +4,7 @@
 :root {
     --primary-color: #2563eb;
     --primary-dark: #1d4ed8;
+    --accent-color: #2563eb;
     --bg-primary: #ffffff;
     --bg-secondary: #f8fafc;
     --text-primary: #1e293b;
@@ -37,7 +38,7 @@ body {
 
 /* ===== HEADER ===== */
 .header {
-    background: var(--bg-primary);
+    background: var(--bg-primary); /* var(--bg-white)から修正 */
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
@@ -81,6 +82,7 @@ body {
     border-radius: var(--radius-md);
     position: relative;
     transition: var(--transition);
+    position: relative;
 }
 
 /* ===== ホバー時の青く光る＋上下に動くエフェクト ===== */
