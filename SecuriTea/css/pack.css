@@ -667,3 +667,62 @@ body {
     box-shadow: var(--shadow-md);
 }
 /* ===== (ここまで追加) ===== */
+/* ===== pack.css の末尾に追加 ===== */
+
+/* --- サジェスト検索用のスタイル --- */
+
+/* 検索コンテナを相対位置の基準にする */
+.search-container {
+    position: relative;
+}
+
+/* サジェスト表示用のコンテナ */
+.suggestions-container {
+    display: none; 
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    right: 0;
+    
+    background: #45bd7b; /* 白背景 */
+    border: 1px solid #000000; /* 黒枠 */
+    
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    margin-top: 0.5rem; 
+    z-index: 1001; /* 最前面に表示 */
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.suggestions-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem; 
+}
+
+.suggestions-list li {
+    margin: 0;
+    padding: 0;
+}
+
+.suggestions-list a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.suggestions-list a:hover {
+    background: var(--bg-tertiary);
+    color: var(--primary-color);
+}
+
+.suggestions-list a strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}

@@ -28,13 +28,15 @@
                 </p>
                 <!--検索機能（未完成）-->
                 <div class="search-section">
-                    <div class="search-container">
+                    <div class="search-container"> 
                         <div class="search-bar">
                             <i class="fas fa-search search-icon"></i>
-                            <input type="text" placeholder="特徴でセキュリティソフトを探す" class="search-input">
-                            <button class="search-btn">
+                            <input type="text" placeholder="特徴でセキュリティソフトを探す" class="search-input" id="live-search-input" autocomplete="off">
+                            <button class="search-btn" id="live-search-button">
                                 <i class="fas fa-arrow-right"></i>
                             </button>
+                        </div>
+                        <div class="suggestions-container" id="suggestions-container">
                         </div>
                     </div>
                 </div>
@@ -88,6 +90,93 @@
     <!--フッターとチャットボット-->
     <?php require "footer.php"; ?>
     <?php include './component/chatBot.php'; ?>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("live-search-input");
+    const suggestionsContainer = document.getElementById("suggestions-container");
+
+    // 1. 入力イベント (キーをタイプするたび)
+    searchInput.addEventListener("input", function() {
+        const term = this.value.trim();
+
+        // 1文字未満ならサジェストを消す
+        if (term.length < 1) {
+            hideSuggestions();
+            return;
+        }
+
+        // 2. live_search.php にキーワードを送信
+        fetch(`live_search.php?term=${encodeURIComponent(term)}`)
+            .then(response => response.json())
+            .then(data => {
+                // 3. 結果の表示
+                if (data.status === 'success' && data.data.length > 0) {
+                    showSuggestions(data.data, term);
+                } else {
+                    hideSuggestions();
+                }
+            })
+            .catch(error => {
+                console.error("検索エラー:", error);
+                hideSuggestions();
+            });
+    });
+
+    // 4. サジェストを表示する関数
+    function showSuggestions(items, term) {
+        suggestionsContainer.innerHTML = ""; // 中身をクリア
+        const ul = document.createElement("ul");
+        ul.className = "suggestions-list";
+
+        items.forEach(item => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = item.url;
+            
+            // 入力したキーワードを太字にする (簡易版)
+            try {
+                const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+                a.innerHTML = item.name.replace(regex, '<strong>$1</strong>');
+            } catch (e) {
+                a.textContent = item.name; // 正規表現エラー時はそのまま表示
+            }
+            
+            li.appendChild(a);
+            ul.appendChild(li);
+        });
+
+        suggestionsContainer.appendChild(ul);
+        suggestionsContainer.style.display = "block";
+    }
+
+    // 5. サジェストを非表示にする関数
+    function hideSuggestions() {
+        suggestionsContainer.innerHTML = "";
+        suggestionsContainer.style.display = "none";
+    }
+    
+    // 6. 検索欄の外側をクリックしたらサジェストを消す
+    document.addEventListener("click", function(event) {
+        if (!event.target.closest('.search-container')) {
+            hideSuggestions();
+        }
+    });
+    
+    // 正規表現のエスケープ用
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    // 検索ボタンは、product.php の検索結果ページに飛ばす（今回は未実装）
+    document.getElementById("live-search-button").addEventListener("click", function() {
+        const term = searchInput.value.trim();
+        if (term.length > 0) {
+            // 本来は product.php?search=... などに遷移する
+            alert("検索機能（サジェスト）が実行されました。");
+        }
+    });
+});
+</script>
 </body>
 
 </html>
