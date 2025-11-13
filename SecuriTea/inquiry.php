@@ -81,11 +81,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
 </main>
 
-<footer class="footer">
-    <div class="container">
-        <p>&copy; 2025 Modern Securitea. All Rights Reserved.</p>
-    </div>
-</footer>
+<!--フッターとチャットボット-->
+    <?php require "footer.php"; ?>
+    <?php include './component/chatBot.php'; ?>
 
 </body>
 </html>
