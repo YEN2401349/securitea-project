@@ -135,7 +135,6 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: var(--text-white);
     position: relative;
-    overflow: hidden;
 }
 
 .hero::before {
@@ -774,3 +773,67 @@ a:focus {
         break-inside: avoid;
     }
 }
+/* --- サジェスト検索用のスタイル --- */
+
+/* 検索コンテナを相対位置の基準にする */
+/* --- サジェスト検索用のスタイル --- */
+
+/* 検索コンテナを相対位置の基準にする */
+.search-container {
+    position: relative;
+}
+
+/* サジェスト表示用のコンテナ (修正済み) */
+.suggestions-container {
+    display: none; /* デフォルトは非表示 */
+    position: absolute;
+    top: 100%; /* 検索バーの真下 */
+    left: 0;
+    right: 0;
+    
+    background: #45bd7b; /* (1) 背景を白に設定 */
+    border: 1px solid #000000; /* (2) 枠線を黒 (1pxの実線) に設定 */ /* ★コメントを閉じ、border指定をこちらに統一 */
+    
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    margin-top: 0.5rem; /* 検索バーとの隙間 */
+    z-index: 500;
+    max-height: 400px;
+    overflow-y: auto;
+    /* border: 1px solid var(--border-light); <-- ★重複していたので削除 */
+}
+
+.suggestions-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem; /* リストの内側の余白 */
+}
+
+.suggestions-list li {
+    margin: 0;
+    padding: 0;
+}
+
+.suggestions-list a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    text-align: left; /* 左揃え */
+    font-size: 0.9rem;
+}
+
+.suggestions-list a:hover {
+    background: var(--bg-tertiary);
+    color: var(--primary-color);
+}
+
+/* 検索結果のハイライト (太字) */
+.suggestions-list a strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* ★余分な閉じカッコとコメントを削除 */
