@@ -11,8 +11,69 @@
   --font-family: 'Inter', sans-serif;
 }
 
-
 body {
+.header {
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+.logo img {
+  height: 3rem;
+  width: auto;
+  transition: var(--transition);
+}
+
+.logo img:hover {
+  transform: scale(1.05);
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: black;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+  position: relative;
+}
+
+/* ホバー時に青く光って少し浮く */
+.nav-link:hover {
+  color: var(--primary-color);
+  background: var(--bg-tertiary);
+  transform: translateY(-2px);
+}
+
+.nav-link i {
+  font-size: 1rem;
+}
+
+/* =========================
+   🧭 レイアウト全体
   margin: 0;
   font-family: "Segoe UI", Roboto, sans-serif;
   background: #f8f9fa;
@@ -49,7 +110,9 @@ header h1 {
   gap: 2rem;
 }
 
-/* サイドバー */
+/* =========================
+   📋 サイドバー
+========================= */
 .sidebar {
   flex: 0 0 250px;
   background: #fff;
@@ -77,7 +140,9 @@ header h1 {
   font-weight: 600;
 }
 
-/* メインコンテンツ */
+/* =========================
+   📄 メインコンテンツ
+========================= */
 .content {
   flex: 1;
 }
@@ -117,18 +182,19 @@ header h1 {
   font-size: 0.95rem;
   font-weight: 500;
 }
-/* --- カード内のボタンスタイル --- */
 
+/* =========================
+   🔘 ボタン関連
+========================= */
 .card-actions {
   display: flex;
-  justify-content: flex-end; /* ボタンを右揃えにする */
-  gap: 0.75rem; /* ボタン間のスペース */
+  justify-content: flex-end;
+  gap: 0.75rem;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #eee; /* 上の要素との区切り線 */
+  border-top: 1px solid #eee;
 }
 
-/* 共通ボタンスタイル */
 .btn {
   padding: 0.5rem 1rem;
   border: none;
@@ -140,24 +206,25 @@ header h1 {
   transition: background-color 0.2s ease;
 }
 
-/* プラン変更ボタン (青) */
 .btn-primary {
-  background-color: #1967d2; /* サイドバーのアクティブ色と統一 */
+  background-color: #1967d2;
 }
 
 .btn-primary:hover {
-  background-color: #165cb8; /* 少し暗い青 */
+  background-color: #165cb8;
 }
 
-/* 契約解除ボタン (赤) */
 .btn-danger {
   background-color: #d93025;
 }
 
 .btn-danger:hover {
-  background-color: #c5221f; /* 少し暗い赤 */
+  background-color: #c5221f;
 }
-/* --- 編集フォームのスタイル (追記) --- */
+
+/* =========================
+   ✏️ 編集フォーム
+========================= */
 .form-group {
   margin-bottom: 1.25rem;
 }
@@ -180,7 +247,7 @@ header h1 {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.95rem;
-  box-sizing: border-box; /* paddingを含めてwidth:100%にする */
+  box-sizing: border-box;
 }
 
 .form-row {
@@ -207,9 +274,9 @@ header h1 {
   border-top: 1px solid #eee;
 }
 
-/* リンクをボタンのように見せるスタイル */
+/* リンク風ボタン */
 .btn-secondary {
-  display: inline-block; /* aタグをボタンのように見せるため */
+  display: inline-block;
   text-decoration: none;
   background-color: #f1f3f4;
   color: #3c4043;
