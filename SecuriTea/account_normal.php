@@ -11,22 +11,42 @@ if (!isset($_SESSION['customer']['user_id'])) {
 // ユーザー情報を取得
 try {
   $pdo = $db;
-  $sql = $pdo->prepare("SELECT * FROM Profiles WHERE user_id = ?");
-  $sql->execute([$_SESSION['customer']['user_id']]);
-  $user = $sql->fetch(PDO::FETCH_ASSOC);
-  $payment_method = '未登録';
-  $order = null;   // $order を初期化
-  $payment = null; // $payment を初期化
+  $user_id = $_SESSION['customer']['user_id'];
 
-  // まず Orders テーブルから order_id を取得
-  $sql_order = $pdo->prepare("SELECT order_id FROM Orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
-  // ORDER BY create_at DESC LIMIT 1 状況見てこれをつける
-  $sql_order->execute([$_SESSION['customer']['user_id']]);
+  // 1. プロフィール情報
+  $sql = $pdo->prepare("SELECT * FROM Profiles WHERE user_id = ?");
+  $sql->execute([$user_id]);
+  $user = $sql->fetch(PDO::FETCH_ASSOC);
+
+  // 1.5 ユーザー情報　メルアド取得
+  $sql_email = $pdo->prepare("SELECT user_email FROM Users WHERE user_id = ?");
+  $sql_email->execute([$user_id]);
+  $email = $sql_email->fetch(PDO::FETCH_ASSOC);
+
+  // 2. サブスク情報
+  $sql_subscription = $pdo->prepare("SELECT product_id, start_date, end_date,status_id FROM Subscription WHERE user_id = ? ORDER BY create_date DESC LIMIT 1");
+  $sql_subscription->execute([$user_id]);
+  $subscription = $sql_subscription->fetch(PDO::FETCH_ASSOC);
+
+  $payment_method = '未登録';
+
+  // 3. user_id を使って Orders テーブルから最新の order_id を取得
+  $sql_order = $pdo->prepare("SELECT * FROM Orders WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1");
+  $sql_order->execute([$user_id]);
   $order = $sql_order->fetch(PDO::FETCH_ASSOC);
 
-  if ($order) {
+  // 3.5 契約プラン名取得
+  $product = null; 
+  if ($subscription && !empty($subscription['product_id'])) {
+  $sql_product = $pdo->prepare("SELECT name FROM Products WHERE product_id = ?");
+  $sql_product->execute([$subscription['product_id']]);
+  $product = $sql_product->fetch(PDO::FETCH_ASSOC);
+  }
+
+  // 4. order_id が取得できたら、Payments テーブルを検索
+  if ($order && !empty($order['order_id'])) {
     // order_id があれば Payments から payment_method を取得
-    $sql_payment = $pdo->prepare("SELECT payment_method,start_date,end_date FROM Payments WHERE order_id = ?");
+    $sql_payment = $pdo->prepare("SELECT payment_method FROM Payments WHERE order_id = ?");
     $sql_payment->execute([$order['order_id']]);
     $payment = $sql_payment->fetch(PDO::FETCH_ASSOC);
 
@@ -34,11 +54,14 @@ try {
       $payment_method = $payment['payment_method'];
     }
   }
+  // --- 修正箇所ここまで ---
+
 } catch (PDOException $e) {
   echo "エラー：" . $e->getMessage();
   exit();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -71,7 +94,7 @@ try {
         <h2>連絡先情報</h2>
         <div class="info-row">
           <div class="info-label">メール</div>
-          <div class="info-value"><?= htmlspecialchars($user['user_email'] ?? '未登録') ?></div>
+          <div class="info-value"><?= htmlspecialchars($email['user_email'] ?? '未登録') ?></div>
         </div>
         <div class="info-row">
           <div class="info-label">電話</div>
@@ -85,24 +108,29 @@ try {
         </form>
 
         <h2>利用状況</h2>
+        <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
+          <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
+          ーー月ーー日までご利用いただけます。</h2>
+          <!-- 上のところは後々編集する -->
+          <?php endif; ?>
         <div class="info-row">
           <div class="info-label">利用プラン</div>
-          <div class="info-value"><?= htmlspecialchars($user['product_id'] ?? '未登録') ?></div>
+          <div class="info-value"><?= htmlspecialchars($product['name'] ?? '未登録') ?></div>
         </div>
         <div class="info-row">
           <div class="info-label">料金</div>
           <!-- $user['billing_cycle'] 必要に応じて -->
-          <div class="info-value"><?= htmlspecialchars($user['plan_price'] ?? '---') ?>円</div>
+          <div class="info-value"><?= htmlspecialchars($order['total_amount'] ?? '---') ?>円</div>
         </div>
         <div class="info-row">
           <div class="info-label">契約期間</div>
           <div class="info-value">
-            <?= htmlspecialchars($payment['start_date'] ?? '---') . ' ～ ' . htmlspecialchars($payment['end_date'] ?? '---') ?>
+            <?= htmlspecialchars($subscription['start_date'] ?? '---') . ' ～ ' . htmlspecialchars($subscription['end_date'] ?? '---') ?>
           </div>
         </div>
         <div class="info-row">
           <div class="info-label">次回更新日</div>
-          <div class="info-value"><?= htmlspecialchars($payment['end_date'] ?? '---') ?></div>
+          <div class="info-value"><?= htmlspecialchars($subscription['end_date'] ?? '---') ?></div>
         </div>
         <div class="info-row">
           <div class="info-label">お支払い方法</div>
@@ -116,28 +144,17 @@ try {
         </form>
 
         <h2>基本オプション</h2>
-        <div class="info-row">
-          <div class="info-label">オプション1</div>
-          <div class="info-value"><?= htmlspecialchars($user['option1'] ?? '-') ?></div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">オプション2</div>
-          <div class="info-value"><?= htmlspecialchars($user['option2'] ?? '-') ?></div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">オプション3</div>
-          <div class="info-value"><?= htmlspecialchars($user['option3'] ?? '-') ?></div>
-        </div>
+        <p>なし</p>
 
         <div class="card-actions">
           <form action="software.php">
             <button class="btn btn-primary">プラン変更</button>
           </form>
-          
           <form action="confirm_cancel.php" method="post">
             <button type="submit" class="btn btn-danger">契約解除</button>
           </form>
         </div>
+
       </div>
     </main>
   </div>

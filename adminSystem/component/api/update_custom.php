@@ -41,13 +41,15 @@ if (!empty($input['custom_image'])) {
             }
         }
     }
-} else {
-    $imagePath = $oldImagePath ?? null;
+}
+
+if (!empty($input['custom_existingImagePath']) && empty($imagePath)) {
+    $imagePath = $input['custom_existingImagePath'];
 }
 
 $stmt = $db->prepare("
     UPDATE Products
-    SET name = ?, price = ?, billing_cycle = ?, duration_months = ?, description = ?, image_path = ?
+    SET name = ?, price = ?, billing_cycle = ?, security_features=?, eye_catch=?, duration_months = ?, description = ?, image_path = ?
     WHERE product_id = ?
 ");
 
@@ -55,6 +57,8 @@ $stmt->execute([
     $input['custom_name'],
     $input['custom_price'],
     $input['custom_billing_cycle'],
+    $input['custom_security_features'],
+    $input['custom_eye_catch'],
     $input['custom_duration_months'],
     $input['custom_description'],
     $imagePath,

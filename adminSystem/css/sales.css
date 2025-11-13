@@ -1,98 +1,135 @@
-
-
-
-/* === Table Container === */
-.table-container {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    overflow-x: auto;
-    /* Enable horizontal scrolling */
-    border: 1px solid #e5e7eb;
-    max-height: 100%;
-    max-width: 90%;
-    /* limit total width */
-    overflow-x: auto;
-    /* enable scroll if content overflows */
-    margin: auto;
-}
-
-/* === Table === */
-.table-container table {
-    min-width: 80%;
-    /* ensure horizontal scroll */
-    border-collapse: collapse;
-    /* Prevent narrow layout */
-}
-
-.table-container th,
-.table-container td {
-    padding: 10px 12px;
-    text-align: center;
-    border: 1px solid #e2e8f0;
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-/* === Table Header === */
-.table-container th {
-    background-color: #f8fafc;
-    color: #334155;
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-    /* Keep header fixed */
-    z-index: 2;
-}
-
-/* === Zebra Striping === */
-.table-container tr:nth-child(even) td {
-    background-color: #f9fafb;
-}
-
-/* === Hover Effect === */
-.table-container tr:hover td {
-    background-color: #eef2ff;
-}
-
-/* === Highlight Total Row === */
-.table-container tr:last-child th,
-.table-container tr:last-child td {
-    background-color: #e0f2fe;
-    font-weight: bold;
-}
-
-/* === Scrollbar Styling === */
-.table-container::-webkit-scrollbar {
-    height: 8px;
-    width: 8px;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-}
-
-.table-container::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
-.main-content {
-    width: 80%;
+/* Container */
+.my-container {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 2rem;
 }
 
-.main-content h1 {
+/* Title */
+.title {
     font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
 }
 
-.flex {
+/* Box */
+.box {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+/* Form Grid */
+.form-grid {
     display: flex;
-    padding: auto;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
+.form-item {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
-.mb-4 {
-    margin-bottom: 1rem;
+label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+/* Input & Select */
+.input, .select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.input:focus, .select:focus {
+    outline: none;
+    border-color: #3273dc;
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.btn-primary {
+    background-color: #3273dc;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #275bb5;
+}
+
+.btn-light {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.btn-light:hover {
+    background-color: #e0e0e0;
+}
+
+/* Table */
+.table-container {
+    overflow-x: auto;
+}
+
+.table-wrapper {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.table th, .table td {
+    padding: 0.75rem 1rem;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Zebra stripe */
+.table tr:nth-child(even) td {
+    background-color: #f9fafb;
+}
+
+/* Hover */
+.table tr:hover td {
+    background-color: #eef2ff;
+}
+
+/* Total amount */
+.total-amount {
+    text-align: right;
+    margin-top: 1rem;
+    font-weight: 600;
 }

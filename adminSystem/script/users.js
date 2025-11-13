@@ -93,10 +93,11 @@ function render() {
             <td>${it.product || ''}</td>
             <td>${"￥" + it.price + "円" || ''}</td>
             <td>${it.custom || ''}</td>
-            <td><button data-id="${it.id}" class="deleteBtn border">削除</button></td>
         </tr>
     `).join('');
+    //<td><button data-id="${it.id}" class="deleteBtn border">削除</button></td>
 
+    
     document.querySelectorAll('.deleteBtn').forEach(b => b.addEventListener('click', onDelete));
 
     renderPagination(total);

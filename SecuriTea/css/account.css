@@ -12,16 +12,6 @@
 }
 
 body {
-  font-family: var(--font-family);
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-
-/* =========================
-   🌟 ヘッダー関連
-========================= */
 .header {
   background: var(--bg-primary);
   box-shadow: var(--shadow-sm);
@@ -84,7 +74,35 @@ body {
 
 /* =========================
    🧭 レイアウト全体
-========================= */
+  margin: 0;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: #f8f9fa;
+  color: #202124;
+}
+
+/* ヘッダー */
+header {
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* レイアウト全体 */
 .container {
   display: flex;
   max-width: 1200px;

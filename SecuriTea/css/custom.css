@@ -501,3 +501,32 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* ===== 戻る/確認ボタンの横並びスタイル (custom.php) ===== */
+
+/* ボタンを囲むコンテナ */
+.summary-actions {
+    display: flex;
+    gap: 0.75rem; /* ボタン間の隙間 */
+    margin-top: auto; /* コンテナを一番下に配置 */
+}
+
+/* 共通ボタンスタイル (product-btn を上書き) */
+.summary-actions .product-btn {
+    width: auto; /* 既存の width: 100% をリセット */
+    margin-top: 0; /* 既存の margin-top: auto をリセット */
+    flex-grow: 1; /* flexアイテムとして伸縮 */
+}
+
+/* 戻るボタン (グレー) */
+.summary-actions .btn-secondary {
+    background: var(--secondary-color, #64748b);
+    flex-basis: 40.00%; /* 1:2 の「1」の部分 */
+}
+.summary-actions .btn-secondary:hover {
+    background: var(--primary-dark, #475569);
+}
+
+/* 確認ボタン (青) */
+.summary-actions .btn-primary {
+    flex-basis: 60.00%; /* 1:2 の「2」の部分 */
+}

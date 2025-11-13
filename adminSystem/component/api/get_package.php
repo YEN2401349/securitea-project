@@ -6,6 +6,8 @@ try {
     description,
     price,
     billing_cycle,
+    security_features,
+    eye_catch,
     CASE
         WHEN billing_cycle = 'monthly' THEN '月付'
         WHEN billing_cycle = 'yearly' THEN '年付'

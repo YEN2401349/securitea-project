@@ -37,7 +37,7 @@ body {
 }
 
 .mail-item {
-    padding: 12px 16px;
+    padding: 0.5rem;
     border-bottom: 1px solid #eee;
     cursor: pointer;
     transition: background 0.2s;
@@ -177,9 +177,24 @@ body {
     padding: 100px 0;
 }
 
-.show_unhandled{
+.show_unhandled {
     margin-left: 10px;
 }
+
+.mailbox {
+    display: flex;
+    flex-direction: column;
+}
+
+.mail-list-wrapper {
+    overflow-y: auto;
+    transition: max-height 0.2s;
+}
+
+.mail-item:last-child {
+    border-bottom: none;
+}
+
 @media (max-width: 900px) {
     .mail-container {
         flex-direction: column;
