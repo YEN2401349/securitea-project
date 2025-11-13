@@ -1,4 +1,4 @@
-/* ===== MODERN SECURITEA STYLES ===== */
+/* ===== MODERN SECURITEA STYLES (抜粋) ===== */
 
 /* CSS Variables */
 :root {
@@ -75,57 +75,44 @@ body {
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
-    color: var(--text-primary);
+    color: black;
     font-weight: 500;
     font-size: 0.875rem;
     padding: 0.5rem 1rem;
     border-radius: var(--radius-md);
-    position: relative;
     transition: var(--transition);
     position: relative;
 }
 
-/* ===== ホバー時の青く光る＋上下に動くエフェクト ===== */
 .nav-link:hover {
     color: var(--primary-color);
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    background: var(--bg-tertiary);
+    transform: translateY(-1px);
 }
 
-/* 下にアンダーライン風の青い光を追加 */
-.nav-link::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0%;
-    height: 2px;
-    background: var(--primary-color);
-    transition: width 0.3s ease;
-    border-radius: 2px;
+.nav-link i {
+    font-size: 1rem;
 }
 
-.nav-link:hover::after {
-    width: 100%;
-}
 
 /* ===== FOOTER ===== */
 .footer {
-    background: #1e293b;
+    background: #1e293b; /* --bg-dark */
     color: var(--text-white);
     padding: 2rem 0;
     margin-top: 4rem;
     text-align: center;
 }
 
+
 /* ============================
-  アカウント登録・フォームページ共通
-============================ */
+  アカウント登録ページ用スタイル
+   ============================ */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 200px);
+  min-height: calc(100vh - 200px); /* ヘッダーとフッターの高さを考慮 */
   padding: 2rem;
 }
 
@@ -170,49 +157,27 @@ body {
   font-size: 1rem;
 }
 
-/* 横並びフィールド */
+/* ★★★横並びのための追加スタイル★★★ */
 .form-row {
     display: flex;
-    gap: 1rem;
-    align-items: center;
+    gap: 1rem; /* 要素間のスペース */
+    align-items: center; /* 垂直方向の中央揃え */
 }
 
 .form-group-half {
-    width: 50%;
+    width: 50%; /* 半分の幅を割り当て */
 }
 
 .tel-part {
-    flex: 1;
+    flex: 1; /* 残りのスペースを均等に分割 */
     text-align: center;
 }
-
 .form-row span {
     font-size: 1rem;
     color: #666;
 }
+/* ★★★ここまで★★★ */
 
-/* テキストエリア */
-.form-group textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-family: var(--font-family);
-  line-height: 1.6;
-  resize: vertical;
-  min-height: 120px;
-}
-
-/* input/textareaのフォーカス時 */
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-}
-
-/* ボタン */
 .product-btn {
     display: inline-flex;
     align-items: center;
@@ -232,4 +197,170 @@ body {
 
 .product-btn:hover {
     background: var(--primary-dark);
+}
+/*===== MODERN SECURITEA STYLES ===== */
+
+/* CSS Variables */
+:root {
+    --primary-color: #2563eb;
+    --primary-dark: #1d4ed8;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --text-primary: #1e293b;
+    --text-white: #ffffff;
+    --border-light: #f1f5f9;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --radius-md: 0.5rem;
+    --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+
+
+/* ===== FOOTER ===== */
+.footer {
+    background: #1e293b; /* --bg-dark */
+    color: var(--text-white);
+    padding: 2rem 0;
+    margin-top: 4rem;
+    text-align: center;
+}
+
+
+/* ============================
+  フォームページ共通スタイル
+ ============================ */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 150px); /* ヘッダーとフッターの高さを考慮 */
+  padding: 2rem;
+}
+
+.login-card {
+  background: var(--bg-primary);
+  padding: 2.5rem;
+  border-radius: 12px;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+}
+
+.login-form {
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* ★★★横並びのための追加スタイル★★★ */
+.form-row {
+    display: flex;
+    gap: 1rem; /* 要素間のスペース */
+    align-items: center; /* 垂直方向の中央揃え */
+}
+
+.form-group-half {
+    width: 50%; /* 半分の幅を割り当て */
+}
+
+.tel-part {
+    flex: 1; /* 残りのスペースを均等に分割 */
+    text-align: center;
+}
+.form-row span {
+    font-size: 1rem;
+    color: #666;
+}
+/* ★★★ここまで★★★ */
+
+.product-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    color: var(--text-white);
+    text-decoration: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition);
+    width: 100%;
+    margin-top: 1rem;
+    border: none;
+    cursor: pointer;
+}
+
+.product-btn:hover {
+    background: var(--primary-dark);
+}
+
+/* ============================
+   ★★★ここから下を追記★★★
+ ============================ */
+
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: var(--font-family); /* フォントを他の要素と統一 */
+  line-height: 1.6;
+  resize: vertical; /* 縦方向のリサイズのみ許可 */
+  min-height: 120px; /* テキストエリアの最小の高さ */
+}
+
+/* フォーカス時のスタイルをinputとtextareaに共通で適用 */
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
