@@ -95,7 +95,7 @@
             </div>
 
         <?php else: ?>
-            <h2>カートは空です</h2>
+            <br><h2>カートは空です。</h2>
             <p style="margin-top: 1rem; text-align: center;">プランを選択してください。</p>
             <div class="cart-actions">
                 <a href="product.php" class="product-btn secondary-btn">
