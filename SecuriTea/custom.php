@@ -83,7 +83,9 @@ $yearly_checked = ($existing_cycle === 'yearly') ? 'checked' : '';
                                                $checked_attr, // ★ 変更 (3/4): checked属性を追加
                                                " data-price-monthly='", $monthly_price, "'",
                                                " data-price-yearly='", $yearly_price, "'",
-                                               " data-label='", $name_escaped, "'>",
+                                               " data-label='", $name_escaped,"'",
+                                               " data-product-id='", $value["product_id"], "'",
+                                               ">",
                                         "<div class='tooltip-container'>",
                                             "<i class='fas fa-info-circle info-icon'></i>",
                                             "<span class='tooltip-text'>",$desc_escaped,"</span>",
@@ -172,18 +174,21 @@ $yearly_checked = ($existing_cycle === 'yearly') ? 'checked' : '';
 
             // 3. 合計金額の計算
             checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    totalCount++;
-                    const price = parseFloat(checkbox.getAttribute(priceAttribute)) || 0;
-                    totalPrice += price;
-                    
-                    // ★ 送信用データ配列に追加 (account_check.php が期待する形式)
-                    selectedOptionsData.push({
-                        label: checkbox.getAttribute("data-label") 
-                        // 他にIDなどが必要なら data- 属性をPHP側で埋め込み、ここで取得する
-                    });
-                }
+            if (checkbox.checked) {
+            totalCount++;
+            
+            // 個別の価格を取得
+            const individualPrice = parseFloat(checkbox.getAttribute(priceAttribute)) || 0;
+            totalPrice += individualPrice; 
+            
+            // ★ 送信用データ配列に追加 (account_check.php が期待する形式)
+            selectedOptionsData.push({
+                id: checkbox.getAttribute("data-product-id"), // ★ 取得する
+                label: checkbox.getAttribute("data-label"),
+                price: individualPrice // ★ 取得する
             });
+        }
+    });
 
             // 4. 合計・項目数の表示更新 (変更なし)
             if (totalCountEl) totalCountEl.textContent = totalCount;
