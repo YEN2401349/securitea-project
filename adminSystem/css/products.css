@@ -335,5 +335,6 @@ tr:nth-child(even) {
     .main-content {
         max-width: 1200px;
         margin: 0 auto;
+        margin-left: 20%;
     }
 }

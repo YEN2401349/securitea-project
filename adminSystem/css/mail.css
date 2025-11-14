@@ -9,6 +9,10 @@ body {
     height: 80vh;
 }
 
+.main-content {
+    margin-left: 20%;
+}
+
 .card {
     background: #fff;
     border-radius: 10px;

@@ -94,6 +94,7 @@ select {
 section {
     margin: auto;
     width: 1170px;
+    margin-left: 20%;
 }
 
 .table-wrapper {

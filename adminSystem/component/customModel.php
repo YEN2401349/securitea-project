@@ -36,15 +36,15 @@
                         </div>
                     </div>
                     <div style="flex:1 1 45%;">
-                        <label>アイキャッチ</label><br>
-                        <textarea name="custom_eye_catch" cols="70" rows="3" maxlength="255"></textarea>
+                        <label>eye_catch</label><br>
+                        <textarea name="custom_eye_catch" cols="70" rows="3"></textarea>
                     </div>
                     <div style="flex:1 1 45%;">
-                        <label>機能</label><br>
-                        <textarea name="custom_security_features" cols="70" rows="10" maxlength="255"></textarea>
+                        <label>security_features</label><br>
+                        <textarea name="custom_security_features" cols="70" rows="3"></textarea>
                     </div>
                     <div style="flex:1 1 45%;">
-                        <label>説明</label><br>
+                        <label>説明</label>
                         <textarea name="custom_description" cols="70" rows="10" required></textarea>
                     </div>
                 </div>
