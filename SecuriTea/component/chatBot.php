@@ -14,7 +14,7 @@
     <div class="chat-log" id="chat-log">
         <div class="message bot">
             <div class="message-content">
-                こんにちは！SecuriTeaのAIサポートです。防毒ソフトについて何かご質問がございましたら、お気軽にお聞きください。
+                こんにちは！SecuriTeaのAIサポートです。セキュリティーソフトについて何かご質問がございましたら、お気軽にお聞きください。
             </div>
             <div class="message-time">今</div>
         </div>

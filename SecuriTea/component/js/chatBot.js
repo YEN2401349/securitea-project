@@ -36,15 +36,7 @@ if (chatForm) {
 
         const message = chatInput.value.trim();
         if (!message) return;
-        const resUserMessage = "会社紹介：   Q&A:      ユーザーの質問：" + message + "。" + `提供された「会社紹介」と「Q&A（よくある質問とその回答）」の内容のみに基づいてユーザーの質問に回答してください。
-それ以外の質問にはすべて「申し訳ありませんが、該当する質問が見つかりませんでした」とお答えください。以下のルールを厳守してください。
-
-1. 提供された「会社紹介」と「Q&A」の内容のみに基づいて質問に回答してください。
-
-2. 質問がこれらの範囲に該当しない場合は、必ず「申し訳ありませんが、該当する質問が見つかりませんでした」だけを返答し、それ以外の言葉は一切返答しないでください。
-
-3. 回答は必ず簡潔かつ短くしてください。説明や余計な言葉を付け加えないでください。
-`;
+        
         // Add user message
         addMessage(message, 'user');
         chatInput.value = '';
@@ -52,7 +44,8 @@ if (chatForm) {
 
         //api call
         try {
-            const aiReply = await callGeminiAPI(resUserMessage);
+            // ここで渡すのを「resUserMessage」から「message」に変更します
+            const aiReply = await callGeminiAPI(message); 
             console.log(aiReply);
             addMessage(aiReply, 'bot');
         } catch (error) {
@@ -93,18 +86,12 @@ function getCurrentTime() {
 
 // Function to call Gemini API
 async function callGeminiAPI(message) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDYuVhc0z89JA4BYW9G8x6mvvT4NnqCboU`;
+    // Gemini APIのURLやキーは削除します
+    // 代わりに、サーバー上のPHPファイルへのパスを指定します
+    const url = 'component/api.php'; // 例: 同じ階層に api.php を作る場合
 
     const requestBody = {
-        contents: [
-            {
-                parts: [
-                    {
-                        text: message
-                    }
-                ]
-            }
-        ]
+        message: message // ユーザーの質問だけを送る
     };
 
     const response = await fetch(url, {
@@ -119,7 +106,13 @@ async function callGeminiAPI(message) {
     }
 
     const data = await response.json();
-    return data.candidates[0].content.parts[0].text;
+
+    // PHPから返ってきた 'reply' というキーのテキストを返す
+    if (data.reply) {
+        return data.reply;
+    } else {
+        throw new Error('APIからの応答が不正です。');
+    }
 }
 
 
