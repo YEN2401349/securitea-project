@@ -1,4 +1,13 @@
-/* cards */
+/* ================== Dashboard CSS ================== */
+
+/* Main Content */
+.main-content {
+    width: 80%;
+    padding: 2rem;
+    margin-left: 17%;
+}
+
+/* Cards layout */
 .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -26,30 +35,18 @@
     color: #0b3b6f;
 }
 
-.main-content {
-    width: 80%;
-    padding: 2rem;
-    margin-left: 20%;
-}
-
-.main-content h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-
+/* Flex helper */
 .flex {
     display: flex;
-    padding: auto;
 }
 
-
+/* Margin bottom helper */
 .mb-4 {
     margin-bottom: 1rem;
 }
 
-.yearSelect{
+/* Year select dropdown */
+.yearSelect {
     padding: 0.5rem 0.75rem;
     border: 1px solid #ccc;
     border-radius: 6px;
@@ -59,4 +56,14 @@
 .yearSelect:focus {
     outline: none;
     border-color: #3273dc;
+}
+
+@media (max-width: 900px) {
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 5%;
+    }
+
 }

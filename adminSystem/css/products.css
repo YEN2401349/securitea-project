@@ -1,11 +1,14 @@
-/* layout */
-.flex {
-    display: flex;
+/* ================== Users/Custom/Package Page CSS ================== */
+
+/* Layout */
+.main-content {
+    width: 80%;
+    padding: 2rem;
+    margin-left: 20%;
 }
 
-.main-content {
-    flex: 1;
-    padding: 1.5rem;
+.flex {
+    display: flex;
 }
 
 .items-center {
@@ -32,22 +35,6 @@
     gap: 1.5rem;
 }
 
-.min-h-screen {
-    min-height: 100vh;
-}
-
-.p-2 {
-    padding: 0.5rem;
-}
-
-.p-3 {
-    padding: 0.75rem;
-}
-
-.p-4 {
-    padding: 1rem;
-}
-
 .mt-4 {
     margin-top: 1rem;
 }
@@ -56,7 +43,7 @@
     margin-bottom: 1rem;
 }
 
-/* buttons and forms */
+/* Buttons and forms */
 button {
     cursor: pointer;
     border: none;
@@ -87,7 +74,7 @@ select {
     box-sizing: border-box;
 }
 
-/* table */
+/* Table */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -121,47 +108,32 @@ tr:nth-child(even) {
     overflow-x: auto;
 }
 
-.customEditBtn {
-    background-color: #3273dc;
-    color: #fff;
-}
-
-.customEditBtn:hover {
-    background-color: #3273dc;
-    color: #fff;
-}
-
-.customDeleteBtn {
-    background-color: #dc3545;
-    color: #fff;
-}
-
-.customDeleteBtn:hover {
-    background-color: #dc3545;
-    color: #fff;
-}
-
+/* Custom & Package Buttons */
+.customEditBtn,
 .packageEditBtn {
     background-color: #3273dc;
     color: #fff;
 }
 
+.customEditBtn:hover,
 .packageEditBtn:hover {
     background-color: #3273dc;
     color: #fff;
 }
 
+.customDeleteBtn,
 .packageDeleteBtn {
     background-color: #dc3545;
     color: #fff;
 }
 
+.customDeleteBtn:hover,
 .packageDeleteBtn:hover {
     background-color: #dc3545;
     color: #fff;
 }
 
-/* modal */
+/* Modal */
 .formContainer {
     display: flex;
     flex-wrap: wrap;
@@ -193,30 +165,6 @@ tr:nth-child(even) {
     max-width: 35rem;
     width: 100%;
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-}
-
-.main-content h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-.main-content h3 {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.text-sm {
-    font-size: 0.875rem;
-    color: #6b7280;
-}
-
-.text-lg {
-    font-size: 1.125rem;
-}
-
-.text-gray {
-    color: #6b7280;
 }
 
 #customTableWrapper,
@@ -263,20 +211,33 @@ tr:nth-child(even) {
     border-top: 1px solid #ddd;
 }
 
+/* Typography */
+.main-content h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
 
-@media (max-width: 640px) {
+.main-content h3 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
 
-    .main-header {
-        justify-content: space-between;
-        padding: 0.75rem 1rem;
-        flex-wrap: wrap;
-    }
+.text-sm {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
 
+.text-lg {
+    font-size: 1.125rem;
+}
 
-    .main-content {
-        padding: 1rem;
-    }
+.text-gray {
+    color: #6b7280;
+}
 
+/* Responsive */
+@media (max-width: 900px) {
     h1 {
         font-size: 1.25rem;
     }
@@ -308,15 +269,15 @@ tr:nth-child(even) {
         width: 90%;
         padding: 1rem;
     }
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 5%;
+    }
 }
 
-
 @media (max-width: 1024px) {
-
-    .main-header {
-        padding: 1rem;
-    }
-
     .main-content {
         padding: 1.25rem;
     }
@@ -327,14 +288,5 @@ tr:nth-child(even) {
 
     button {
         font-size: 0.9rem;
-    }
-}
-
-
-@media (min-width: 1025px) {
-    .main-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        margin-left: 20%;
     }
 }

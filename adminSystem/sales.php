@@ -1,7 +1,7 @@
 <?php include("component/header.php"); ?>
 <link rel="stylesheet" href="css/sales.css">
 <section class="section">
-    <div class="container my-container">
+    <div class="container">
         <h1 class="title">📊 売上照会</h1>
 
         <div class="box">

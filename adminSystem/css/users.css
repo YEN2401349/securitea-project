@@ -1,11 +1,15 @@
-/* layout */
-.flex {
-    display: flex;
-    padding: auto;
+/* ================== Users Page CSS ================== */
+
+/* Layout */
+.main-content {
+    width: 80%;
+    padding: 2rem;
+    margin-left: 16%;
 }
 
-.main-content {
-    flex: 1;
+
+.flex {
+    display: flex;
 }
 
 .items-center {
@@ -24,43 +28,15 @@
     gap: 0.75rem;
 }
 
-.gap-4 {
-    gap: 1rem;
-}
-
-.gap-6 {
-    gap: 1.5rem;
-}
-
-.min-h-screen {
-    min-height: 100vh;
-}
-
-.p-2 {
-    padding: 0.5rem;
-}
-
-.p-3 {
-    padding: 0.75rem;
-}
-
-.p-4 {
-    padding: 1rem;
-}
-
-.main-content {
-    padding: 1.5rem;
+.mb-4 {
+    margin-bottom: 1rem;
 }
 
 .mt-4 {
     margin-top: 1rem;
 }
 
-.mb-4 {
-    margin-bottom: 1rem;
-}
-
-/* buttons and forms */
+/* Buttons and inputs */
 button {
     cursor: pointer;
     border: none;
@@ -90,13 +66,7 @@ select {
     width: 100%;
 }
 
-/* table */
-section {
-    margin: auto;
-    width: 1170px;
-    margin-left: 20%;
-}
-
+/* Table */
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
@@ -133,10 +103,13 @@ tr:nth-child(even) {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+/* Scrollable table */
+#tableWrapper.scrollable {
+    max-height: 70%;
+    overflow-y: auto;
+}
 
-
-
-/* modal */
+/* Modal */
 #modal {
     position: fixed;
     inset: 0;
@@ -159,6 +132,7 @@ tr:nth-child(even) {
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Typography */
 .main-content h1 {
     font-size: 1.5rem;
     font-weight: 700;
@@ -175,21 +149,21 @@ tr:nth-child(even) {
     color: #6b7280;
 }
 
-.text-lg {
-    font-size: 1.125rem;
-}
-
 .text-gray {
     color: #6b7280;
 }
 
-#tableWrapper {
-    max-height: none;
-    overflow-y: visible;
+.text-lg {
+    font-size: 1.125rem;
 }
 
-#tableWrapper.scrollable {
-    max-height: 70%;
-    overflow-y: auto;
-}
 
+@media (max-width: 900px) {
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 5%;
+    }
+
+}

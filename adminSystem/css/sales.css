@@ -1,11 +1,11 @@
-/* Container */
-.my-container {
-    max-width: 1200px;
-    margin: 0 auto;
+/* ================== Sales Page CSS ================== */
+
+
+/* Main Content */
+.main-content {
+    width: 80%;
     padding: 2rem;
-}
-.section{
-    margin-left: 20%;
+    margin-left: 17%;
 }
 
 /* Title */
@@ -135,4 +135,15 @@ label {
     text-align: right;
     margin-top: 1rem;
     font-weight: 600;
+}
+
+
+@media (max-width: 900px) {
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 5%;
+    }
+
 }
