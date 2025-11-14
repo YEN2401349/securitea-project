@@ -791,7 +791,7 @@ a:focus {
     left: 0;
     right: 0;
     
-    background: #e3e3e3; /* (1) 背景を白に設定 */
+    background: #ffffff; /* (1) 背景を白に設定 */
     border: 1px solid #000000; /* (2) 枠線を黒 (1pxの実線) に設定 */ /* ★コメントを閉じ、border指定をこちらに統一 */
     
     border-radius: var(--radius-md);
