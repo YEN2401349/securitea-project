@@ -281,3 +281,49 @@ body {
     color: var(--text-light);
     font-size: 0.875rem;
 }
+/* --- 電話番号3分割フォーム (追記) --- */
+.phone-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* フォームとハイフンの間の隙間 */
+}
+
+.phone-inputs input[type="tel"] {
+  /* 3つのフォームの幅を比率で調整 */
+  text-align: center;
+}
+
+/* 幅の比率 (例: 3:4:4) */
+.phone-inputs input#phone1 {
+  flex: 3;
+}
+.phone-inputs input#phone2 {
+  flex: 4;
+}
+.phone-inputs input#phone3 {
+  flex: 4;
+}
+
+.phone-inputs span {
+  font-size: 1rem;
+  color: #5f6368;
+}
+
+/* --- エラーメッセージ用のスタイル (追記) --- */
+.error-box {
+  background-color: #fce8e6;
+  border: 1px solid #ea4335;
+  color: #c5221f;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.error-box strong {
+  display: block;
+  font-weight: 700;
+}
+
+.error-box p {
+  margin: 0.5rem 0 0 0;
+}
