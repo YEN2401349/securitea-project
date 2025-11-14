@@ -17,40 +17,6 @@ if (!isset($_SESSION['customer']['user_id'])) {
   <link rel="stylesheet" href="css/login-style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    .containerA {
-      text-align: center;
-      margin: 100px auto;
-      max-width: 600px;
-      padding: 40px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    .containerA h1 {
-      color: #007bff;
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-    .containerA p {
-      color: #333;
-      line-height: 1.8;
-      margin-bottom: 2rem;
-    }
-    .containerA a {
-      display: inline-block;
-      background-color: #007bff;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: 0.2s;
-    }
-    .containerA a:hover {
-      background-color: #0056b3;
-      transform: translateY(-2px);
-    }
-  </style>
 </head>
 <body>
   <?php require "headerTag.php"; ?>

@@ -62,8 +62,6 @@ if (isset($_POST['email'])) {
   </main>
 
   <!-- フッター -->
-  <footer class="footer">
-    <p>&copy; 2025 SecuriTea. All rights reserved.</p>
-  </footer>
+  <?php require "footer.php"; ?>
 </body>
 </html>
