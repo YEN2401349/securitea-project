@@ -116,7 +116,7 @@ try {
           <div class="info-value"><?= htmlspecialchars($user['phone'] ?? '未登録') ?></div>
         </div>
 
-        <form action="edit_account.php">
+        <form action="edit_account.php" method="POST">
           <div class="card-actions">
             <button class="btn btn-primary">情報の修正</button>
           </div>
