@@ -32,9 +32,6 @@
                         <div class="search-bar">
                             <i class="fas fa-search search-icon"></i>
                             <input type="text" placeholder="特徴でセキュリティソフトを探す" class="search-input" id="live-search-input" autocomplete="off">
-                            <button class="search-btn" id="live-search-button">
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
                         </div>
                         <div class="suggestions-container" id="suggestions-container">
                         </div>
@@ -166,15 +163,6 @@ document.addEventListener("DOMContentLoaded", function() {
     function escapeRegExp(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
-
-    // 検索ボタンは、product.php の検索結果ページに飛ばす（今回は未実装）
-    document.getElementById("live-search-button").addEventListener("click", function() {
-        const term = searchInput.value.trim();
-        if (term.length > 0) {
-            // 本来は product.php?search=... などに遷移する
-            alert("検索機能（サジェスト）が実行されました。");
-        }
-    });
 });
 </script>
 </body>
