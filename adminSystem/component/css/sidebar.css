@@ -179,7 +179,7 @@ nav a:hover {
     }
 
     .sidebar {
-        position: static;
+        position: fixed;
         /* Fixed not needed */
         transform: none;
         width: 270px;

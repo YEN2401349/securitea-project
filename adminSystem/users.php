@@ -3,7 +3,7 @@
 
 
 
-    <section>
+    <section class="section">
         <header class="flex items-center justify-between mb-4">
             <h1>利用者確認</h1>
             <div class="flex items-center gap-3">
