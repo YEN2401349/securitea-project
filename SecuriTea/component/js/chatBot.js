@@ -6,6 +6,34 @@ const chatForm = document.getElementById('chat-form');
 const chatInput = document.querySelector('.chat-input');
 const chatLog = document.getElementById('chat-log');
 
+
+async function fetchProducts() {
+    try {
+        const res = await fetch('./component/api/get_products.php'); // wait for fetch
+        const json = await res.json(); // wait for JSON parsing
+
+        if (!json.success) throw new Error(json.error);
+
+        const product_items = json.data.map(p => ({
+            id: p.product_id,
+            name: p.name,
+            price: p.price,
+            plan_type: p.plan_type,
+            security_features: p.security_features,
+            eye_catch: p.eye_catch,
+            duration_months: p.duration_months,
+            description: p.description,
+            category_name: p.category_name
+        }));
+        console.log(product_items);
+        localStorage.setItem('products', JSON.stringify(product_items));
+    } catch (err) {
+        console.error('Failed to fetch custom data:', err);
+    }
+}
+
+
+
 // Toggle chat visibility
 if (chatToggleBtn && chatContainer) {
     chatToggleBtn.addEventListener('click', function () {
@@ -31,25 +59,60 @@ if (chatInput) {
 
 // Chat form submission
 if (chatForm) {
+    const product_items = JSON.parse(localStorage.getItem('products') || '[]');
+
     chatForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
         const message = chatInput.value.trim();
         if (!message) return;
-        
-        // Add user message
+
         addMessage(message, 'user');
         chatInput.value = '';
         chatInput.style.height = 'auto';
 
-        //api call
+
+        const productInfoText = product_items.map(p => {
+            return `商品名: ${p.name}, 価格: ${p.price}円, プランタイプ: ${p.plan_type}, 期間: ${p.duration_months}ヶ月, 特徴: ${p.security_features}, カテゴリ: ${p.category_name}`;
+        }).join('\n');
+        console.log(productInfoText);
+        const prompt = `
+会社紹介：
+
+\n
+
+Q&A（よくある質問とその回答）：
+
+\n
+
+
+製品情報：${productInfoText}\n
+提供された「会社紹介」と「Q&A」と　「製品情報」（よくある質問とその回答）」の内容のみに基づいてユーザーの質問に回答してください。
+それ以外の質問にはすべて「申し訳ありませんが、該当する質問が見つかりませんでした」とお答えください。以下のルールを厳守してください。
+
+ユーザーの質問: "${message}"
+【回答形式ルール】
+1. 提供された「会社紹介」と「Q&A」と　「製品情報」の内容のみに基づいて質問に回答してください。
+
+2. 質問がこれらの範囲に該当しない場合は、必ず「申し訳ありませんが、該当する質問が見つかりませんでした」だけを返答し、それ以外の言葉は一切返答しないでください。
+
+3. 回答は必ず簡潔かつ短くしてください。説明や余計な言葉を付け加えないでください。
+
+4. 回答は必ず日本語で回答してください。
+
+5. 必要に応じて、項目ごとに改行または箇条書きで整理してください。
+
+6. 必ず Markdown 形式で回答してください
+
+7.「ユーザーの質問」を繰り返さず、質問に対する答えだけを返してください。
+
+`;
+
         try {
-            // ここで渡すのを「resUserMessage」から「message」に変更します
-            const aiReply = await callGeminiAPI(message); 
-            console.log(aiReply);
+            const aiReply = await callGeminiAPI(prompt);
             addMessage(aiReply, 'bot');
         } catch (error) {
-            addMessage( `⚠️ ${error.message}` , 'bot');
+            addMessage(`⚠️ ${error.message}`, 'bot');
         }
     });
 }
@@ -62,7 +125,7 @@ function addMessage(content, sender) {
 
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
-    contentDiv.textContent = content;
+    contentDiv.innerHTML = marked.parse(content);
 
     const timeDiv = document.createElement('div');
     timeDiv.className = 'message-time';
@@ -75,6 +138,8 @@ function addMessage(content, sender) {
     chatLog.scrollTop = chatLog.scrollHeight;
 }
 
+
+
 // Function to get current time
 function getCurrentTime() {
     const now = new Date();
@@ -86,12 +151,18 @@ function getCurrentTime() {
 
 // Function to call Gemini API
 async function callGeminiAPI(message) {
-    // Gemini APIのURLやキーは削除します
-    // 代わりに、サーバー上のPHPファイルへのパスを指定します
-    const url = 'component/api.php'; // 例: 同じ階層に api.php を作る場合
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDYuVhc0z89JA4BYW9G8x6mvvT4NnqCboU`;
 
     const requestBody = {
-        message: message // ユーザーの質問だけを送る
+        contents: [
+            {
+                parts: [
+                    {
+                        text: message
+                    }
+                ]
+            }
+        ]
     };
 
     const response = await fetch(url, {
@@ -106,13 +177,7 @@ async function callGeminiAPI(message) {
     }
 
     const data = await response.json();
-
-    // PHPから返ってきた 'reply' というキーのテキストを返す
-    if (data.reply) {
-        return data.reply;
-    } else {
-        throw new Error('APIからの応答が不正です。');
-    }
+    return data.candidates[0].content.parts[0].text;
 }
 
 
@@ -128,3 +193,5 @@ document.addEventListener('keydown', function (e) {
         chatForm.dispatchEvent(new Event('submit'));
     }
 });
+// Call the function
+fetchProducts();
