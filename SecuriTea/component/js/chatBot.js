@@ -9,8 +9,8 @@ const chatLog = document.getElementById('chat-log');
 
 async function fetchProducts() {
     try {
-        const res = await fetch('./component/api/get_products.php'); // wait for fetch
-        const json = await res.json(); // wait for JSON parsing
+        const res = await fetch('./component/api/get_products.php');
+        const json = await res.json();
 
         if (!json.success) throw new Error(json.error);
 
@@ -25,9 +25,12 @@ async function fetchProducts() {
             description: p.description,
             category_name: p.category_name
         }));
+
         localStorage.setItem('products', JSON.stringify(product_items));
+        return product_items;
     } catch (err) {
         console.error('Failed to fetch custom data:', err);
+        return [];
     }
 }
 
@@ -74,6 +77,7 @@ if (chatForm) {
         const productInfoText = product_items.map(p => {
             return `商品名: ${p.name}, 価格: ${p.price}円, プランタイプ: ${p.plan_type}, 期間: ${p.duration_months}ヶ月, 特徴: ${p.security_features}, カテゴリ: ${p.category_name}`;
         }).join('\n');
+        console.log(productInfoText);
         const prompt = `
 会社紹介：
 
@@ -87,13 +91,9 @@ Q&A（よくある質問とその回答）：
 製品情報：${productInfoText}\n
 
 【回答形式ルール】
-1. 提供された「会社紹介」と「Q&A」と「製品情報」の内容に基づいて質問に回答してください。
-2. 質問がこれらの範囲に該当しない場合でも、提供された情報から合理的に推測して回答して構いません。
-3. 回答は簡潔かつ短くしてください。
-4. 回答は日本語で行ってください。
-5. 回答は必ず Markdown 形式で、製品ごとに箇条書きで表示してください。
-6. 商品を「初心者向け」「上級者向け」など、簡単なラベルを付けて推薦してください。
-7. 「ユーザーの質問」を繰り返さず、質問に対する答えだけを返してください。
+1. 提供された会社紹介、Q&A、製品情報に基づいて質問に回答してください。範囲外でも合理的に推測して構いません。
+2. 回答は簡潔に、日本語で、Markdown形式で作成してください。
+4. ユーザーの質問内容を繰り返さないでください。
 ユーザーの質問: "${message}"
 `;
 
@@ -115,9 +115,8 @@ function addMessage(content, sender) {
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
 
-
-    let html = formatAIContentToHTML(content);
-
+    let html = marked.parse(content);
+    html = formatAIContentToHTML(html);
     contentDiv.innerHTML = marked.parse(html);
 
     const timeDiv = document.createElement('div');
@@ -137,12 +136,13 @@ function formatAIContentToHTML(content) {
         if (line.startsWith('* ')) {
             const parts = line.slice(2).split(',').map(p => p.trim());
             const name = parts.shift();
-            const sublist = parts.map(p => `<li>${p}</li>`).join('\n');
-            return `<ul class="product-list"><li>${name}<ul style=" padding-left: 20px;;">${sublist}</ul></li></ul>`;
+            const sublist = parts.map(p => `<li>${p}</li>`).join('');
+            return `<ul class="product-list"><li>${name}<ul style="padding-left: 20px;">${sublist}</ul></li></ul>`;
         }
         return line;
     }).join('\n');
 }
+
 
 
 
