@@ -1,4 +1,6 @@
-/* ===== MODERN SECURITEA STYLES (抜粋) ===== */
+/* ========================================
+   top-style.css (省略版)
+   ======================================== */
 
 /* CSS Variables for consistent theming */
 :root {
@@ -65,63 +67,7 @@ body {
     padding: 0 1.5rem;
 }
 
-/* ===== HEADER ===== */
-.header {
-    background: var(--bg-primary); /* var(--bg-white)から修正 */
-    box-shadow: var(--shadow-sm);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-light);
-}
-
-.header .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.5rem;
-}
-
-.logo img {
-    height: 3rem;
-    width: auto;
-    transition: var(--transition);
-}
-
-.logo img:hover {
-    transform: scale(1.05);
-}
-
-.nav-list {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    color: black;
-    font-weight: 500;
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    transition: var(--transition);
-    position: relative;
-}
-
-.nav-link:hover {
-    color: var(--primary-color);
-    background: var(--bg-tertiary);
-    transform: translateY(-1px);
-}
-
-.nav-link i {
-    font-size: 1rem;
-}
+/* ===== (HEADER は heder-footer.css に移行) ===== */
 
 /* ===== MAIN CONTENT ===== */
 .main {
@@ -234,22 +180,7 @@ body {
     color: var(--text-light);
 }
 
-.search-btn {
-    background: var(--primary-color);
-    color: var(--text-white);
-    border: none;
-    padding: 1.25rem 1.5rem;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.search-btn:hover {
-    background: var(--primary-dark);
-    transform: scale(1.05);
-}
+/* .search-btn (ボタン) は top.php で使用されていないため削除 */
 
 /* ===== PRODUCTS SECTION ===== */
 .products {
@@ -322,23 +253,7 @@ body {
     transform: scale(1.1);
 }
 
-.product-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: var(--success-color);
-    color: var(--text-white);
-    padding: 0.25rem 0.75rem;
-    border-radius: var(--radius-md);
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.product-badge.new {
-    background: var(--accent-color);
-}
+/* .product-badge (バッジ) は top.php で使用されていないため削除 */
 
 .product-content {
     padding: 2rem;
@@ -413,45 +328,12 @@ body {
 .product-btn:hover i {
     transform: translateX(4px);
 }
-/* ===== FOOTER ===== */
-.footer {
-    background: var(--bg-dark);
-    color: var(--text-white);
-    padding: 3rem 0 2rem;
-    margin-top: 4rem;
-}
 
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 2rem;
-}
+/* ===== (FOOTER は heder-footer.css に移行) ===== */
 
-.footer-links {
-    display: flex;
-    gap: 2rem;
-}
-
-.footer-link {
-    color: var(--text-light);
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: var(--transition);
-}
-
-.footer-link:hover {
-    color: var(--text-white);
-    transform: translateY(-1px);
-}
-
-.footer-copyright p {
-    color: var(--text-light);
-    font-size: 0.875rem;
-}
 
 /* ===== AI CHAT INTERFACE ===== */
+/* (chatBot.php で読み込まれるため残します) */
 .chat-toggle-btn {
     position: fixed;
     bottom: 2rem;
@@ -654,21 +536,7 @@ body {
         padding: 0 1rem;
     }
     
-    .header .container {
-        padding: 1rem;
-    }
-    
-    .nav-list {
-        gap: 1rem;
-    }
-    
-    .nav-link {
-        padding: 0.5rem;
-    }
-    
-    .nav-link span { /* テキスト部分を非表示にする場合はクラス名を指定する必要がある */
-        display: none;
-    }
+    /* (ヘッダー/フッター関連のレスポンシブ指定は heder-footer.css に移行) */
     
     .hero {
         padding: 3rem 0 4rem;
@@ -680,14 +548,6 @@ body {
     
     .hero-description {
         font-size: 1.125rem;
-    }
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .footer-links {
-        justify-content: center;
     }
     
     .chat-container {
@@ -774,9 +634,7 @@ a:focus {
     }
 }
 /* --- サジェスト検索用のスタイル --- */
-
-/* 検索コンテナを相対位置の基準にする */
-/* --- サジェスト検索用のスタイル --- */
+/* (top.php の JavaScript で使用されるため残します) */
 
 /* 検索コンテナを相対位置の基準にする */
 .search-container {
@@ -837,4 +695,4 @@ a:focus {
 }
 
 /* ★余分な閉じカッコとコメントを削除 */
-
+/* (元のファイルの末尾にあった余分な } は削除しました) */
