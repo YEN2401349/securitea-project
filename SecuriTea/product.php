@@ -33,10 +33,6 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
                             <i class="fas fa-search search-icon"></i>
                             
                             <input type="text" placeholder="特徴でセキュリティソフトを探す" class="search-input" id="live-search-input" autocomplete="off" value="<?php echo $search_term; ?>">
-                            
-                            <button class="search-btn" id="live-search-button">
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
                         </div>
                         
                         <div class="suggestions-container" id="suggestions-container"></div>
