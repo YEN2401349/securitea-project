@@ -117,8 +117,8 @@
             </div>
     </main>
     
-    <?php require "footer.php"; // footer.php があれば読み込みます ?>
-    <?php include 'component/chatBot.php'; // chatBot.php があれば読み込みます ?>
+    <?php require "footer.php";?>
+    <?php include 'component/chatBot.php';?>
 
 </body>
 </html>

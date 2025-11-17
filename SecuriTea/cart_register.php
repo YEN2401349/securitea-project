@@ -82,15 +82,6 @@ try {
     exit;
 }
 
-// (I) セッションクリア
-unset($_SESSION['custom_options']);
-unset($_SESSION['custom_total_price']);
-unset($_SESSION['custom_billing_cycle']);
-unset($_SESSION['custom_term_start']);
-unset($_SESSION['custom_term_end']);
-unset($_SESSION['package_plan']);
-
-// (J) 完了ページへ
 header('Location: cart.php');
 exit;
 ?>
