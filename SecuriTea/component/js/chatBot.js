@@ -123,7 +123,15 @@ function addMessage(content, sender) {
 
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
-    contentDiv.innerHTML = marked.parse(content);
+
+    
+    let html = content;
+    if (!content.includes('- ') && !content.includes('\n')) {
+        html = content.split(',').map(item => item.trim()).join('<br>');
+    }
+
+    
+    contentDiv.innerHTML = marked.parse(html);
 
     const timeDiv = document.createElement('div');
     timeDiv.className = 'message-time';
