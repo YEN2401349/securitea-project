@@ -25,7 +25,6 @@ async function fetchProducts() {
             description: p.description,
             category_name: p.category_name
         }));
-        console.log(product_items);
         localStorage.setItem('products', JSON.stringify(product_items));
     } catch (err) {
         console.error('Failed to fetch custom data:', err);
@@ -75,7 +74,6 @@ if (chatForm) {
         const productInfoText = product_items.map(p => {
             return `商品名: ${p.name}, 価格: ${p.price}円, プランタイプ: ${p.plan_type}, 期間: ${p.duration_months}ヶ月, 特徴: ${p.security_features}, カテゴリ: ${p.category_name}`;
         }).join('\n');
-        console.log(productInfoText);
         const prompt = `
 会社紹介：
 
@@ -124,13 +122,9 @@ function addMessage(content, sender) {
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
 
-    
-    let html = content;
-    if (!content.includes('- ') && !content.includes('\n')) {
-        html = content.split(',').map(item => item.trim()).join('<br>');
-    }
 
-    
+    let html = formatAIContent(content);
+
     contentDiv.innerHTML = marked.parse(html);
 
     const timeDiv = document.createElement('div');
@@ -144,6 +138,19 @@ function addMessage(content, sender) {
     chatLog.scrollTop = chatLog.scrollHeight;
 }
 
+
+function formatAIContent(content) {
+
+    return content.split('\n').map(line => {
+        if (line.startsWith('* ')) {
+            const parts = line.slice(2).split(',').map(p => p.trim());
+            const name = parts.shift();
+            const sublist = parts.map(p => `  - ${p}`).join('\n');
+            return `* ${name}\n${sublist}`;
+        }
+        return line;
+    }).join('\n');
+}
 
 
 // Function to get current time
