@@ -18,7 +18,7 @@
 <body>
     <div class="payment-container">
         <h2>お支払いが完了しました</h2>
-        <p>カスタムプランのご契約ありがとうございます。<br>サービスをご利用いただけます。</p>
+        <p>ご契約ありがとうございます。<br>サービスをご利用いただけます。</p>
         <div class="form-actions">
             <a href="account.php" class="submit-btn" style="text-align: center; text-decoration: none;">マイページへ</a>
             
