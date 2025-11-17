@@ -85,23 +85,16 @@ Q&A（よくある質問とその回答）：
 
 
 製品情報：${productInfoText}\n
-提供された「会社紹介」と「Q&A」と　「製品情報」（よくある質問とその回答）」の内容のみに基づいてユーザーの質問に回答してください。
-それ以外の質問にはすべて「申し訳ありませんが、該当する質問が見つかりませんでした」とお答えください。以下のルールを厳守してください。
 
-ユーザーの質問: "${message}"
 【回答形式ルール】
-1. 提供された「会社紹介」と「Q&A」と　「製品情報」の内容のみに基づいて質問に回答してください。
-
-2. 質問がこれらの範囲に該当しない場合は、必ず「申し訳ありませんが、該当する質問が見つかりませんでした」だけを返答し、それ以外の言葉は一切返答しないでください。
-
-3. 回答は必ず簡潔かつ短くしてください。説明や余計な言葉を付け加えないでください。
-
-4. 回答は必ず日本語で回答してください。
-
+1. 提供された「会社紹介」と「Q&A」と「製品情報」の内容に基づいて質問に回答してください。
+2. 質問がこれらの範囲に該当しない場合でも、提供された情報から合理的に推測して回答して構いません。
+3. 回答は簡潔かつ短くしてください。
+4. 回答は日本語で行ってください。
 5. 回答は必ず Markdown 形式で、製品ごとに箇条書きで表示してください。
-
-6.「ユーザーの質問」を繰り返さず、質問に対する答えだけを返してください。
-
+6. 商品を「初心者向け」「上級者向け」など、簡単なラベルを付けて推薦してください。
+7. 「ユーザーの質問」を繰り返さず、質問に対する答えだけを返してください。
+ユーザーの質問: "${message}"
 `;
 
         try {
@@ -123,7 +116,7 @@ function addMessage(content, sender) {
     contentDiv.className = 'message-content';
 
 
-    let html = formatAIContent(content);
+    let html = formatAIContentToHTML(content);
 
     contentDiv.innerHTML = marked.parse(html);
 
@@ -139,18 +132,18 @@ function addMessage(content, sender) {
 }
 
 
-function formatAIContent(content) {
-
+function formatAIContentToHTML(content) {
     return content.split('\n').map(line => {
         if (line.startsWith('* ')) {
             const parts = line.slice(2).split(',').map(p => p.trim());
             const name = parts.shift();
-            const sublist = parts.map(p => `  - ${p}`).join('\n');
-            return `* ${name}\n${sublist}`;
+            const sublist = parts.map(p => `<li>${p}</li>`).join('\n');
+            return `<ul class="product-list"><li>${name}<ul style=" padding-left: 20px;;">${sublist}</ul></li></ul>`;
         }
         return line;
     }).join('\n');
 }
+
 
 
 // Function to get current time
