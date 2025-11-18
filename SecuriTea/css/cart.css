@@ -52,6 +52,9 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Container (style923.css より) */
@@ -118,10 +121,8 @@ body {
     font-size: 1rem;
 }
 
-body {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+.main {
+    flex: 1;
 }
 
 /* ===== BUTTONS (style923.css より .product-btn を流用) ===== */
