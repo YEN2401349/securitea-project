@@ -63,7 +63,7 @@ body {
 
 /* ===== HEADER (style923.css より) ===== */
 .header {
-    background: var(--bg-white);
+    background: #ffffff;
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
@@ -195,7 +195,6 @@ body {
 /* 上部固定の選択オプション表示エリア */
 #selected-options {
     position: relative;
-    top: 70px; /* ヘッダーの高さに合わせる */
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
