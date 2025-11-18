@@ -198,6 +198,7 @@ body {
 #selected-options {
     position: relative;
     top: 70px; /* ヘッダーの高さに合わせる */
+    bottom: 70px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
