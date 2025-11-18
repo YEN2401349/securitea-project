@@ -77,7 +77,6 @@ if (chatForm) {
         const productInfoText = product_items.map(p => {
             return `商品名: ${p.name}, 価格: ${p.price}円, プランタイプ: ${p.plan_type}, 期間: ${p.duration_months}ヶ月, 特徴: ${p.security_features}, カテゴリ: ${p.category_name}`;
         }).join('\n');
-        console.log(productInfoText);
         const prompt = `
 会社紹介：
 
@@ -98,7 +97,9 @@ Q&A（よくある質問とその回答）：
 `;
 
         try {
+            showTyping();
             const aiReply = await callGeminiAPI(prompt);
+            hideTyping();
             addMessage(aiReply, 'bot');
         } catch (error) {
             addMessage(`⚠️ ${error.message}`, 'bot');
@@ -128,6 +129,26 @@ function addMessage(content, sender) {
 
     chatLog.appendChild(messageDiv);
     chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+//add typing animetion
+function showTyping() {
+    const typing = document.createElement('div');
+    typing.id = "typingIndicator";
+    typing.className = "message bot typing";
+    typing.innerHTML = `
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    `;
+    chatLog.appendChild(typing);
+    chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+//remove typing animetion
+function hideTyping() {
+    const typing = document.getElementById("typingIndicator");
+    if (typing) typing.remove();
 }
 
 
