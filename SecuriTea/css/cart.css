@@ -123,6 +123,8 @@ body {
 
 .main {
     flex: 1;
+    padding-top: 120px;
+    padding-bottom: 120px; 
 }
 
 /* ===== BUTTONS (style923.css より .product-btn を流用) ===== */
@@ -198,7 +200,6 @@ body {
 #selected-options {
     position: relative;
     top: 70px; /* ヘッダーの高さに合わせる */
-    bottom: 500px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
