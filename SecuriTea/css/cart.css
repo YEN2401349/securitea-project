@@ -194,7 +194,7 @@ body {
 
 /* 上部固定の選択オプション表示エリア */
 #selected-options {
-    position: fixed;
+    position: relative;
     top: 70px; /* ヘッダーの高さに合わせる */
     left: 50%;
     transform: translateX(-50%);
