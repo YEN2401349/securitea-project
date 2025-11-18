@@ -1,6 +1,6 @@
 /* ========================================
    heder-footer.css
-   (top-style.css から抽出)
+   (文字黒・ロゴ拡大版)
    ======================================== */
 
 /* CSS Variables for consistent theming */
@@ -8,8 +8,8 @@
     --primary-color: #2563eb;
     --primary-dark: #1d4ed8;
     --secondary-color: #64748b;
-    --accent-color: #06b6d4;
-    --success-color: #10b981;
+    --accent-color: #1E90FF;
+    --success-color: #32cd32;
     --warning-color: #f59e0b;
     --error-color: #ef4444;
     
@@ -70,7 +70,8 @@ body {
 
 /* ===== HEADER ===== */
 .header {
-    background: var(--bg-primary);
+    background: var(--accent-color); /* ヘッダー帯全体：水色 */
+    
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
@@ -87,6 +88,7 @@ body {
 }
 
 .logo img {
+    /* ===== 変更箇所: ロゴサイズを大きく変更 (3rem -> 6rem) ===== */
     height: 3rem;
     width: auto;
     transition: var(--transition);
@@ -107,7 +109,10 @@ body {
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
-    color: black; /* 元のCSSで var(--text-primary) ではなく black になっていたため維持 */
+    
+    /* ===== 変更箇所: 文字色を黒に変更 ===== */
+    color: black;
+    
     font-weight: 500;
     font-size: 0.875rem;
     padding: 0.5rem 1rem;
@@ -117,8 +122,10 @@ body {
 }
 
 .nav-link:hover {
-    color: var(--primary-color);
-    background: var(--bg-tertiary);
+    /* ホバー時は背景を緑色に変更 (文字は白のまま視認性確保) */
+    background: var(--success-color);
+    color: var(--text-white);
+    
     transform: translateY(-1px);
 }
 
@@ -131,7 +138,7 @@ body {
     background: var(--bg-dark);
     color: var(--text-white);
     padding: 3rem 0 2rem;
-    margin-top: 4rem; /* top-style.css では .products の後に配置されていたため、必要に応じて調整してください */
+    margin-top: 4rem;
 }
 
 .footer-content {
@@ -182,10 +189,6 @@ body {
         padding: 0.5rem;
     }
     
-    /* 注意: headerTag.php のナビゲーションテキストは <span> で囲まれていません。
-       もしテキストも非表示にしたい場合は、PHP側で <span class="nav-text"> のように囲み、
-       セレクタを .nav-link .nav-text に変更する必要があります。
-    */
     .nav-link span {
         display: none;
     }
