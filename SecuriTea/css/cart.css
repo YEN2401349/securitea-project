@@ -118,9 +118,10 @@ body {
     font-size: 1rem;
 }
 
-/* ===== MAIN CONTENT (style923.css より) ===== */
-.main {
-    min-height: calc(100vh - 200px); /* フッターとヘッダーの高さを考慮した最小の高さ */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ===== BUTTONS (style923.css より .product-btn を流用) ===== */
@@ -195,6 +196,7 @@ body {
 /* 上部固定の選択オプション表示エリア */
 #selected-options {
     position: relative;
+    top: 70px; /* ヘッダーの高さに合わせる */
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
