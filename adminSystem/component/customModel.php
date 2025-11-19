@@ -44,7 +44,7 @@
                         <textarea name="custom_security_features" cols="70" rows="3"></textarea>
                     </div>
                     <div style="flex:1 1 45%;">
-                        <label>説明</label>
+                        <label>説明</label><br>
                         <textarea name="custom_description" cols="70" rows="10" required></textarea>
                     </div>
                 </div>

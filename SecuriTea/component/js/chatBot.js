@@ -61,10 +61,10 @@ if (chatInput) {
 
 // Chat form submission
 if (chatForm) {
-    const product_items = JSON.parse(localStorage.getItem('products') || '[]');
-
     chatForm.addEventListener('submit', async function (e) {
         e.preventDefault();
+
+        const product_items = JSON.parse(localStorage.getItem('products') || '[]');
 
         const message = chatInput.value.trim();
         if (!message) return;
