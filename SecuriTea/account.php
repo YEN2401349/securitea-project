@@ -123,7 +123,7 @@ try {
         </form>
 
         <h2>利用状況</h2>
-        <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
+        <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
           <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
           ーー月ーー日までご利用いただけます。</h2>
           <!-- 上のところは後々編集する -->
