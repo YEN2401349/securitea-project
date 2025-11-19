@@ -72,6 +72,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $product_name; ?> - SecuriTea</title>
     <link rel="stylesheet" href="css/pack.css">
+    <link rel="stylesheet" href="css/heder-footer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 

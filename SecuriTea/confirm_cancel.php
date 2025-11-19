@@ -15,6 +15,7 @@ if (!isset($_SESSION['customer']['user_id'])) {
   <meta charset="UTF-8">
   <title>契約解除の確認</title>
   <link rel="stylesheet" href="css/account.css">
+  <link rel="stylesheet" href="css/heder-footer.css">
 </head>
 <body>
   <div class="container">
