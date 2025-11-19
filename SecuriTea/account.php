@@ -130,7 +130,15 @@ try {
           <?php endif; ?>
         <div class="info-row">
           <div class="info-label">利用プラン</div>
-          <div class="info-value"><?= htmlspecialchars($product['name'] ?? '未登録') ?></div>
+          <div class="info-value">
+            <?php
+              if (!empty($subscription) && !empty($product['name'])) {
+                  echo htmlspecialchars($product['name']);
+              } else {
+                echo '未登録';
+              }
+            ?>
+          </div>
         </div>
         <div class="info-row">
           <div class="info-label">料金</div>
