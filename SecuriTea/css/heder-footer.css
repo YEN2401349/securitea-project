@@ -69,65 +69,25 @@ body {
 }
 
 /* ===== HEADER ===== */
-.hero {
-    text-align: center;
-    padding: 4rem 0 6rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: var(--text-white);
-    position: relative;
-}
-
-.hero::before {
-    content: "";
-    position: absolute;
+.header {
+    background: var(--bg-primary); /* 白背景 */
+    box-shadow: var(--shadow-sm);
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-    animation: float 20s ease-in-out infinite;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-light);
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-}
-
-.hero-title {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    position: relative;
-    z-index: 2;
-}
-
-.hero-title-main {
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-.hero-title-sub {
-    display: block;
-    background: linear-gradient(45deg, #fbbf24, #f59e0b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.hero-description {
-    font-size: 1.25rem;
-    margin-bottom: 3rem;
-    opacity: 0.9;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-    z-index: 2;
+.header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
 }
 
 .logo img {
-    /* ===== 変更箇所: ロゴサイズを大きく変更 (3rem -> 6rem) ===== */
-    height: 3rem;
+    height: 3rem; /* ロゴ大きめ */
     width: auto;
     transition: var(--transition);
 }
@@ -147,10 +107,7 @@ body {
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
-    
-    /* ===== 変更箇所: 文字色を黒に変更 ===== */
-    color: black;
-    
+    color: black; /* 黒文字 */
     font-weight: 500;
     font-size: 0.875rem;
     padding: 0.5rem 1rem;
@@ -160,10 +117,8 @@ body {
 }
 
 .nav-link:hover {
-    /* ホバー時は背景を緑色に変更 (文字は白のまま視認性確保) */
-    background: var(--success-color);
-    color: var(--text-white);
-    
+    background: var(--bg-tertiary); /* 薄青背景 */
+    color: var(--primary-color); /* 青文字 */
     transform: translateY(-1px);
 }
 
@@ -173,7 +128,7 @@ body {
 
 /* ===== FOOTER ===== */
 .footer {
-    background: var(--bg-dark);
+    background: var(--bg-dark); /* 濃紺背景 */
     color: var(--text-white);
     padding: 3rem 0 2rem;
     margin-top: 4rem;
@@ -209,63 +164,27 @@ body {
     font-size: 0.875rem;
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* ===== HEADER & FOOTER RESPONSIVE ===== */
 @media (max-width: 768px) {
-    .container {
-        padding: 0 1rem;
-    }
-    
     .header .container {
         padding: 1rem;
-    }
-    
-    .nav-list {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 1rem;
     }
-    
-    .nav-link {
-        padding: 0.5rem;
-    }
-    
-    .nav-link span {
-        display: none;
+
+    .nav-list {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
     }
 
     .footer-content {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .footer-links {
         justify-content: center;
-    }
-}
-
-/* ===== ACCESSIBILITY ===== */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* Focus styles for keyboard navigation */
-*:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-button:focus,
-a:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    :root {
-        --border-color: #000000;
-        --text-secondary: #000000;
     }
 }
