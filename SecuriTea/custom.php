@@ -69,7 +69,7 @@ $yearly_checked = ($existing_cycle === 'yearly') ? 'checked' : '';
             <section class="mini-products">
                 <div class="mini-products-grid">
                     <?php
-                        $data=$db->query("select product_id, name, description, image_path, price FROM Products where category_id = 2");
+                        $data=$db->query("select product_id, name, description, image_path, price FROM Products where category_id = 2 AND product_id != 0");
                         foreach($data as $value){
                                 $monthly_price = (int)$value["price"];
                                 $yearly_price = $monthly_price * 10; 
