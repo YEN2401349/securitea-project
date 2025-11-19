@@ -70,11 +70,16 @@ try {
         $itemSql = $db->prepare(
         "INSERT INTO `Cart_Items`(`cart_id`, `product_id`, `price`, `created_at`, `updated_at`) VALUES (?, ?, ?, NOW(), NOW())"
     );
+        $itemSql->execute([$cart_id,0,0]);
+
         foreach ($_SESSION['custom_options'] as $item) {
             $product_id = $item['id'];
             $price = $item['price'];
             $itemSql->execute([$cart_id, $product_id, $price]);
         }
+    }else{
+        $itemSql = $db->prepare("INSERT INTO `Cart_Items`(`cart_id`, `product_id`, `price`, `created_at`, `updated_at`) VALUES (?, ?, ?, NOW(), NOW())");
+        $itemSql->execute([$cart_id,$_SESSION['package_plan']['product_id'],$total_amount]);
     }
 
 } catch (PDOException $e) {
