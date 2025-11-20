@@ -21,7 +21,6 @@
         <p>ご契約ありがとうございます。<br>サービスをご利用いただけます。</p>
         <div class="form-actions">
             <a href="account.php" class="submit-btn" style="text-align: center; text-decoration: none;">マイページへ</a>
-            
             <a href="top.php" class="submit-btn" style="text-align: center; text-decoration: none;">トップページへ戻る</a>
         </div>
     </div>

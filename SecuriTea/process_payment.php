@@ -110,13 +110,19 @@ try {
     // 2. Order_Items (明細) への登録
     // --------------------------------------------------
     // カートの中身を注文明細として保存
+    // あれする　ここでベースプランもcart_itemに登録するように変更してください
     $orderItemSql = $db->prepare("INSERT INTO Order_Items (order_id, product_id, price) VALUES (?, ?, ?)");
+    if(isset($_SESSION['custom_options'])){
+        $orderItemSql->execute([$order_id,0,0]);
     foreach ($cart_items as $item) {
         $orderItemSql->execute([
             $order_id, 
-            $cart_items['product_id'], 
-            $cart_items['price']
+            $item['product_id'], 
+            $item['price']
         ]);
+    }
+    }else{
+        $orderItemSql->execute([$order_id,$_SESSION['package_plan']['product_id'],$_SESSION['package_plan']['totalPrice']]);
     }
 
 
@@ -125,7 +131,7 @@ try {
     // --------------------------------------------------
     // order_id, amount, method, payment_date
     $paymentSql = $db->prepare("INSERT INTO Payments (order_id,amount,payment_date,payment_method,status) VALUES (?,?,NOW(),?,'success')");
-    $paymentSql->execute([$order_id, $total_amount, $payment_method]);
+    $paymentSql->execute([$order_id,$total_amount, $payment_method]);
 
 
     // --------------------------------------------------
@@ -133,7 +139,11 @@ try {
     // --------------------------------------------------
     // user_id, order_id, start_date, end_date, status(1=有効など)
     $subSql = $db->prepare("INSERT INTO Subscription (user_id,product_id,start_date,end_date,status_id,create_date,update_date) VALUES (?,?,?,?,1,NOW(),NOW())");
-    $subSql->execute([$user_id,$cart['$product_id'],$sql_start_date,$sql_end_date]);
+    if(isset($_SESSION['custom_options'])){
+        $subSql->execute([$user_id,0,$sql_start_date,$sql_end_date]);
+    }else{
+        $subSql->execute([$user_id,$_SESSION['package_plan']['product_id'],$sql_start_date,$sql_end_date]);
+    }
     $subscription_id = $db->lastInsertId();
 
 
@@ -143,10 +153,12 @@ try {
     // どのオプションが含まれているかを記録
     $subCustomSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id,create_date,update_date) VALUES (?, ?,NOW(),NOW())");
     foreach ($cart_items as $item) {
+        if($item['product_id'] != 0){
         $subCustomSql->execute([
             $subscription_id,
-            $cart_item['product_id']
+            $item['product_id']
         ]);
+        }
     }
 
 
