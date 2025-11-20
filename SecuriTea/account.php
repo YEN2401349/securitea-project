@@ -185,7 +185,7 @@ try {
         <?php endif; ?>
 
         <div class="card-actions">
-          <form action="software.php">
+          <form action="product.php">
             <button class="btn btn-primary">プラン変更</button>
           </form>
           <form action="confirm_cancel.php" method="post">
