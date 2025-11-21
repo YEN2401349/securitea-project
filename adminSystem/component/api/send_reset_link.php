@@ -36,7 +36,7 @@ $expire = date("Y-m-d H:i:s", strtotime("+1 hour"));
 $stmt = $db->prepare("UPDATE Users SET reset_token = ?, reset_token_expire = ? WHERE user_email = ?");
 $stmt->execute([$token, $expire, $email]);
 
-$reset_link = "https://aso-2401349.greater.jp/adminSystem//reset_password.php?token=" . urlencode($token)."&email=" . urlencode($email);
+$reset_link = "https://aso-2401349.greater.jp/public_html/adminSystem/reset_password.php?token=" . urlencode($token)."&email=" . urlencode($email);
 
 $mail = new PHPMailer(true);
 
