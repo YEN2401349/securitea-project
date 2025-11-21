@@ -18,7 +18,7 @@
         <div class="payment-options">
             
             <div class="payment-option">
-                <input type="radio" id="credit-card" name="payment-method" value="credit" checked>
+                <input type="radio" id="credit-card" name="payment-method" value="credit_card" checked>
                 <label for="credit-card">
                     <i class="fas fa-credit-card"></i>
                     <span>クレジットカード</span>
@@ -68,7 +68,7 @@
             </div>
 
             <div class="payment-option">
-                <input type="radio" id="bank-transfer" name="payment-method" value="bank">
+                <input type="radio" id="bank-transfer" name="payment-method" value="bank_transfer">
                 <label for="bank-transfer">
                     <i class="fas fa-university"></i>
                     <span>銀行引き落とし</span>
