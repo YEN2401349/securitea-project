@@ -124,7 +124,7 @@ try {
         </form>
 
         <h2>利用状況</h2>
-        <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
+        <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
           <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
           ーー月ーー日までご利用いただけます。</h2>
           <!-- 上のところは後々編集する -->
@@ -161,7 +161,7 @@ try {
           <div class="info-value"><?= htmlspecialchars($payment_method) ?></div>
         </div>
 
-        <form action="new-pay.php">
+        <form action="pay-change.php">
           <div class="card-actions">
             <button class="btn btn-primary">お支払いの変更</button>
           </div>
