@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="css/login-style.css">
   <link rel="stylesheet" href="css/heder-footer.css">
 </head>
+
 <body>
   <!-- ヘッダー -->
   <?php require 'headerTag.php' ?>
@@ -20,16 +22,13 @@
         メールアドレスを入力してください。
       </p>
 
-      <?php
-      if (isset($_GET['error']) && $_GET['error'] === 'not_found') {
-          echo '<p style="color: red;">そのメールアドレスは登録されていません。</p>';
-      }
-      ?>
-
-      <form action="remindPass-output.php" method="post" class="login-form">
+      <form class="login-form">
         <div class="form-group">
           <label for="email">メールアドレス</label>
           <input type="email" id="email" name="email" required placeholder="メールアドレス">
+          <span id="emailError" class="error">
+            入力されたメールアドレスが登録されていません。
+          </span>
         </div>
 
         <button type="submit" class="product-btn">送信</button>
@@ -39,5 +38,7 @@
 
   <!-- フッター -->
   <?php require "footer.php"; ?>
+  <script src="./script/passwordForget.js"></script>
 </body>
+
 </html>
