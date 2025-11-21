@@ -48,9 +48,9 @@
           <label for="gender">性別</label>
           <select id="gender" name="gender" required>
             <option value="" disabled selected>選択してください</option>
-            <option value="male">男性</option>
-            <option value="female">女性</option>
-            <option value="unanswered">無回答</option>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+            <option value="その他">その他</option>
           </select>
         </div>
 
