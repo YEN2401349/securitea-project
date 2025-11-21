@@ -36,7 +36,7 @@ $expire = date("Y-m-d H:i:s", strtotime("+1 hour"));
 $stmt = $db->prepare("UPDATE Users SET reset_token = ?, reset_token_expire = ? WHERE user_email = ?");
 $stmt->execute([$token, $expire, $email]);
 
-$reset_link = "https://aso-2401349.greater.jp/SecuriTea/reset_password.php?token=" . urlencode($token)."&email=" . urlencode($email);
+$reset_link = "https://aso-2401349.greater.jp/public_html/SecuriTea/resetPass.php?token=" . urlencode($token)."&email=" . urlencode($email);
 
 $mail = new PHPMailer(true);
 
@@ -52,7 +52,7 @@ try {
 このリンクの有効期限は1時間です。
 
 -----------------------------
-管理者システム サポート
+SecuriTea　カスタマーサポート
 EOT;
     $mail->isSMTP();
     $mail->Host = 'smtp.lolipop.jp';
@@ -62,12 +62,12 @@ EOT;
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
 
-    $mail->setFrom('noreply@aso-2401349.greater.jp', '管理者システム');
+    $mail->setFrom('noreply@aso-2401349.greater.jp', 'SecuriTea　カスタマーサポート');
     $mail->addAddress($email);
     $mail->CharSet = 'UTF-8';
     $mail->Encoding = 'base64';
     $mail->isHTML(false);
-    $mail->Subject = '【管理者システム】パスワード再設定リンク';
+    $mail->Subject = '【SecuriTea　カスタマーサポート】パスワード再設定リンク';
     $mail->Body = $message;
 
     $mail->send();
