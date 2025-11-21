@@ -23,7 +23,7 @@
       <form id="resetForm" class="login-form">
         <?php
         $mail = isset($_GET['email']) ? $_GET['email'] : '...';
-        echo '<input type="hidden" id="mail" name="mail" value="' . $mail . '">';
+        echo '<input type="hidden" id="email" name="email" value="' . $mail . '">';
         ?>
         <div class="form-group">
           <label for="password">パスワード</label>
