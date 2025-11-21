@@ -20,13 +20,6 @@
       <p class="login-description">
         新しいパスワードを入力してください。
       </p>
-
-      <?php
-      if (isset($_GET['error']) && $_GET['error'] === 'mismatch') {
-        echo '<p style="color: red;">パスワードが一致しません。</p>';
-      }
-      ?>
-
       <form id="resetForm" class="login-form">
         <?php
         $mail = isset($_GET['email']) ? $_GET['email'] : '...';
@@ -39,6 +32,9 @@
         <div class="form-group">
           <label for="password-confirm">パスワード(確認)</label>
           <input type="password" id="password-confirm" name="password_confirm" required placeholder="パスワード">
+          <span id="passwordError" class="error">
+            パスワードが一致しません。
+          </span>
         </div>
 
 
