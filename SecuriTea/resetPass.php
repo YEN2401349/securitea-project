@@ -29,7 +29,7 @@
 
       <form id="resetForm" class="login-form">
         <?php
-        $mail = $_GET['mail']?$_GET['mail']: '...';
+        $mail = isset($_GET['email']) ? $_GET['email'] : '...';
         echo '<input type="hidden" id="mail" name="mail" value="' . $mail . '">';
         ?>
         <div class="form-group">
