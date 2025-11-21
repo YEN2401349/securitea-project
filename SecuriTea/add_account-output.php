@@ -65,8 +65,8 @@ echo '<p>ご登録ありがとうございます。</p>';
 echo '<p><a href="login.php" class="product-btn">ログイン画面へ</a></p>';
 echo '</div>';
 echo '</main>';
-
-echo '<footer class="footer"><p>&copy; 2025 SecuriTea. All rights reserved.</p></footer>';
+//フッター
+require "footer.php"; 
 echo '</body></html>';
 
 $pdo = null; // DB切断
