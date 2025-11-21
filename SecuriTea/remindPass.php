@@ -22,7 +22,7 @@
         メールアドレスを入力してください。
       </p>
 
-      <form class="login-form">
+      <form class="login-form" id="forgotForm">
         <div class="form-group">
           <label for="email">メールアドレス</label>
           <input type="email" id="email" name="email" required placeholder="メールアドレス">
