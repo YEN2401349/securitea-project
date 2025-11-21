@@ -71,6 +71,13 @@ try {
       $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  $payment_map = [
+    'credit_card' => 'クレジットカード',
+    'paypal' => 'PayPal',
+    'bank_transfer' => '銀行引き落とし'
+  ];
+
+  $payment_jp = $payment_map[$payment_method] ?? '未登録';
 } catch (PDOException $e) {
   echo "エラー：" . $e->getMessage();
   exit();
@@ -158,7 +165,7 @@ try {
         </div>
         <div class="info-row">
           <div class="info-label">お支払い方法</div>
-          <div class="info-value"><?= htmlspecialchars($payment_method) ?></div>
+          <div class="info-value"><?= htmlspecialchars($payment_jp) ?></div>
         </div>
 
         <form action="new-pay.php">
