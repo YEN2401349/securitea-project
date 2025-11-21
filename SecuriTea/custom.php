@@ -26,6 +26,7 @@ $yearly_checked = ($existing_cycle === 'yearly') ? 'checked' : '';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecuriTea(セキュリティー) - カスタムプラン</title> 
     <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/heder-footer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -69,7 +70,7 @@ $yearly_checked = ($existing_cycle === 'yearly') ? 'checked' : '';
             <section class="mini-products">
                 <div class="mini-products-grid">
                     <?php
-                        $data=$db->query("select product_id, name, description, image_path, price FROM Products where category_id = 2");
+                        $data=$db->query("select product_id, name, description, image_path, price FROM Products where category_id = 2 AND product_id != 0");
                         foreach($data as $value){
                                 $monthly_price = (int)$value["price"];
                                 $yearly_price = $monthly_price * 10; 

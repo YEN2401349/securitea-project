@@ -15,6 +15,7 @@ if (!isset($_SESSION['customer']['user_id'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>契約解除完了</title>
   <link rel="stylesheet" href="css/login-style.css">
+  <link rel="stylesheet" href="css/heder-footer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>

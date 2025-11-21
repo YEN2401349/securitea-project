@@ -1,139 +1,201 @@
 <?php
 session_start();
-require 'DBconnect.php'; // DB接続
+require 'DBconnect.php';
 
-// --- 1. 事前チェック ---
-
-// ログインチェック (customerセッションに 'id' があると仮定)
+// ログインチェック
 if (!isset($_SESSION['customer']['user_id'])) {
-    header('Location: login.php'); // ログインしてなければログインページへ
+    header('Location: login.php');
     exit;
 }
 
-// カート情報チェック (custom.php からの情報)
-if (!isset($_SESSION['custom_options']) || empty($_SESSION['custom_options']) || !isset($_SESSION['custom_total_price'])) {
-    header('Location: custom.php'); // カートが空ならカスタム選択ページへ
-    exit;
-}
-
-// POSTデータチェック
+// POSTリクエストチェック
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['payment-method'])) {
-    header('Location: new-pay.php'); // POST以外、または支払い方法が未選択なら支払いページへ
+    header('Location: new-pay.php');
     exit;
 }
+
+$user_id = $_SESSION['customer']['user_id'];
+$payment_method = $_POST['payment-method']; // credit, paypal, bank
 
 // --- 2. 決済処理 (スタブ) ---
 // 本来はここに Stripe, PayPal などの決済API呼び出し処理が入ります。
-// クレジットカード情報 ($_POST['card-number'] など) もここで使います。
 // 今回は「必ず成功する」と仮定します。
-$payment_succeeded = true; 
+$payment_succeeded = true;
 
 if (!$payment_succeeded) {
-    // 決済失敗時の処理
     $_SESSION['payment_error'] = "決済処理に失敗しました。";
     header('Location: payment-error.php');
     exit;
 }
 
-// --- 3. データベース登録処理 ---
-
 try {
     $db->beginTransaction();
 
-    // --- 3a. Payments テーブルへの登録 ---
-    
-    // 前提: 注文(Orders)は作成済みで、セッションに order_id があると仮定
-    // (もし Orders テーブルがない場合、ここは機能しません)
-    $order_id = $_SESSION['order_id'] ?? 0; // 仮にセッションになければ 0 を設定 (FK制約に注意)
-    $amount = $_SESSION['custom_total_price'];
-    
-    // ENUM の値 ('credit card', 'paypal', 'bank transfer') にマッピング
-    $payment_method_raw = $_POST['payment-method']; // 'credit', 'paypal', 'bank'
-    $payment_method_db = [
-        'credit' => 'credit card',
-        'paypal' => 'paypal',
-        'bank' => 'bank transfer'
-    ][$payment_method_raw] ?? 'credit card'; // 不明な場合は credit card
-    
-    // Payments テーブル に挿入
-    $sql_payment = "INSERT INTO Subscription (order_id, amount, payment_method, status) 
-                    VALUES (?, ?, ?, 'success')";
-    $stmt_payment = $db->prepare($sql_payment);
-    $stmt_payment->execute([
-        $order_id,
-        $amount,
-        $payment_method_db
-    ]);
+    // --------------------------------------------------
+    // A. カート情報の取得 (DBから)
+    // --------------------------------------------------
+    $cartSql = $db->prepare("SELECT * FROM Cart WHERE user_id = ?");
+    $cartSql->execute([$user_id]);
+    $cart = $cartSql->fetch(PDO::FETCH_ASSOC);
 
-    // --- 3b. Subscriptions テーブルへの登録 ---
+    if (!$cart) {
+        throw new Exception("カート情報が見つかりません。");
+    }
 
-    $user_id = $_SESSION['customer']['id'];
-    $options = $_SESSION['custom_options'];
-    $termStartStr = $_SESSION['custom_term_start'];
-    $termEndStr = $_SESSION['custom_term_end'];
+    $cart_id = $cart['cart_id'];
+    $total_amount = $cart['total_amount'];
 
-    // 期間文字列 (例: 2025年10月07日(火)) を Y-m-d 形式に変換
-    // (preg_replace で曜日部分を除去してから DateTime でパース)
-    $termStart = preg_replace('/\(.+\)/', '', $termStartStr);
-    $termEnd = preg_replace('/\(.+\)/', '', $termEndStr);
-    
-    $start_date = DateTime::createFromFormat('Y年m月d日', $termStart)->format('Y-m-d');
-    $end_date = DateTime::createFromFormat('Y年m月d日', $termEnd)->format('Y-m-d');
+    // カート内アイテムの取得
+    $itemsSql = $db->prepare("SELECT * FROM Cart_Items WHERE cart_id = ?");
+    $itemsSql->execute([$cart_id]);
+    $cart_items = $itemsSql->fetchAll(PDO::FETCH_ASSOC);
 
-    // SQL準備 (ループの外で)
-    $sql_get_id = "SELECT product_id FROM Products WHERE name = ?";
-    $sql_insert_sub = "INSERT INTO Subscriptions (user_id, product_id, start_date, end_date, status_id) 
-                       VALUES (?, ?, ?, ?, 4)"; // status_id=4 (デフォルト値)
-    
-    $stmt_get_id = $db->prepare($sql_get_id);
-    $stmt_insert_sub = $db->prepare($sql_insert_sub);
+    // --------------------------------------------------
+    // B. 期間(サブスクリプション期間)の計算
+    // --------------------------------------------------
+    $start_date = new DateTime(); // 今日 (開始日)
+    $end_date   = new DateTime(); // 計算用 (終了日)
 
-    // セッションにあるオプションの「ラベル名」を元に product_id を検索し、
-    // オプション（商品）の数だけ Subscriptions に登録
-    foreach ($options as $option) {
-        $label = $option['label'];
+    // パッケージプランがある場合
+    if (isset($_SESSION['package_plan'])) {
         
-        // ラベル名(name)から product_id を逆引き
-        $stmt_get_id->execute([$label]);
-        $product = $stmt_get_id->fetch(PDO::FETCH_ASSOC);
+        // ★ここで期間タイプを取得します
+        // ※ add_pack.php で 'monthly', 'yearly', '3years' のいずれかをセットしておいてください
+        $plan_cycle = $_SESSION['package_plan']['plan_type'] ?? 'monthly'; 
 
-        if ($product) {
-            $product_id = $product['product_id'];
-            
-            // Subscriptions テーブル に挿入
-            $stmt_insert_sub->execute([
-                $user_id,
-                $product_id,
-                $start_date,
-                $end_date
-            ]);
+        switch ($plan_cycle) {
+            case 'triennially':
+                // 3年後の日付
+                $end_date->modify('+3 years');
+                break;
+            case 'yearly':
+                // 1年後の日付
+                $end_date->modify('+1 year');
+                break;
+            case 'monthly':
+            default:
+                // 1ヶ月後の日付
+                $end_date->modify('+1 month');
+                break;
+        }
+
+    } 
+    // カスタムプランがある場合
+    elseif (isset($_SESSION['custom_options'])) {
+        
+        $custom_cycle = $_SESSION['custom_billing_cycle'] ?? 'monthly';
+
+        if ($custom_cycle === 'yearly') {
+            $end_date->modify('+1 year');
         } else {
-            // もし商品名(label)から product_id が見つからなかったらエラー
-            throw new Exception("商品が見つかりません: " . htmlspecialchars($label, ENT_QUOTES));
+            $end_date->modify('+1 month');
         }
     }
 
-    // --- 4. 完了処理 ---
+    // DB保存用のフォーマット (Y-m-d)
+    $sql_start_date = $start_date->format('Y-m-d');
+    $sql_end_date   = $end_date->format('Y-m-d');
+
+
+    // --------------------------------------------------
+    // 1. Ordersテーブルへの登録
+    // --------------------------------------------------
+    // user_id, total_amount, order_date
+    $orderSql = $db->prepare("INSERT INTO Orders (user_id,total_amount,status,created_at,updated_at) VALUES (?, ?, 'paid',NOW(),NOW())");
+    $orderSql->execute([$user_id, $total_amount]);
+    $order_id = $db->lastInsertId();
+
+
+    // --------------------------------------------------
+    // 2. Order_Items (明細) への登録
+    // --------------------------------------------------
+    // カートの中身を注文明細として保存
+    // あれする　ここでベースプランもcart_itemに登録するように変更してください
+    $orderItemSql = $db->prepare("INSERT INTO Order_Items (order_id, product_id, price) VALUES (?, ?, ?)");
+    if(isset($_SESSION['custom_options'])){
+        $orderItemSql->execute([$order_id,0,0]);
+    foreach ($cart_items as $item) {
+        $orderItemSql->execute([
+            $order_id, 
+            $item['product_id'], 
+            $item['price']
+        ]);
+    }
+    }else{
+        $orderItemSql->execute([$order_id,$_SESSION['package_plan']['product_id'],$_SESSION['package_plan']['totalPrice']]);
+    }
+
+
+    // --------------------------------------------------
+    // 3. Paymentsテーブルへの登録
+    // --------------------------------------------------
+    // order_id, amount, method, payment_date
+    $paymentSql = $db->prepare("INSERT INTO Payments (order_id,amount,payment_date,payment_method,status) VALUES (?,?,NOW(),?,'success')");
+    $paymentSql->execute([$order_id,$total_amount, $payment_method]);
+
+
+    // --------------------------------------------------
+    // 4. Subscription (契約) テーブルへの登録
+    // --------------------------------------------------
+    // user_id, order_id, start_date, end_date, status(1=有効など)
+    $subSql = $db->prepare("INSERT INTO Subscription (user_id,product_id,start_date,end_date,status_id,create_date,update_date) VALUES (?,?,?,?,1,NOW(),NOW())");
+    if(isset($_SESSION['custom_options'])){
+        $subSql->execute([$user_id,0,$sql_start_date,$sql_end_date]);
+    }else{
+        $subSql->execute([$user_id,$_SESSION['package_plan']['product_id'],$sql_start_date,$sql_end_date]);
+    }
+    $subscription_id = $db->lastInsertId();
+
+
+    // --------------------------------------------------
+    // 5. SubscriptionCustoms (契約詳細) への登録
+    // --------------------------------------------------
+    // どのオプションが含まれているかを記録
+    $subCustomSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id,create_date,update_date) VALUES (?, ?,NOW(),NOW())");
+    foreach ($cart_items as $item) {
+        if($item['product_id'] != 0){
+        $subCustomSql->execute([
+            $subscription_id,
+            $item['product_id']
+        ]);
+        }
+    }
+
+
+    // --------------------------------------------------
+    // 6. カート情報の削除 (購入完了したので空にする)
+    // --------------------------------------------------
+    // 外部キー制約がある場合、子(Items)から消す必要があることが多いです
+    $delItemSql = $db->prepare("DELETE FROM Cart_Items WHERE cart_id = ?");
+    $delItemSql->execute([$cart_id]);
+    
+    $delCartSql = $db->prepare("DELETE FROM Cart WHERE cart_id = ?");
+    $delCartSql->execute([$cart_id]);
+
+
+    // --- 完了処理 ---
     $db->commit();
 
-    // カートセッションをクリア
+    // セッションのカート情報をクリア
     unset($_SESSION['custom_options']);
     unset($_SESSION['custom_total_price']);
     unset($_SESSION['custom_billing_cycle']);
     unset($_SESSION['custom_term_start']);
     unset($_SESSION['custom_term_end']);
-    unset($_SESSION['order_id']); // 仮
+    unset($_SESSION['package_plan']); // パッケージプランもあればクリア
 
     // 完了ページへリダイレクト
-    header('Location: payment_complete.php');
+    header('Location: pay_complete.php');
     exit;
 
 } catch (Exception $e) {
-    // --- 5. エラー処理 ---
-    $db->rollBack();
+    // --- エラー処理 ---
+    if ($db->inTransaction()) {
+        $db->rollBack();
+    }
     
-    // エラーメッセージをセッションに保存してエラーページへ
-    $_SESSION['payment_error'] = "データベース登録中にエラーが発生しました: " . $e->getMessage();
+    // エラーメッセージをセッションに保存
+    $_SESSION['payment_error'] = "システムエラーが発生しました: " . $e->getMessage();
     header('Location: payment_error.php');
     exit;
 }

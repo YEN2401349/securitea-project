@@ -18,6 +18,7 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecuriTea(セキュリティー)</title>
     <link rel="stylesheet" href="css/pack.css">
+    <link rel="stylesheet" href="css/heder-footer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -33,10 +34,6 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
                             <i class="fas fa-search search-icon"></i>
                             
                             <input type="text" placeholder="特徴でセキュリティソフトを探す" class="search-input" id="live-search-input" autocomplete="off" value="<?php echo $search_term; ?>">
-                            
-                            <button class="search-btn" id="live-search-button">
-                                <i class="fas fa-arrow-right"></i>
-                            </button>
                         </div>
                         
                         <div class="suggestions-container" id="suggestions-container"></div>

@@ -52,6 +52,9 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Container (style923.css より) */
@@ -63,11 +66,11 @@ body {
 
 /* ===== HEADER (style923.css より) ===== */
 .header {
-    background: var(--bg-white);
+    background: #ffffff;
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 9999;
     border-bottom: 1px solid var(--border-light);
 }
 
@@ -118,9 +121,10 @@ body {
     font-size: 1rem;
 }
 
-/* ===== MAIN CONTENT (style923.css より) ===== */
 .main {
-    min-height: calc(100vh - 200px); /* フッターとヘッダーの高さを考慮した最小の高さ */
+    flex: 1;
+    padding-top: 120px;
+    padding-bottom: 120px; 
 }
 
 /* ===== BUTTONS (style923.css より .product-btn を流用) ===== */
@@ -194,7 +198,7 @@ body {
 
 /* 上部固定の選択オプション表示エリア */
 #selected-options {
-    position: fixed;
+    position: relative;
     top: 70px; /* ヘッダーの高さに合わせる */
     left: 50%;
     transform: translateX(-50%);

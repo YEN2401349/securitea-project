@@ -1,3 +1,7 @@
+:root{
+  --text-light: #94a3b8;
+}
+
 body {
     font-family: var(--font-family);
     background: var(--bg-secondary);

@@ -84,6 +84,7 @@ try {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>アカウント情報</title>
   <link rel="stylesheet" href="css/account.css">
+  <link rel="stylesheet" href="css/heder-footer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -123,14 +124,22 @@ try {
         </form>
 
         <h2>利用状況</h2>
-        <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
+        <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
           <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
           ーー月ーー日までご利用いただけます。</h2>
           <!-- 上のところは後々編集する -->
           <?php endif; ?>
         <div class="info-row">
           <div class="info-label">利用プラン</div>
-          <div class="info-value"><?= htmlspecialchars($product['name'] ?? '未登録') ?></div>
+          <div class="info-value">
+            <?php
+              if (!empty($subscription) && !empty($product['name'])) {
+                  echo htmlspecialchars($product['name']);
+              } else {
+                echo '未登録';
+              }
+            ?>
+          </div>
         </div>
         <div class="info-row">
           <div class="info-label">料金</div>
@@ -176,7 +185,7 @@ try {
         <?php endif; ?>
 
         <div class="card-actions">
-          <form action="software.php">
+          <form action="product.php">
             <button class="btn btn-primary">プラン変更</button>
           </form>
           <form action="confirm_cancel.php" method="post">
