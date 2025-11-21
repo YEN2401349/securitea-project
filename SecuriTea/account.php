@@ -71,22 +71,6 @@ try {
       $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  //性別
-  $gender_map = [
-    'male' => '男性',
-    'female' => '女性',
-    'other' => 'その他'
-  ];
-  $gender_jp = $gender_map[$user['gender']] ?? '未登録';
-
-  //支払い方法
-  $payment_map = [
-    'credit_card' => 'クレジットカード',
-    'bank' => '銀行引き落とし',
-    'paypal' => 'PayPal'
-  ];
-  $payment_jp = $payment_map[$payment_method] ?? '未登録';
-
 } catch (PDOException $e) {
   echo "エラー：" . $e->getMessage();
   exit();
@@ -120,7 +104,7 @@ try {
 
         <div class="info-row">
           <div class="info-label">性別</div>
-          <div class="info-value"><?= htmlspecialchars($gender_jp) ?></div>
+          <div class="info-value"><?= htmlspecialchars($user['gender'] ?? '未登録') ?></div>
         </div>
 
         <h2>連絡先情報</h2>
@@ -140,7 +124,7 @@ try {
         </form>
 
         <h2>利用状況</h2>
-        <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
+        <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
           <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
           ーー月ーー日までご利用いただけます。</h2>
           <!-- 上のところは後々編集する -->
@@ -174,10 +158,10 @@ try {
         </div>
         <div class="info-row">
           <div class="info-label">お支払い方法</div>
-          <div class="info-value"><?= htmlspecialchars($payment_jp) ?></div>
+          <div class="info-value"><?= htmlspecialchars($payment_method) ?></div>
         </div>
 
-        <form action="pay-change.php">
+        <form action="new-pay.php">
           <div class="card-actions">
             <button class="btn btn-primary">お支払いの変更</button>
           </div>
