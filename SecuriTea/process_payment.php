@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['payment-method'])) {
 }
 
 $user_id = $_SESSION['customer']['user_id'];
-$payment_method = $_POST['payment-method']; // credit, paypal, bank
+$payment_method = $_POST['payment-method']; //('credit_card','paypal','bank_transfer')
 
 // --- 2. 決済処理 (スタブ) ---
 // 本来はここに Stripe, PayPal などの決済API呼び出し処理が入ります。
