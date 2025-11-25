@@ -77,6 +77,8 @@ body {
     z-index: 100;
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-light);
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 .header .container {
