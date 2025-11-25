@@ -1,14 +1,13 @@
 <?php include("../DBconnect.php");
 try {
     $stmt = $db->prepare("SELECT 
-  DATE(o.created_at) AS order_date,
-  p.name,
-  p.price,
+  DATE(created_at) AS order_date,
+  product_name,
+  price,
   SUM(o.quantity) AS total_quantity,
-  p.category_id
-FROM Order_Items o
-LEFT JOIN Products p ON o.product_id = p.product_id
-GROUP BY DATE(o.created_at), p.name, p.price 
+  category_id
+FROM Order_Items 
+GROUP BY DATE(created_at),product_name, price 
 ORDER BY order_date ASC;");
     $stmt->execute();
 
