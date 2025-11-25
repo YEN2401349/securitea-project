@@ -7,9 +7,8 @@ try {
     $userCount = $userStmt->fetch(PDO::FETCH_ASSOC);
 
     $amountStmt = $db->query("
-        SELECT SUM(o.quantity * p.price) AS total_amount_sum
-        FROM Order_Items o
-        LEFT JOIN Products p ON o.product_id = p.product_id
+        SELECT SUM(quantity * price) AS total_amount_sum
+        FROM Order_Items
     ");
     $totalAmount = $amountStmt->fetch(PDO::FETCH_ASSOC);
 
