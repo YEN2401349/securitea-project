@@ -1,4 +1,3 @@
-<?php require 'headerTag.php' ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -30,6 +29,7 @@
   </style>
 </head>
 <body>
+  <?php require 'headerTag.php' ?>
   <main class="login-container">
     <div class="login-card">
       <h2 class="section-title">アカウント登録</h2>
