@@ -1,4 +1,4 @@
-<?php include("../DBconnect.php");
+<?php include("../../../common/DBconnect.php");
 try {
     $stmt = $db->prepare("SELECT
     product_id,

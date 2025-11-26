@@ -1,5 +1,5 @@
 <?php
-include("../DBconnect.php");
+include("../../../common/DBconnect.php");
 try {
     $db->beginTransaction();
     $stmt = $db->prepare("INSERT INTO Users (user_email, user_password, role) VALUES (?, ?, 'admin')");
@@ -9,9 +9,9 @@ try {
 
     $user = [
         'id' => $db->lastInsertId(),
-        'email' => $_POST['email'],
+        'email' => htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8'),
         'role' => 'admin',
-        'name' => $_POST['name']
+        'name' => htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8')
     ];
 
     $stmt = $db->prepare("INSERT INTO Profiles (user_id, full_name) VALUES (?, ?)");

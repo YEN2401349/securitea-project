@@ -1,5 +1,5 @@
 <?php
-include("../DBconnect.php");
+include("../../../common/DBconnect.php");
 $data = json_decode(file_get_contents("php://input"), true);
 $token = $data['token'] ?? '';
 $email = $data['email'] ?? '';

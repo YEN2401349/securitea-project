@@ -1,5 +1,5 @@
 <?php
-include("../DBconnect.php");
+include("../../../common/DBconnect.php");
 
 try {
 

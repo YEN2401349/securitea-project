@@ -1,4 +1,4 @@
-<?php include("../DBconnect.php");
+<?php include("../../../common/DBconnect.php");
 try {
     $stmt = $db->prepare("SELECT 
   DATE(created_at) AS order_date,

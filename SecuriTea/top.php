@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php require "DBconnect.php"; ?>
+<?php require "../common/DBconnect.php"; ?>
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -45,7 +45,24 @@
                 <div class="products-grid">
                     <?php
                         $count = 0;
-                        $data=$db->query("select * FROM Products where category_id = 1 ORDER BY RAND() LIMIT 3");
+                        // Get all product IDs for the category
+                        $stmt = $db->prepare("SELECT product_id FROM Products WHERE category_id = 1");
+                        $stmt->execute();
+                        $product_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                        // Shuffle the IDs and take the first 3
+                        shuffle($product_ids);
+                        $random_ids = array_slice($product_ids, 0, 3);
+
+                        // Fetch the products for the selected IDs
+                        $data = [];
+                        if (!empty($random_ids)) {
+                            $placeholders = implode(',', array_fill(0, count($random_ids), '?'));
+                            $stmt = $db->prepare("SELECT * FROM Products WHERE product_id IN ($placeholders)");
+                            $stmt->execute($random_ids);
+                            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        }
+
                         foreach($data as $value){
                                 echo "<div class='product-card'>",
                                         "<div class='product-image'>",

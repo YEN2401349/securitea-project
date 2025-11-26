@@ -1,4 +1,4 @@
-<?php include("../DBconnect.php");
+<?php include("../../../common/DBconnect.php");
 try {
     $stmt = $db->prepare("SELECT  u.user_id, u.user_email, u.user_password, u.role, p.full_name FROM Users u,Profiles p WHERE u.user_email = ? AND u.role = 'admin' AND p.user_id = u.user_id;");
     $stmt->execute([$_POST['email']]);

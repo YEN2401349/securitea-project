@@ -27,7 +27,7 @@ async function reloadFromServer() {
         const dataArray = Array.isArray(json.data) ? json.data : [];
         saleItems = dataArray.map(p => ({
             order_date: p.order_date,
-            product: p.name,
+            product: p.product_name,
             quantity: parseInt(p.total_quantity),
             price: parseInt(p.price),
             category_id: p.category_id

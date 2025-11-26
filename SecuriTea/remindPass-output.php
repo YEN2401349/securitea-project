@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php require 'DBconnect.php' ?>
+<?php require '../common/DBconnect.php' ?>
 <?php
 if (isset($_POST['email'])) {
     $email = $_POST['email'];

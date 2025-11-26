@@ -1,6 +1,6 @@
 <?php
 // データベース接続を読み込む
-require_once 'DBconnect.php';
+require_once '../common/DBconnect.php';
 
 // 出力形式をJSONに指定
 header('Content-Type: application/json; charset=UTF-8');
