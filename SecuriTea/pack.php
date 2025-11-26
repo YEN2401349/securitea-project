@@ -1,5 +1,5 @@
 <?php session_start();?>
-<?php require "../common/DBconnect.php";?>
+<?php require "DBconnect.php";?>
 
 <?php
 // --- ▼ ここから追加 (DBデータ取得処理) ---
@@ -125,7 +125,7 @@ try {
                         </fieldset>
 
                         <div class="form-buttons-container">
-                            <a href="javascript:history.back()" class="back-btn">
+                            <a href="product.php" class="back-btn">
                                 <i class="fas fa-arrow-left"></i> 前のページに戻る
                             </a>
                             
@@ -160,4 +160,5 @@ try {
     <?php include './component/chatBot.php'; ?>
 </body>
 
+</html>
 </html>

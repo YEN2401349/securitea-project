@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "../common/DBconnect.php";
+require "DBconnect.php";
 
 // ログインチェック
 if (!isset($_SESSION['customer']['user_id'])) {
@@ -71,13 +71,6 @@ try {
       $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  $payment_map = [
-    'credit_card' => 'クレジットカード',
-    'paypal' => 'PayPal',
-    'bank_transfer' => '銀行引き落とし'
-  ];
-
-  $payment_jp = $payment_map[$payment_method] ?? '未登録';
 } catch (PDOException $e) {
   echo "エラー：" . $e->getMessage();
   exit();
@@ -133,8 +126,7 @@ try {
         <h2>利用状況</h2>
         <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
           <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
-          ーー月ーー日までご利用いただけます。</h2>
-          <!-- 上のところは後々編集する -->
+          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>日までご利用いただけます。</h2>
           <?php endif; ?>
         <div class="info-row">
           <div class="info-label">利用プラン</div>
@@ -165,7 +157,7 @@ try {
         </div>
         <div class="info-row">
           <div class="info-label">お支払い方法</div>
-          <div class="info-value"><?= htmlspecialchars($payment_jp) ?></div>
+          <div class="info-value"><?= htmlspecialchars($payment_method) ?></div>
         </div>
 
         <form action="new-pay.php">
@@ -178,8 +170,7 @@ try {
         <?php if (!empty($custom_options)): // オプションが1件以上あれば ?>
           <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
           <h2 style="color: red;">こちらは解約済みのオプションです。<br>
-          ーー月ーー日までご利用いただけます。</h2>
-          <!-- 上のところは後々編集する -->
+          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>日までご利用いただけます。</h2>
           <?php endif; ?>
           <?php foreach ($custom_options as $option): // ループで全部表示 ?>
             <div class="info-row">
@@ -195,17 +186,9 @@ try {
           <form action="product.php">
             <button class="btn btn-primary">プラン変更</button>
           </form>
-
-          <?php
-          // 契約中のみ契約解除ボタンを表示
-          if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] != 2):
-          ?>
           <form action="confirm_cancel.php" method="post">
             <button type="submit" class="btn btn-danger">契約解除</button>
           </form>
-          <?php else: ?>
-          <p style="color: red;">契約は既に解約済みです</p>
-          <?php endif; ?>
         </div>
 
       </div>

@@ -1,29 +1,40 @@
 <?php
 session_start();
-require '../common/DBconnect.php';
+require 'DBconnect.php';
 
-// ログインチェック
+// 1. ログインチェック
 if (!isset($_SESSION['customer']['user_id'])) {
     header('Location: login.php');
     exit;
 }
 
-// POSTリクエストチェック
+// 2. POSTデータチェック
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['payment-method'])) {
     header('Location: new-pay.php');
     exit;
 }
 
 $user_id = $_SESSION['customer']['user_id'];
-$payment_method = $_POST['payment-method']; //('credit_card','paypal','bank_transfer')
+$payment_method = $_POST['payment-method'];
 
-// --- 2. 決済処理 (スタブ) ---
-// 本来はここに Stripe, PayPal などの決済API呼び出し処理が入ります。
-// 今回は「必ず成功する」と仮定します。
-$payment_succeeded = true;
+// 3. 支払い金額と変更モードの取得
+$change_mode = $_SESSION['change_info']['mode'] ?? 'new';
+$pay_amount = 0;
+
+if (isset($_SESSION['change_info']['amount'])) {
+    $pay_amount = $_SESSION['change_info']['amount'];
+} else {
+    if (isset($_SESSION['package_plan'])) {
+        $pay_amount = $_SESSION['package_plan']['totalPrice'];
+    } elseif (isset($_SESSION['custom_options'])) {
+        $pay_amount = $_SESSION['custom_total_price'];
+    }
+}
+
+// --- 決済処理 (スタブ) ---
+$payment_succeeded = true; 
 
 if (!$payment_succeeded) {
-    $_SESSION['payment_error'] = "決済処理に失敗しました。";
     header('Location: payment-error.php');
     exit;
 }
@@ -31,172 +42,180 @@ if (!$payment_succeeded) {
 try {
     $db->beginTransaction();
 
-    // --------------------------------------------------
-    // A. カート情報の取得 (DBから)
-    // --------------------------------------------------
-    $cartSql = $db->prepare("SELECT * FROM Cart WHERE user_id = ?");
-    $cartSql->execute([$user_id]);
-    $cart = $cartSql->fetch(PDO::FETCH_ASSOC);
-
-    if (!$cart) {
-        throw new Exception("カート情報が見つかりません。");
-    }
-
-    $cart_id = $cart['cart_id'];
-    $total_amount = $cart['total_amount'];
-
-    // カート内アイテムの取得
-    $itemsSql = $db->prepare("SELECT * FROM Cart_Items WHERE cart_id = ?");
-    $itemsSql->execute([$cart_id]);
-    $cart_items = $itemsSql->fetchAll(PDO::FETCH_ASSOC);
-
-    // --------------------------------------------------
-    // B. 期間(サブスクリプション期間)の計算
-    // --------------------------------------------------
-    $start_date = new DateTime(); // 今日 (開始日)
-    $end_date   = new DateTime(); // 計算用 (終了日)
-
-    // パッケージプランがある場合
-    if (isset($_SESSION['package_plan'])) {
-        
-        // ★ここで期間タイプを取得します
-        // ※ add_pack.php で 'monthly', 'yearly', '3years' のいずれかをセットしておいてください
-        $plan_cycle = $_SESSION['package_plan']['plan_type'] ?? 'monthly'; 
-
-        switch ($plan_cycle) {
-            case 'triennially':
-                // 3年後の日付
-                $end_date->modify('+3 years');
-                break;
-            case 'yearly':
-                // 1年後の日付
-                $end_date->modify('+1 year');
-                break;
-            case 'monthly':
-            default:
-                // 1ヶ月後の日付
-                $end_date->modify('+1 month');
-                break;
-        }
-
-    } 
-    // カスタムプランがある場合
-    elseif (isset($_SESSION['custom_options'])) {
-        
-        $custom_cycle = $_SESSION['custom_billing_cycle'] ?? 'monthly';
-
-        if ($custom_cycle === 'yearly') {
-            $end_date->modify('+1 year');
-        } else {
-            $end_date->modify('+1 month');
-        }
-    }
-
-    // DB保存用のフォーマット (Y-m-d)
-    $sql_start_date = $start_date->format('Y-m-d');
-    $sql_end_date   = $end_date->format('Y-m-d');
-
-
-    // --------------------------------------------------
+    // ==================================================
     // 1. Ordersテーブルへの登録
-    // --------------------------------------------------
-    // user_id, total_amount, order_date
-    $orderSql = $db->prepare("INSERT INTO Orders (user_id,total_amount,status,created_at,updated_at) VALUES (?, ?, 'paid',NOW(),NOW())");
-    $orderSql->execute([$user_id, $total_amount]);
+    // ==================================================
+    $orderSql = $db->prepare("INSERT INTO Orders (user_id, total_amount, status, created_at, updated_at) VALUES (?, ?, 'paid', NOW(), NOW())");
+    $orderSql->execute([$user_id, $pay_amount]);
     $order_id = $db->lastInsertId();
 
 
-    // --------------------------------------------------
+    // ==================================================
     // 2. Order_Items (明細) への登録
-    // --------------------------------------------------
-    // カートの中身を注文明細として保存
-    // あれする　ここでベースプランもcart_itemに登録するように変更してください
-    $orderItemSql = $db->prepare("INSERT INTO Order_Items (order_id, product_id, price) VALUES (?, ?, ?)");
-    if(isset($_SESSION['custom_options'])){
-        $orderItemSql->execute([$order_id,0,0]);
-    foreach ($cart_items as $item) {
-        $orderItemSql->execute([
-            $order_id, 
-            $item['product_id'], 
-            $item['price']
-        ]);
-    }
-    }else{
-        $orderItemSql->execute([$order_id,$_SESSION['package_plan']['product_id'],$_SESSION['package_plan']['totalPrice']]);
+    // ==================================================
+    $itemSql = $db->prepare("INSERT INTO Order_Items (order_id, product_name, category_id, price, quantity, created_at, updated_at) VALUES (?, ?, ?, ?, 1, NOW(), NOW())");
+
+    if (isset($_SESSION['custom_options'])) {
+        foreach ($_SESSION['custom_options'] as $item) {
+            $itemSql->execute([$order_id, $item['label'], 2, $item['price']]);
+        }
+    } elseif (isset($_SESSION['package_plan'])) {
+        $plan = $_SESSION['package_plan'];
+        $itemSql->execute([$order_id, $plan['product_name'], 1, $plan['totalPrice']]);
     }
 
 
-    // --------------------------------------------------
+    // ==================================================
     // 3. Paymentsテーブルへの登録
-    // --------------------------------------------------
-    // order_id, amount, method, payment_date
-    $paymentSql = $db->prepare("INSERT INTO Payments (order_id,amount,payment_date,payment_method,status) VALUES (?,?,NOW(),?,'success')");
-    $paymentSql->execute([$order_id,$total_amount, $payment_method]);
+    // ==================================================
+    $paymentSql = $db->prepare("INSERT INTO Payments (order_id, amount, payment_date, payment_method, status) VALUES (?, ?, NOW(), ?, 'success')");
+    $paymentSql->execute([$order_id, $pay_amount, $payment_method]);
 
 
-    // --------------------------------------------------
-    // 4. Subscription (契約) テーブルへの登録
-    // --------------------------------------------------
-    // user_id, order_id, start_date, end_date, status(1=有効など)
-    $subSql = $db->prepare("INSERT INTO Subscription (user_id,product_id,start_date,end_date,status_id,create_date,update_date) VALUES (?,?,?,?,1,NOW(),NOW())");
-    if(isset($_SESSION['custom_options'])){
-        $subSql->execute([$user_id,0,$sql_start_date,$sql_end_date]);
-    }else{
-        $subSql->execute([$user_id,$_SESSION['package_plan']['product_id'],$sql_start_date,$sql_end_date]);
+    // ==================================================
+    // ★追加: 予約の強制キャンセル処理
+    // upgradeまたはswitchの場合、未来の予約(start_date > NOW)は無効化する
+    // ==================================================
+    if ($change_mode === 'upgrade' || $change_mode === 'switch') {
+        // 解約扱い(status=2)にする、または物理削除する
+        // ここでは「キャンセル済み」として履歴に残るよう status=2 にUPDATEします
+        $cancelResSql = $db->prepare("UPDATE Subscription SET status_id = 2, update_date = NOW() WHERE user_id = ? AND start_date > NOW() AND status_id = 1");
+        $cancelResSql->execute([$user_id]);
     }
-    $subscription_id = $db->lastInsertId();
 
 
-    // --------------------------------------------------
-    // 5. SubscriptionCustoms (契約詳細) への登録
-    // --------------------------------------------------
-    // どのオプションが含まれているかを記録
-    $subCustomSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id,create_date,update_date) VALUES (?, ?,NOW(),NOW())");
-    foreach ($cart_items as $item) {
-        if($item['product_id'] != 0){
-        $subCustomSql->execute([
-            $subscription_id,
-            $item['product_id']
-        ]);
+    // ==================================================
+    // 4. 日付の計算
+    // ==================================================
+    if ($change_mode === 'reserve') {
+        $current_end_date = $_SESSION['change_info']['current_end_date'];
+        $start_dt = new DateTime($current_end_date);
+        $start_dt->modify('+1 day');
+    } else {
+        $start_dt = new DateTime();
+    }
+    $start_date_sql = $start_dt->format('Y-m-d');
+
+    // 終了日の決定
+    $plan_type = $_SESSION['package_plan']['plan_type'] ?? $_SESSION['custom_billing_cycle'] ?? 'monthly';
+    $end_dt = clone $start_dt;
+    
+    if($plan_type === 'triennially') {
+        $end_dt->modify('+3 years');
+    } elseif($plan_type === 'yearly') {
+        $end_dt->modify('+1 year');
+    } else {
+        $end_dt->modify('+1 month');
+    }
+    $end_date_sql = $end_dt->format('Y-m-d');
+
+
+    // ==================================================
+    // 5. Subscription (契約) の処理 (分岐)
+    // ==================================================
+
+    if ($change_mode === 'reserve') {
+        // --- Reserve (予約) ---
+        $new_pid = isset($_SESSION['package_plan']) ? $_SESSION['package_plan']['product_id'] : 0;
+        $subSql = $db->prepare("INSERT INTO Subscription (user_id, product_id, start_date, end_date, status_id, create_date, update_date) VALUES (?, ?, ?, ?, 1, NOW(), NOW())");
+        $subSql->execute([$user_id, $new_pid, $start_date_sql, $end_date_sql]);
+        $new_sub_id = $db->lastInsertId();
+
+        if (isset($_SESSION['custom_options'])) {
+            $subCSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id, create_date, update_date) VALUES (?, ?, NOW(), NOW())");
+            foreach ($_SESSION['custom_options'] as $opt) {
+                $subCSql->execute([$new_sub_id, $opt['id']]);
+            }
+        }
+
+    } elseif ($change_mode === 'upgrade') {
+        // --- Upgrade ---
+        $target_sub_id = $_SESSION['change_info']['current_sub_id'];
+
+        if (isset($_SESSION['package_plan'])) {
+            $new_pid = $_SESSION['package_plan']['product_id'];
+            $updSql = $db->prepare("UPDATE Subscription SET product_id = ?, status_id = 1, update_date = NOW() WHERE subscription_id = ?");
+            $updSql->execute([$new_pid, $target_sub_id]);
+        
+        } elseif (isset($_SESSION['custom_options'])) {
+            $updStatusSql = $db->prepare("UPDATE Subscription SET status_id = 1, update_date = NOW() WHERE subscription_id = ?");
+            $updStatusSql->execute([$target_sub_id]);
+
+            $delDSql = $db->prepare("DELETE FROM SubscriptionCustoms WHERE subscription_id = ?");
+            $delDSql->execute([$target_sub_id]);
+            
+            $insDSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id, create_date, update_date) VALUES (?, ?, NOW(), NOW())");
+            foreach ($_SESSION['custom_options'] as $opt) {
+                $insDSql->execute([$target_sub_id, $opt['id']]);
+            }
+        }
+
+    } elseif ($change_mode === 'switch') {
+        // --- Switch ---
+        if(isset($_SESSION['change_info']['current_sub_id'])){
+            $old_sub_id = $_SESSION['change_info']['current_sub_id'];
+            $stopSql = $db->prepare("UPDATE Subscription SET status_id = 2, end_date = NOW(), update_date = NOW() WHERE subscription_id = ?");
+            $stopSql->execute([$old_sub_id]);
+        }
+
+        $new_pid = isset($_SESSION['package_plan']) ? $_SESSION['package_plan']['product_id'] : 0;
+        $subSql = $db->prepare("INSERT INTO Subscription (user_id, product_id, start_date, end_date, status_id, create_date, update_date) VALUES (?, ?, ?, ?, 1, NOW(), NOW())");
+        $subSql->execute([$user_id, $new_pid, $start_date_sql, $end_date_sql]);
+        $new_sub_id = $db->lastInsertId();
+
+        if (isset($_SESSION['custom_options'])) {
+            $subCSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id, create_date, update_date) VALUES (?, ?, NOW(), NOW())");
+            foreach ($_SESSION['custom_options'] as $opt) {
+                $subCSql->execute([$new_sub_id, $opt['id']]);
+            }
+        }
+
+    } else {
+        // --- New ---
+        $new_pid = isset($_SESSION['package_plan']) ? $_SESSION['package_plan']['product_id'] : 0;
+        $subSql = $db->prepare("INSERT INTO Subscription (user_id, product_id, start_date, end_date, status_id, create_date, update_date) VALUES (?, ?, ?, ?, 1, NOW(), NOW())");
+        $subSql->execute([$user_id, $new_pid, $start_date_sql, $end_date_sql]);
+        $new_sub_id = $db->lastInsertId();
+
+        if (isset($_SESSION['custom_options'])) {
+            $subCSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id, create_date, update_date) VALUES (?, ?, NOW(), NOW())");
+            foreach ($_SESSION['custom_options'] as $opt) {
+                $subCSql->execute([$new_sub_id, $opt['id']]);
+            }
         }
     }
 
+    // ==================================================
+    // 6. カート情報のクリア
+    // ==================================================
+    $cartSql = $db->prepare("SELECT cart_id FROM Cart WHERE user_id = ?");
+    $cartSql->execute([$user_id]);
+    $cart = $cartSql->fetch(PDO::FETCH_ASSOC);
+    if ($cart) {
+        $db->prepare("DELETE FROM Cart_Items WHERE cart_id = ?")->execute([$cart['cart_id']]);
+        $db->prepare("DELETE FROM Cart WHERE cart_id = ?")->execute([$cart['cart_id']]);
+    }
 
-    // --------------------------------------------------
-    // 6. カート情報の削除 (購入完了したので空にする)
-    // --------------------------------------------------
-    // 外部キー制約がある場合、子(Items)から消す必要があることが多いです
-    $delItemSql = $db->prepare("DELETE FROM Cart_Items WHERE cart_id = ?");
-    $delItemSql->execute([$cart_id]);
-    
-    $delCartSql = $db->prepare("DELETE FROM Cart WHERE cart_id = ?");
-    $delCartSql->execute([$cart_id]);
-
-
-    // --- 完了処理 ---
     $db->commit();
 
-    // セッションのカート情報をクリア
+    // セッションクリア
     unset($_SESSION['custom_options']);
     unset($_SESSION['custom_total_price']);
     unset($_SESSION['custom_billing_cycle']);
     unset($_SESSION['custom_term_start']);
     unset($_SESSION['custom_term_end']);
-    unset($_SESSION['package_plan']); // パッケージプランもあればクリア
+    unset($_SESSION['package_plan']);
+    unset($_SESSION['change_info']); 
 
-    // 完了ページへリダイレクト
     header('Location: pay_complete.php');
     exit;
 
 } catch (Exception $e) {
-    // --- エラー処理 ---
     if ($db->inTransaction()) {
         $db->rollBack();
     }
-    
-    // エラーメッセージをセッションに保存
-    $_SESSION['payment_error'] = "システムエラーが発生しました: " . $e->getMessage();
-    header('Location: payment_error.php');
+    $_SESSION['payment_error'] = "処理中にエラーが発生しました: " . $e->getMessage();
+    header('Location: payment-error.php');
     exit;
 }
 ?>
