@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "DBconnect.php";
+require "../common/DBconnect.php";
 
 // ログインチェック
 if (!isset($_SESSION['customer']['user_id'])) {
