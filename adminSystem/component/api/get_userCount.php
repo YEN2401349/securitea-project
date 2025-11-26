@@ -1,4 +1,4 @@
-<?php include("../DBconnect.php");
+<?php include("../../../common/DBconnect.php");
 try {
     $stmt = $db->prepare("SELECT count(*) AS user_count FROM Users u WHERE u.role = 'user';");
     $stmt->execute();

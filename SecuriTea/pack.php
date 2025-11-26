@@ -1,5 +1,5 @@
 <?php session_start();?>
-<?php require "DBconnect.php";?>
+<?php require "../common/DBconnect.php";?>
 
 <?php
 // --- ▼ ここから追加 (DBデータ取得処理) ---
