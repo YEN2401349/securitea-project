@@ -1,5 +1,5 @@
 <?php
-require_once("../DBconnect.php");
+require_once("../../../common/DBconnect.php");
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;

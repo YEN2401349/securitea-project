@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "DBconnect.php";
+require "../common/DBconnect.php";
 
 // --- 1. pack.php からのPOSTデータを受け取る ---
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['product_id']) || !isset($_POST['plan_type'])) {

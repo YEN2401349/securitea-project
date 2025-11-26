@@ -1,5 +1,5 @@
 <?php
-require 'DBconnect.php';
+require '../common/DBconnect.php';
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

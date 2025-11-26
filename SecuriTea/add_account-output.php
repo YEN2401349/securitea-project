@@ -1,5 +1,5 @@
 <?php
-require 'DBconnect.php';
+require '../common/DBconnect.php';
 
 $pdo = $db;
 

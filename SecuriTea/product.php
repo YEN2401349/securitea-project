@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php require_once 'DBconnect.php'; ?>
+<?php require_once '../common/DBconnect.php'; ?>
 <?php
 // ▼▼▼ ここから追加 ▼▼▼
 // URLから検索キーワードを取得

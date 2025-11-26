@@ -1,5 +1,5 @@
 <?php
-include("../DBconnect.php");
+include("../../../common/DBconnect.php");
 $data = json_decode(file_get_contents("php://input"), true);
 
 $id = $data["id"] ?? 0;
