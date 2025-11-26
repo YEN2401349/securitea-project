@@ -223,7 +223,7 @@ function getCurrentTime() {
 
 // Function to call Gemini API
 async function callGeminiAPI(message) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCQvZG0QNo2yf_Ndz9PgLNBPW9C2num05U`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBxcmFcgmSBtO2nzH3rxkJ1QrTo0ffQEoc`;
 
     const requestBody = {
         contents: [
