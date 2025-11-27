@@ -1,5 +1,5 @@
 <?PHP session_start();?>
-<?PHP require_once 'DBconnect.php'; ?>
+<?PHP require_once '../common/DBconnect.php'; ?>
 <?php
 // セッションから既存の選択情報を読み込む
 $existing_labels = [];

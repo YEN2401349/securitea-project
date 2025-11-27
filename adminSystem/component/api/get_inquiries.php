@@ -1,5 +1,5 @@
 <?php
-include("../DBconnect.php");
+include("../../../common/DBconnect.php");
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);

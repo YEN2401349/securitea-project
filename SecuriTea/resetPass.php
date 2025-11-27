@@ -1,25 +1,6 @@
-<?php
-session_start();
-if (!isset($_SESSION['reset_email'])) {
-    header('Location: remindPass.php');
-    exit;
-}
-if (isset($_POST['number'])) {
-    $code = $_POST['number'];
-    if (strlen($code) !== 6 || !is_numeric($code)) {
-        header('Location: remindPass-output.php?error=code_invalid');
-        exit;
-    }
-    $_SESSION['password_reset_step'] = 2;
-} else if (isset($_SESSION['password_reset_step']) && $_SESSION['password_reset_step'] === 2) {
-} else {
-    header('Location: remindPass-output.php');
-    exit;
-}
-?>
-
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +8,7 @@ if (isset($_POST['number'])) {
   <link rel="stylesheet" href="css/login-style.css">
   <link rel="stylesheet" href="css/heder-footer.css">
 </head>
+
 <body>
   <!-- ヘッダー -->
   <?php require 'headerTag.php' ?>
@@ -38,14 +20,11 @@ if (isset($_POST['number'])) {
       <p class="login-description">
         新しいパスワードを入力してください。
       </p>
-
-      <?php
-      if (isset($_GET['error']) && $_GET['error'] === 'mismatch') {
-          echo '<p style="color: red;">パスワードが一致しません。</p>';
-      }
-      ?>
-
-      <form action="resetPass_process.php" method="post" class="login-form">
+      <form id="resetForm" class="login-form">
+        <?php
+        $mail = isset($_GET['email']) ? $_GET['email'] : '...';
+        echo '<input type="hidden" id="email" name="email" value="' . $mail . '">';
+        ?>
         <div class="form-group">
           <label for="password">パスワード</label>
           <input type="password" id="password" name="password" required placeholder="パスワード">
@@ -53,8 +32,11 @@ if (isset($_POST['number'])) {
         <div class="form-group">
           <label for="password-confirm">パスワード(確認)</label>
           <input type="password" id="password-confirm" name="password_confirm" required placeholder="パスワード">
+          <span id="passwordError" class="error">
+            パスワードが一致しません。
+          </span>
         </div>
-          
+
 
         <button type="submit" class="product-btn">再設定</button>
       </form>
@@ -63,5 +45,7 @@ if (isset($_POST['number'])) {
 
   <!-- フッター -->
   <?php require "footer.php"; ?>
+  <script src="./script/reset_password.js"></script>
 </body>
+
 </html>

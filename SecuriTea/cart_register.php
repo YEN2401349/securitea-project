@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'DBconnect.php'; 
+require "../common/DBconnect.php";
 
 // (A) プランの有無を確認
 $hasCustomPlan = isset($_SESSION['custom_options']) && !empty($_SESSION['custom_options']);
@@ -82,11 +82,23 @@ try {
         $itemSql->execute([$cart_id,$_SESSION['package_plan']['product_id'],$total_amount]);
     }
 
+    // 新規契約者と既存契約者を判断する処理
+    $subSql = $db->prepare("SELECT COUNT(*) FROM Subscription WHERE user_id = ? AND end_date >= NOW()");
+    $subSql->execute([$user_id]);
+    $subCount = $subSql->fetchColumn();
+
+    // 件数が0より大きければ「既存契約者」、そうでなければ「新規」
+    if ($subCount > 0) {
+        // 既存契約者用のページへ（例: 契約更新用のカート画面など）
+        header('Location: cart_planChange.php'); 
+    } else {
+        // 新規登録者用のページへ（通常のカート画面）
+        header('Location: cart.php');
+    }
+    exit; // 忘れずにexit
+
 } catch (PDOException $e) {
     echo "データベースエラー: " . $e->getMessage();
     exit;
 }
-
-header('Location: cart.php');
-exit;
 ?>

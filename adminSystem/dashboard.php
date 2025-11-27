@@ -21,9 +21,9 @@
     </div>
 </section>
 <div style="width:80%; max-width:1000px; margin:50px auto;">
-    <h2 style="text-align:center;">📈 年間売上折線圖</h2>
+    <h2 style="text-align:center;">📈 年間売上折線図</h2>
     <div style="text-align:right; margin-bottom:10px;">
-        <label for="yearSelect">年度選擇：</label>
+        <label for="yearSelect">年度選択：</label>
         <select id="yearSelect" class="yearSelect">
         </select>
     </div>

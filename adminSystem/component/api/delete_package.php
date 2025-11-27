@@ -1,5 +1,5 @@
 <?php
-include("../DBconnect.php");
+include("../../../common/DBconnect.php");
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!empty($input['id'])) {

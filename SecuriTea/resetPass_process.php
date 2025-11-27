@@ -1,5 +1,5 @@
 <?php session_start(); ?>
-<?php require 'DBconnect.php' ?>
+<?php require '../common/DBconnect.php' ?>
 <?php
 if (!isset($_SESSION['reset_email']) || !isset($_SESSION['password_reset_step']) || $_SESSION['password_reset_step'] !== 2) {
     header('Location: remindPass.php');

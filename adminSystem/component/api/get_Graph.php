@@ -1,5 +1,5 @@
 <?php
-include('../DBconnect.php'); 
+include('../../../common/DBconnect.php'); 
 
 $year = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
 

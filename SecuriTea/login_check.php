@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'DBconnect.php'; 
+require '../common/DBconnect.php'; 
 
 $email = $_POST['email'];
 $password = $_POST['password'];

@@ -123,6 +123,19 @@ A　マルウェアや不正アクセスによってカメラの画像や音声�
 
 Q　支払い方法は何ですか？
 A　"クレジットカード、PayPal、銀行引き落としの 3 つから選べ、更新日に自動的に引き落とされます"
+
+Q スタンダードプランについて
+A "スタンダードプランはライトプランの機能に加えてWebカメラやマイクの保護や
+ポップアップ・広告ブロック、パスワードマネージャー機能によりライトプランよりも利便性
+を向上化させたプランでペアレンタルコントロール機能もあるのでお子様のデバイスでの
+利用にもおすすめできます。"
+
+Q	エキスパートプランについて
+A	"エキスパートプランはスタンダードプランに加えVPN接続や暗号化ストレージの機能の
+追加だけでなくパフォーマンスの最適化を行う機能もありもっと強固なセキュリティソフトを
+お求めの方向けの商品となっています"
+
+
 \n
 
 
@@ -217,7 +230,7 @@ function getCurrentTime() {
 
 // Function to call Gemini API
 async function callGeminiAPI(message) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDYuVhc0z89JA4BYW9G8x6mvvT4NnqCboU`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBxcmFcgmSBtO2nzH3rxkJ1QrTo0ffQEoc`;
 
     const requestBody = {
         contents: [

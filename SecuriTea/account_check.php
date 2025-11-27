@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'DBconnect.php'; 
+require '../common/DBconnect.php'; 
 
 // (A) カスタムプランがカートにあるか
 $hasCustomPlan = isset($_SESSION['custom_options']) && !empty($_SESSION['custom_options']);

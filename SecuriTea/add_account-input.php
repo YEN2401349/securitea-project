@@ -1,4 +1,3 @@
-<?php require 'headerTag.php' ?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -6,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SecuriTea - アカウント登録</title>
   <link rel="stylesheet" href="css/login-style.css">
-  <link rel="stylesheet" href="css/heder-footer.css"> 
+  <link rel="stylesheet" href="css/heder-footer.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"> 
   <style>
     /* プルダウンメニューのスタイルを他の入力欄と合わせるためのサンプル */
     .login-form select {
@@ -28,6 +29,7 @@
   </style>
 </head>
 <body>
+  <?php require 'headerTag.php' ?>
   <main class="login-container">
     <div class="login-card">
       <h2 class="section-title">アカウント登録</h2>
@@ -48,9 +50,9 @@
           <label for="gender">性別</label>
           <select id="gender" name="gender" required>
             <option value="" disabled selected>選択してください</option>
-            <option value="male">男性</option>
-            <option value="female">女性</option>
-            <option value="unanswered">無回答</option>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+            <option value="その他">その他</option>
           </select>
         </div>
 

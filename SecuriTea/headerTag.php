@@ -16,21 +16,21 @@
                 if(isset($_SESSION['customer'])){
                     echo '<li class="nav-item">',
                             '<a href="account.php" class="nav-link">',
-                                '<i class="fas fa-question-circle"></i>アカウント情報',
+                                '<i class="fas fas fa-user"></i>アカウント情報',
                             '</a>',
                         '</li>';
                 }
                 else{
                     echo '<li class="nav-item">',
                             '<a href="login.php" class="nav-link">',
-                                '<i class="fas fa-user"></i>ログイン',
+                                '<i class="fas fa-sign-in-alt"></i>ログイン',
                             '</a>',
                         '</li>';
                 }
 
                     echo '<li class="nav-item">',
                             '<a href="product.php" class="nav-link">',
-                                '<i class="fas fa-user"></i>商品一覧',
+                                '<i class="fas fa-shopping-cart"></i>商品一覧',
                             '</a>',
                         '</li>',
 
