@@ -28,25 +28,34 @@ try {
   $sql_subscription->execute([$user_id]);
   $subscription = $sql_subscription->fetch(PDO::FETCH_ASSOC);
 
-  // 3. user_id を使って Orders テーブルから最新の order_id を取得
+  // 3. 最新の注文情報 (Orders)
   $sql_order = $pdo->prepare("SELECT * FROM Orders WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1");
   $sql_order->execute([$user_id]);
   $order = $sql_order->fetch(PDO::FETCH_ASSOC);
 
-  $order_items = [];
-  if ($order && !empty($order['order_id'])) {
-      // product_name, price, category_id を取得
-      $sql_items = $pdo->prepare("SELECT * FROM Order_Items WHERE order_id = ?");
-      $sql_items->execute([$order['order_id']]);
-      $order_items = $sql_items->fetchAll(PDO::FETCH_ASSOC);
-  }
+  $display_plan_name = '未登録'; 
+  $display_options = [];         
+  $total_items_price = 0; // ★追加: 合計金額計算用
 
-  // 3.5 契約プラン名取得
-  $product = null; 
-  if ($subscription && !empty($subscription['product_id'])) {
-    $sql_product = $pdo->prepare("SELECT name FROM Products WHERE product_id = ?");
-    $sql_product->execute([$subscription['product_id']]);
-    $product = $sql_product->fetch(PDO::FETCH_ASSOC);
+  if ($order && !empty($order['order_id'])) {
+      $sql_items = $pdo->prepare("SELECT product_name, price, category_id FROM Order_Items WHERE order_id = ?");
+      $sql_items->execute([$order['order_id']]);
+      $items = $sql_items->fetchAll(PDO::FETCH_ASSOC);
+
+      foreach ($items as $item) {
+          // ★合計金額に加算
+          $total_items_price += (int)$item['price'];
+
+          if ($item['category_id'] == 1) {
+              $display_plan_name = $item['product_name'];
+          } elseif ($item['category_id'] == 2) {
+              $display_options[] = $item;
+          }
+      }
+      
+      if ($display_plan_name === '未登録' && !empty($display_options)) {
+          $display_plan_name = 'カスタムプラン';
+      }
   }
 
   // 4. order_id が取得できたら、Payments テーブルを検索
@@ -139,19 +148,13 @@ try {
         <div class="info-row">
           <div class="info-label">利用プラン</div>
           <div class="info-value">
-            <?php
-              if (!empty($subscription) && !empty($order_items['product_name'])) {
-                  echo htmlspecialchars($order_items['product_name']);
-              } else {
-                echo '未登録';
-              }
-            ?>
+            <?= htmlspecialchars($display_plan_name) ?>
           </div>
         </div>
         <div class="info-row">
           <div class="info-label">料金</div>
           <!-- $user['billing_cycle'] 必要に応じて -->
-          <div class="info-value"><?= htmlspecialchars($order_items['price'] ?? '---') ?>円</div>
+          <div class="info-value"><?= number_format($total_items_price) ?>円</div>
         </div>
         <div class="info-row">
           <div class="info-label">契約期間</div>
@@ -183,7 +186,7 @@ try {
           <?php foreach ($custom_options as $option): // ループで全部表示 ?>
             <div class="info-row">
               <div class="info-label">オプション</div>
-              <div class="info-value"><?= htmlspecialchars($option['name']) ?></div>
+              <div class="info-value"><?= htmlspecialchars($option['product_name']) ?></div>
             </div>
           <?php endforeach; ?>
         <?php else: // オプションが1件もなければ 念のため ?>
