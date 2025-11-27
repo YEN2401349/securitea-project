@@ -126,7 +126,7 @@ try {
         <h2>利用状況</h2>
         <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
           <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
-          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>日までご利用いただけます。</h2>
+          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>までご利用いただけます。</h2>
           <?php endif; ?>
         <div class="info-row">
           <div class="info-label">利用プラン</div>
@@ -170,7 +170,7 @@ try {
         <?php if (!empty($custom_options)): // オプションが1件以上あれば ?>
           <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
           <h2 style="color: red;">こちらは解約済みのオプションです。<br>
-          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>日までご利用いただけます。</h2>
+          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>までご利用いただけます。</h2>
           <?php endif; ?>
           <?php foreach ($custom_options as $option): // ループで全部表示 ?>
             <div class="info-row">
@@ -178,7 +178,7 @@ try {
               <div class="info-value"><?= htmlspecialchars($option['name']) ?></div>
             </div>
           <?php endforeach; ?>
-        <?php else: // オプションが1件もなければ 念のためで一応ね ?>
+        <?php else: // オプションが1件もなければ 念のため ?>
           <p>オプション未契約</p>
         <?php endif; ?>
 
@@ -186,9 +186,16 @@ try {
           <form action="product.php">
             <button class="btn btn-primary">プラン変更</button>
           </form>
+          <?php
+          // 契約中のみ契約解除ボタンを表示
+          if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] != 2):
+          ?>
           <form action="confirm_cancel.php" method="post">
             <button type="submit" class="btn btn-danger">契約解除</button>
           </form>
+          <?php else: ?>
+          <p style="color: red;">契約は既に解約済みです</p>
+          <?php endif; ?>
         </div>
 
       </div>
