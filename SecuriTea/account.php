@@ -33,6 +33,14 @@ try {
   $sql_order->execute([$user_id]);
   $order = $sql_order->fetch(PDO::FETCH_ASSOC);
 
+  $order_items = [];
+  if ($order && !empty($order['order_id'])) {
+      // product_name, price, category_id を取得
+      $sql_items = $pdo->prepare("SELECT * FROM Order_Items WHERE order_id = ?");
+      $sql_items->execute([$order['order_id']]);
+      $order_items = $sql_items->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   // 3.5 契約プラン名取得
   $product = null; 
   if ($subscription && !empty($subscription['product_id'])) {
@@ -132,8 +140,8 @@ try {
           <div class="info-label">利用プラン</div>
           <div class="info-value">
             <?php
-              if (!empty($subscription) && !empty($product['name'])) {
-                  echo htmlspecialchars($product['name']);
+              if (!empty($subscription) && !empty($order_items['product_name'])) {
+                  echo htmlspecialchars($order_items['product_name']);
               } else {
                 echo '未登録';
               }
@@ -143,7 +151,7 @@ try {
         <div class="info-row">
           <div class="info-label">料金</div>
           <!-- $user['billing_cycle'] 必要に応じて -->
-          <div class="info-value"><?= htmlspecialchars($order['total_amount'] ?? '---') ?>円</div>
+          <div class="info-value"><?= htmlspecialchars($order_items['price'] ?? '---') ?>円</div>
         </div>
         <div class="info-row">
           <div class="info-label">契約期間</div>
