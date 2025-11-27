@@ -77,7 +77,11 @@ if (chatForm) {
             return `商品名: ${p.name}, 価格: ${p.price}円, プランタイプ: ${p.plan_type}, 期間: ${p.duration_months}ヶ月, 特徴: ${p.security_features}, カテゴリ: ${p.category_name}`;
         }).join('\n');
         const prompt = `
-会社紹介：
+会社紹介：株式会社SecuriTea（セキュリティー）は、セキュリティソフトを開発・販売している会社です。
+私たちSecuriTeaは、温かいお茶を飲んでホッとする瞬間のような「心からの安心」をお届けしたいと考えています。
+難しい設定や専門用語はいりません。
+お客様一人ひとりに合わせた最適なプランで、目に見えない脅威からあなたを守ります。
+
 
 \n
 
