@@ -171,7 +171,7 @@ try {
           <div class="info-value"><?= htmlspecialchars($payment_method) ?></div>
         </div>
 
-        <form action="new-pay.php">
+        <form action="pay-change.php">
           <div class="card-actions">
             <button class="btn btn-primary">お支払いの変更</button>
           </div>
