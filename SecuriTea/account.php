@@ -211,7 +211,7 @@ try {
       </div>
       <div class="logout-box">
         <form action="logout.php" method="post">
-        <button class="btn btn-secondary">ログアウト</button>
+        <button class="btn logout-btn">ログアウト</button>
         </form>
       </div>
     </main>
