@@ -332,10 +332,28 @@ body {
   margin: 0.5rem 0 0 0;
 }
 
+/* ログアウト枠：右寄せ */
 .logout-box {
-  justify-content: flex-end;
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px 0;
+  display: flex;
+  justify-content: flex-end; /* ★右寄せ */
 }
 
+/* 赤色ログアウトボタン */
 .logout-btn {
-  background-color: #c5221f;
+  background-color: #dc3545;  /* 赤 */
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* hover時の色 */
+.logout-btn:hover {
+  background-color: #bb2d3b;  /* 濃い赤 */
 }
