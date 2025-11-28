@@ -343,17 +343,21 @@ body {
 
 /* 赤色ログアウトボタン */
 .logout-btn {
-  background-color: #dc3545;  /* 赤 */
+  background-color: #ff0019;  /* 赤 */
   color: #fff;
-  padding: 10px 20px;
-  font-size: 15px;
+  padding: 14px 28px;        /* ★高さUP & 余白UP */
+  font-size: 1rem;           /* 16px 相当に拡大 */
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;        /* 少し丸く */
   cursor: pointer;
+  min-width: 150px;          /* ★横幅を最低150pxに */
+  text-align: center;
+  font-weight: 600;          /* 押し間違い防止の太字 */
   transition: 0.2s;
 }
 
 /* hover時の色 */
 .logout-btn:hover {
-  background-color: #bb2d3b;  /* 濃い赤 */
+  background-color: #ff0019;  /* 濃い赤 */
+  transform: translateY(-2px); /* 軽く浮かす → 誤タップ防止にも◎ */
 }
