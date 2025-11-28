@@ -331,3 +331,11 @@ body {
 .error-box p {
   margin: 0.5rem 0 0 0;
 }
+
+.logout-box {
+  justify-content: flex-end;
+}
+
+.logout-btn {
+  background-color: #c5221f;
+}
