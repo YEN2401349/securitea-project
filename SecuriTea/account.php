@@ -207,12 +207,12 @@ try {
           <?php else: ?>
           <p style="color: red;">契約は既に解約済みです</p>
           <?php endif; ?>
-
-          <!-- ★ここにログアウトボタンを追加 -->
-          <form action="logout.php" method="post">
-          <button class="btn btn-secondary">ログアウト</button>
-          </form>
         </div>
+      </div>
+      <div class="logout-box">
+        <form action="logout.php" method="post">
+        <button class="btn btn-secondary">ログアウト</button>
+        </form>
       </div>
     </main>
   </div>
