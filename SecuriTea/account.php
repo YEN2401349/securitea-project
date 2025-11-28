@@ -170,6 +170,11 @@ try {
           <div class="info-value"><?= htmlspecialchars($payment_method) ?></div>
         </div>
 
+        <!--check-->
+        <div class="info-row">
+          <div class="info-label"><?= $order["order_id"]?></div>
+        </div>
+
         <form action="pay-change.php">
           <div class="card-actions">
             <button class="btn btn-primary">お支払いの変更</button>
