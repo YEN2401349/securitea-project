@@ -248,43 +248,7 @@ body {
   background-color: #e8eaed;
 }
 
-/* ===== FOOTER ===== */
-.footer {
-    background: var(--bg-dark);
-    color: var(--text-white);
-    padding: 3rem 0 2rem;
-    margin-top: 4rem;
-}
 
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 2rem;
-}
-
-.footer-links {
-    display: flex;
-    gap: 2rem;
-}
-
-.footer-link {
-    color: var(--text-light);
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: var(--transition);
-}
-
-.footer-link:hover {
-    color: var(--text-white);
-    transform: translateY(-1px);
-}
-
-.footer-copyright p {
-    color: var(--text-light);
-    font-size: 0.875rem;
-}
 /* --- 電話番号3分割フォーム (追記) --- */
 .phone-inputs {
   display: flex;
