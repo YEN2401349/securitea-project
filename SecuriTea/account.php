@@ -216,7 +216,5 @@ try {
       </div>
     </main>
   </div>
-    <!-- フッター -->
-  <?php require "footer.php"; ?>
 </body>
 </html>
