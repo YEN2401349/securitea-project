@@ -153,7 +153,6 @@ body {
   gap: 0.75rem; /* ボタン間のスペース */
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #eee; /* 上の要素との区切り線 */
 }
 
 /* 共通ボタンスタイル */
@@ -248,7 +247,43 @@ body {
   background-color: #e8eaed;
 }
 
+/* ===== FOOTER ===== */
+.footer {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    padding: 3rem 0 2rem;
+    margin-top: 4rem;
+}
 
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.footer-link {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: var(--transition);
+}
+
+.footer-link:hover {
+    color: var(--text-white);
+    transform: translateY(-1px);
+}
+
+.footer-copyright p {
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
 /* --- 電話番号3分割フォーム (追記) --- */
 .phone-inputs {
   display: flex;
@@ -294,34 +329,4 @@ body {
 
 .error-box p {
   margin: 0.5rem 0 0 0;
-}
-
-/* ログアウト枠：右寄せ */
-.logout-box {
-  width: 100%;
-  margin-top: 20px;
-  padding: 10px 0;
-  display: flex;
-  justify-content: flex-end; /* ★右寄せ */
-}
-
-/* 赤色ログアウトボタン */
-.logout-btn {
-  background-color: #ff0019;  /* 赤 */
-  color: #fff;
-  padding: 14px 28px;        /* ★高さUP & 余白UP */
-  font-size: 1rem;           /* 16px 相当に拡大 */
-  border: none;
-  border-radius: 8px;        /* 少し丸く */
-  cursor: pointer;
-  min-width: 150px;          /* ★横幅を最低150pxに */
-  text-align: center;
-  font-weight: 600;          /* 押し間違い防止の太字 */
-  transition: 0.2s;
-}
-
-/* hover時の色 */
-.logout-btn:hover {
-  background-color: #ff0019;  /* 濃い赤 */
-  transform: translateY(-2px); /* 軽く浮かす → 誤タップ防止にも◎ */
 }
