@@ -15,7 +15,7 @@ try {
 
   // 1. プロフィール情報とメールアドレスを JOIN で一度に取得
   $sql_user = $pdo->prepare("
-      SELECT p.full_name, p.gender, p.phone, u.user_email 
+      SELECT p.full_name, p.gender, p.phone, u.user_email ,card_brand, masked_card_number
       FROM Profiles p
       JOIN Users u ON p.user_id = u.user_id
       WHERE p.user_id = ?
@@ -28,34 +28,17 @@ try {
   $sql_subscription->execute([$user_id]);
   $subscription = $sql_subscription->fetch(PDO::FETCH_ASSOC);
 
-  // 3. 最新の注文情報 (Orders)
+  // 3. user_id を使って Orders テーブルから最新の order_id を取得
   $sql_order = $pdo->prepare("SELECT * FROM Orders WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1");
   $sql_order->execute([$user_id]);
   $order = $sql_order->fetch(PDO::FETCH_ASSOC);
 
-  $display_plan_name = '未登録'; 
-  $display_options = [];         
-  $total_items_price = 0; // ★追加: 合計金額計算用
-
-  if ($order && !empty($order['order_id'])) {
-      $sql_items = $pdo->prepare("SELECT product_name, price, category_id FROM Order_Items WHERE order_id = ?");
-      $sql_items->execute([$order['order_id']]);
-      $items = $sql_items->fetchAll(PDO::FETCH_ASSOC);
-
-      foreach ($items as $item) {
-          // ★合計金額に加算
-          $total_items_price += (int)$item['price'];
-
-          if ($item['category_id'] == 1) {
-              $display_plan_name = $item['product_name'];
-          } elseif ($item['category_id'] == 2) {
-              $display_options[] = $item;
-          }
-      }
-      
-      if ($display_plan_name === '未登録' && !empty($display_options)) {
-          $display_plan_name = 'カスタムプラン';
-      }
+  // 3.5 契約プラン名取得
+  $product = null; 
+  if ($subscription && !empty($subscription['product_id'])) {
+    $sql_product = $pdo->prepare("SELECT name FROM Products WHERE product_id = ?");
+    $sql_product->execute([$subscription['product_id']]);
+    $product = $sql_product->fetch(PDO::FETCH_ASSOC);
   }
 
   // 4. order_id が取得できたら、Payments テーブルを検索
@@ -88,6 +71,10 @@ try {
       $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
   }
 
+
+  $payment_jp =  $user['masked_card_number'] ?
+      "{$user['card_brand']} **** **** **** " . substr($user['masked_card_number'], -4) :
+      '未登録';
 } catch (PDOException $e) {
   echo "エラー：" . $e->getMessage();
   exit();
@@ -143,18 +130,25 @@ try {
         <h2>利用状況</h2>
         <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
           <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
-          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>までご利用いただけます。</h2>
+          ーー月ーー日までご利用いただけます。</h2>
+          <!-- 上のところは後々編集する -->
           <?php endif; ?>
         <div class="info-row">
           <div class="info-label">利用プラン</div>
           <div class="info-value">
-            <?= htmlspecialchars($display_plan_name) ?>
+            <?php
+              if (!empty($subscription) && !empty($product['name'])) {
+                  echo htmlspecialchars($product['name']);
+              } else {
+                echo '未登録';
+              }
+            ?>
           </div>
         </div>
         <div class="info-row">
           <div class="info-label">料金</div>
           <!-- $user['billing_cycle'] 必要に応じて -->
-          <div class="info-value"><?= number_format($total_items_price) ?>円</div>
+          <div class="info-value"><?= htmlspecialchars($order['total_amount'] ?? '---') ?>円</div>
         </div>
         <div class="info-row">
           <div class="info-label">契約期間</div>
@@ -168,10 +162,10 @@ try {
         </div>
         <div class="info-row">
           <div class="info-label">お支払い方法</div>
-          <div class="info-value"><?= htmlspecialchars($payment_method) ?></div>
+          <div class="info-value"><?= htmlspecialchars($payment_jp) ?></div>
         </div>
 
-        <form action="pay-change.php">
+        <form action="new-pay.php">
           <div class="card-actions">
             <button class="btn btn-primary">お支払いの変更</button>
           </div>
@@ -181,15 +175,16 @@ try {
         <?php if (!empty($custom_options)): // オプションが1件以上あれば ?>
           <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
           <h2 style="color: red;">こちらは解約済みのオプションです。<br>
-          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>までご利用いただけます。</h2>
+          ーー月ーー日までご利用いただけます。</h2>
+          <!-- 上のところは後々編集する -->
           <?php endif; ?>
           <?php foreach ($custom_options as $option): // ループで全部表示 ?>
             <div class="info-row">
               <div class="info-label">オプション</div>
-              <div class="info-value"><?= htmlspecialchars($option['product_name']) ?></div>
+              <div class="info-value"><?= htmlspecialchars($option['name']) ?></div>
             </div>
           <?php endforeach; ?>
-        <?php else: // オプションが1件もなければ 念のため ?>
+        <?php else: // オプションが1件もなければ 念のためで一応ね ?>
           <p>オプション未契約</p>
         <?php endif; ?>
 
@@ -197,25 +192,13 @@ try {
           <form action="product.php">
             <button class="btn btn-primary">プラン変更</button>
           </form>
-          <?php
-          // 契約中のみ契約解除ボタンを表示
-          if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] != 2):
-          ?>
           <form action="confirm_cancel.php" method="post">
             <button type="submit" class="btn btn-danger">契約解除</button>
           </form>
-          <?php else: ?>
-          <p style="color: red;">契約は既に解約済みです</p>
-          <?php endif; ?>
         </div>
-      </div>
-      <div class="logout-box">
-        <form action="logout.php" method="post">
-        <button class="btn logout-btn">ログアウト</button>
-        </form>
+
       </div>
     </main>
   </div>
-  <?php require "footer.php"; ?>
 </body>
 </html>
