@@ -190,7 +190,7 @@ try {
           <?php foreach ($custom_options as $option): // ループで全部表示 ?>
             <div class="info-row">
               <div class="info-label">オプション</div>
-              <div class="info-value"><?= htmlspecialchars($option['product_name']) ?></div>
+              <div class="info-value"><?= htmlspecialchars($option['name']) ?></div>
             </div>
           <?php endforeach; ?>
         <?php else: // オプションが1件もなければ 念のため ?>
