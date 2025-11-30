@@ -13,20 +13,7 @@
     //ログイン状態の確認
     //ログインしていればユーザー情報ページのリンク表示
     //ログインして無ければログインページのリンク表示
-                if(isset($_SESSION['customer'])){
-                    echo '<li class="nav-item">',
-                            '<a href="account.php" class="nav-link">',
-                                '<i class="fas fas fa-user"></i>アカウント情報',
-                            '</a>',
-                        '</li>';
-                }
-                else{
-                    echo '<li class="nav-item">',
-                            '<a href="login.php" class="nav-link">',
-                                '<i class="fas fa-sign-in-alt"></i>ログイン',
-                            '</a>',
-                        '</li>';
-                }
+
 
                     echo '<li class="nav-item">',
                             '<a href="product.php" class="nav-link">',
@@ -38,8 +25,27 @@
                             '<a href="inquiry.php" class="nav-link">',
                                 '<i class="fas fa-question-circle"></i>お問い合わせフォーム',
                             '</a>',
+                        '</li>';
+                if(isset($_SESSION['customer'])){
+                    echo '<li class="nav-item">',
+                            '<a href="account.php" class="nav-link">',
+                                '<i class="fas fas fa-user"></i>アカウント情報',
+                            '</a>',
                         '</li>',
-                    '</ul>',
+                        '<li class="nav-item">',
+                            '<a href="logout.php" class="nav-link">',
+                                '<i class="fas fa-sign-out-alt"></i>ログアウト',
+                            '</a>',
+                        '</li>';
+                }
+                else{
+                    echo '<li class="nav-item">',
+                            '<a href="login.php" class="nav-link">',
+                                '<i class="fas fa-sign-in-alt"></i>ログイン',
+                            '</a>',
+                        '</li>';
+                }
+                echo    '</ul>',
                 '</nav>',
             '</div>',
         '</header>';
