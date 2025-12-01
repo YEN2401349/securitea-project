@@ -64,12 +64,12 @@ try {
     // A-1. 現在のプラン詳細 & 定価総額の計算
     // --------------------------------------------------
     $current_is_custom = ($currentSub['product_id'] == 0);
-    $current_total_price = 0;   // ★定価総額（計算用）
-    $current_monthly_price = 0; // 表示用（月額換算）
+    $current_total_price = 0;   
+    $current_monthly_price = 0; 
     $current_plan_name = "";
     $is_cancelled = ($currentSub['status_id'] == 2);
     
-    // ベースとなる月額価格を取得
+    // ベース価格を取得
     $base_price = 0;
 
     if ($current_is_custom) {
@@ -93,17 +93,15 @@ try {
         $current_plan_name = $pData['name'];
     }
 
-    // ★重要: 定価総額（current_total_price）を期間タイプから算出
-    // (add_pack.phpなどのロジックと合わせる: 年額=10倍, 3年=25倍)
+    // 定価総額を期間タイプから算出
     if ($current_duration_type === 'triennially') {
         $current_total_price = $base_price * 25;
     } elseif ($current_duration_type === 'yearly') {
         $current_total_price = $base_price * 10;
     } else {
-        $current_total_price = $base_price; // 月額
+        $current_total_price = $base_price; 
     }
     
-    // 表示用の月額換算はベース価格そのまま
     $current_monthly_price = $base_price;
 
 
@@ -151,16 +149,12 @@ try {
     $today = new DateTime();
     $endDate = new DateTime($currentSub['end_date']);
     
-    // (日割り計算はしなくなりましたが、表示用に日数は一応残しておきます)
-    $interval_remaining = $today->diff($endDate);
-    $days_remaining = max(0, $interval_remaining->days);
-
     $change_mode = ""; 
     $pay_amount = 0;
     $message = "";
     $note = "";
 
-    // ★判定ロジック
+    // ★判定ロジック修正★
 
     // 1. 同一パッケージプランのチェック
     if (!$current_is_custom && !$new_is_custom && ($currentSub['product_id'] == $new_product_id)) {
@@ -171,38 +165,55 @@ try {
             exit;
         }
 
-        // 期間変更 (Reserve)
+        // 期間変更 (Reserve) 
+        // ※「同一プラン」での期間変更は通常、現契約終了後の予約になります。
         $change_mode = "reserve";
         $pay_amount = $new_total_price;
         $message = "契約更新の予約";
         $note = "現在の契約期間（{$endDate->format('Y/m/d')}）が終了した後、自動的に新しい期間の契約が開始されます。";
 
     } elseif ($current_is_custom === $new_is_custom) {
-        // 同系統 (Custom/Custom) -> Upgrade
-        $change_mode = "upgrade";
+        // 同系統 (Custom/Custom)
         
-        // ★修正: シンプルな差額計算 (新定価 - 旧定価)
-        $diff_price = $new_total_price - $current_total_price; 
-        
-        if ($diff_price > 0) {
-            // ★日割りを廃止し、差額そのまま
-            $pay_amount = $diff_price;
-            
-            $message = "プランのアップグレード";
-            $note = "現在の契約期間を引き継ぎ、プラン変更による差額をお支払いいただきます。";
-        } else {
-            $pay_amount = 0;
-            $message = "プランの変更";
-            $note = "現在の契約期間を引き継いでプランを変更します。追加費用は発生しません。";
+        // ★修正ポイント: 期間タイプが変わる場合は、アップグレードではなく「乗り換え(Switch)」にする
+        if ($current_duration_type !== $new_duration_type) {
+            $change_mode = "switch";
+            $pay_amount = $new_total_price;
+            $message = "お支払いサイクルの変更";
+            $note = "現在の契約を終了し、本日から新しい期間で契約を開始します。<br>※現在契約中の期間に対する返金はございませんのでご注意ください。";
         }
-        if ($is_cancelled) { $message .= " (再開)"; }
+        else {
+            // 期間が同じならアップグレード判定
+            $change_mode = "upgrade";
+            $diff_price = $new_total_price - $current_total_price; 
+            
+            if ($diff_price > 0) {
+                $pay_amount = $diff_price;
+                $message = "プランのアップグレード";
+                $note = "現在の契約期間を引き継ぎ、プラン変更による差額をお支払いいただきます。";
+            } else {
+                // ダウンor維持の場合は乗り換え扱いで即時反映（またはReserve）
+                $change_mode = "switch"; 
+                $pay_amount = $new_total_price;
+                $message = "プラン構成の変更";
+                $note = "現在の契約を終了し、本日から新しい構成で契約を開始します。<br>※現在契約中の期間に対する返金はございませんのでご注意ください。";
+            }
+        }
+        
+        if ($is_cancelled && $change_mode === 'upgrade') { 
+            // 解約済みならUpgradeではなくSwitchで再開させる
+             $change_mode = "switch";
+             $pay_amount = $new_total_price;
+             $message = "プランの再開";
+             $note = "解約済みの契約を終了し、本日から新しい契約を開始します。";
+        }
 
     } else {
-        // 異系統 (Switch)
+        // 異系統 (Package <-> Custom など) -> Switch
         $change_mode = "switch";
         $pay_amount = $new_total_price;
         $message = "プランの乗り換え";
-        $note = "現在の契約を終了し、本日から新しいプランで契約を開始します。";
+        $note = "現在の契約を終了し、本日から新しいプランで契約を開始します。<br>※現在契約中の期間に対する返金はございませんのでご注意ください。";
     }
 
     // --------------------------------------------------
@@ -325,7 +336,10 @@ try {
                     </a>
                 </div>
             </div>
-            <p style="text-align:center; color:#666; margin-top:10px; font-size:0.9rem;"><?php echo $note; ?></p>
+            
+            <p style="text-align:center; color:#d32f2f; margin-top:10px; font-size:0.9rem; font-weight:500;">
+                <?php echo $note; ?>
+            </p>
         </div>
     </main>
     
