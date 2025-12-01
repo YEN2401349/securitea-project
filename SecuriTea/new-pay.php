@@ -83,7 +83,7 @@
 
         <div class="form-actions">
         
-            <a href="cart.php" class="submit-btn secondary-btn">
+            <a href="#" onclick="history.back();" class="submit-btn secondary-btn">
                 <i class="fas fa-arrow-left"></i>
                 <span>カートに戻る</span>
             </a>
