@@ -15,7 +15,7 @@ try {
 
   // 1. プロフィール情報とメールアドレスを JOIN で一度に取得
   $sql_user = $pdo->prepare("
-      SELECT p.full_name, p.gender, p.phone, u.user_email 
+      SELECT p.full_name, p.gender, p.phone, u.user_email ,p.card_brand, p.masked_card_number
       FROM Profiles p
       JOIN Users u ON p.user_id = u.user_id
       WHERE p.user_id = ?
@@ -89,6 +89,10 @@ try {
       $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
   }
 
+
+  $payment_jp = $user['masked_card_number'] ?
+    "{$user['card_brand']} **** **** **** " . substr($user['masked_card_number'], -4) :
+    '未登録';
 } catch (PDOException $e) {
   echo "エラー：" . $e->getMessage();
   exit();
@@ -97,6 +101,7 @@ try {
 
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -114,6 +119,7 @@ try {
       <div class="card">
 
         <h2>個人情報</h2>
+        <span id="user-id" hidden><?= htmlspecialchars($user_id)?></span>
         <div class="info-row">
           <div class="info-label">名前</div>
           <div class="info-value"><?= htmlspecialchars($user['full_name'] ?? '未登録') ?></div>
@@ -168,20 +174,12 @@ try {
         </div>
         <div class="info-row">
           <div class="info-label">お支払い方法</div>
-          <div class="info-value"><?= htmlspecialchars($payment_method) ?></div>
+          <div id="payment-card" class="info-value"><?= htmlspecialchars($payment_jp) ?></div>
         </div>
 
-        <!--check-->
-        <div class="info-row">
-          <div class="info-label"><?= $order["order_id"]?></div>
-          <div class="info-value"><?= $date?></div>
-        </div>
-
-        <form action="pay-change-check.php" method="post">
           <div class="card-actions">
-            <button class="btn btn-primary">お支払いの変更</button>
+            <button class="btn btn-primary" id="btn-primary">お支払いの変更</button>
           </div>
-        </form>
 
         <h2>基本オプション</h2>
         <?php if (!empty($custom_options)): // オプションが1件以上あれば ?>
@@ -192,7 +190,7 @@ try {
           <?php foreach ($custom_options as $option): // ループで全部表示 ?>
             <div class="info-row">
               <div class="info-label">オプション</div>
-              <div class="info-value"><?= htmlspecialchars($option['product_name']) ?></div>
+              <div class="info-value"><?= htmlspecialchars($option['name']) ?></div>
             </div>
           <?php endforeach; ?>
         <?php else: // オプションが1件もなければ 念のため ?>
@@ -214,9 +212,14 @@ try {
           <p style="color: red;">契約は既に解約済みです</p>
           <?php endif; ?>
         </div>
-
+      </div>
+      <div class="logout-box">
+        <form action="logout.php" method="post">
+        <button class="btn logout-btn">ログアウト</button>
+        </form>
       </div>
     </main>
   </div>
+  <?php require "./component/modify-pay.php"; ?>
 </body>
 </html>

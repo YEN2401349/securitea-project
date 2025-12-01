@@ -153,7 +153,6 @@ body {
   gap: 0.75rem; /* ボタン間のスペース */
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #eee; /* 上の要素との区切り線 */
 }
 
 /* 共通ボタンスタイル */

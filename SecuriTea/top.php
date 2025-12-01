@@ -71,7 +71,6 @@
                                         "<div class='product-content'>",
                                             "<h3 class='product-title'>",$value["name"],"</h3>",
                                             "<p class='product-description'>",$value["description"],"</p>",
-                                            "<p>DB出力</p>",
                                             "<a href='product.php' class='product-btn'>",
                                                 "<span>詳細を見る</span>",
                                                 "<i class='fas fa-arrow-right'></i>",
