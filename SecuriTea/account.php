@@ -61,12 +61,13 @@ try {
   // 4. order_id が取得できたら、Payments テーブルを検索
   $payment_method = '未登録';
   if ($order && !empty($order['order_id'])) {
-    $sql_payment = $pdo->prepare("SELECT payment_method FROM Payments WHERE order_id = ?");
+    $sql_payment = $pdo->prepare("SELECT payment_method, payment_date FROM Payments WHERE order_id = ?");
     $sql_payment->execute([$order['order_id']]);
     $payment = $sql_payment->fetch(PDO::FETCH_ASSOC);
 
     if ($payment) {
       $payment_method = $payment['payment_method'];
+      $date = $payment["payment_date"];
     }
   }
 
@@ -173,9 +174,10 @@ try {
         <!--check-->
         <div class="info-row">
           <div class="info-label"><?= $order["order_id"]?></div>
+          <div class="info-value"><?= $date?></div>
         </div>
 
-        <form action="pay-change.php">
+        <form action="pay-change-check.php" method="post">
           <div class="card-actions">
             <button class="btn btn-primary">お支払いの変更</button>
           </div>

@@ -18,7 +18,7 @@
         <div class="payment-options">
             
             <div class="payment-option">
-                <input type="radio" id="credit-card" name="payment-method" value="credit" checked>
+                <input type="radio" id="credit-card" name="payment-method" value="credit_card" checked>
                 <label for="credit-card">
                     <i class="fas fa-credit-card"></i>
                     <span>クレジットカード</span>
@@ -34,20 +34,20 @@
                 </div>
                 <div class="form-group">
                     <label for="card-number">カード番号</label>
-                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
                 </div>
                 <div class="form-group">
                     <label for="card-holder">カード名義人</label>
-                    <input type="text" id="card-holder" placeholder="TARO YAMADA" required>
+                    <input type="text" id="card-holder" placeholder="TARO YAMADA">
                 </div>
                 <div class="form-row">
                     <div class="form-group-half">
                         <label for="card-expiry">有効期限</label>
-                        <input type="text" id="card-expiry" placeholder="MM / YY" required>
+                        <input type="text" id="card-expiry" placeholder="MM / YY">
                     </div>
                     <div class="form-group-half">
                         <label for="card-cvc">セキュリティコード</label>
-                        <input type="text" id="card-cvc" placeholder="123" required>
+                        <input type="text" id="card-cvc" placeholder="123">
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
             </div>
 
             <div class="payment-option">
-                <input type="radio" id="bank-transfer" name="payment-method" value="bank">
+                <input type="radio" id="bank-transfer" name="payment-method" value="bank_transfer">
                 <label for="bank-transfer">
                     <i class="fas fa-university"></i>
                     <span>銀行引き落とし</span>
@@ -82,10 +82,9 @@
         </div>
 
         <div class="form-actions">
-        
-            <a href="cart.php" class="submit-btn secondary-btn">
+            <a href="account.php" class="submit-btn secondary-btn">
                 <i class="fas fa-arrow-left"></i>
-                <span>カートに戻る</span>
+                <span>アカウントに戻る</span>
             </a>
             <button type="submit" class="submit-btn">支払いを確定する</button>
         </div>
@@ -94,29 +93,43 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const paymentOptions = document.querySelectorAll('.payment-option');
-        const paymentDetails = document.querySelectorAll('.payment-details');
+document.addEventListener('DOMContentLoaded', function() {
+const paymentOptions = document.querySelectorAll('.payment-option');
+const paymentDetails = document.querySelectorAll('.payment-details');
 
-        paymentOptions.forEach(option => {
-            const radio = option.querySelector('input[name="payment-method"]');
-            radio.addEventListener('change', function() {
-                // すべての詳細を非表示にする
-                paymentDetails.forEach(detail => {
-                    detail.classList.remove('active');
-                });
-                
-                // 選択された支払い方法に対応する詳細を表示する
-                const targetId = this.id + '-details';
-                const targetDetail = document.getElementById(targetId);
-                if (targetDetail) {
-                    targetDetail.classList.add('active');
-                }
-            });
-        });
-    });
+const cardNumberInput = document.getElementById('card-number');
+const cardHolderInput = document.getElementById('card-holder');
+const cardExpiryInput = document.getElementById('card-expiry');
+const cardCvcInput = document.getElementById('card-cvc');
+const creditCardInputs = [cardNumberInput, cardHolderInput, cardExpiryInput, cardCvcInput];
+
+paymentOptions.forEach(option => {
+const radio = option.querySelector('input[name="payment-method"]');
+radio.addEventListener('change', function() {
+paymentDetails.forEach(detail => {
+detail.classList.remove('active');
+});
+const targetId = this.id + '-details';
+const targetDetail = document.getElementById(targetId);
+if (targetDetail) {
+targetDetail.classList.add('active');
+}
+if (this.value === 'credit') {
+creditCardInputs.forEach(input => {
+input.required = true;
+});
+} else {
+creditCardInputs.forEach(input => {
+ input.required = false;
+});
+}
+});
+}); 
+
+creditCardInputs.forEach(input => {
+ input.required = true;
+ });
+}); 
 </script>
-
-
 </body>
 </html>
