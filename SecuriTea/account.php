@@ -24,7 +24,8 @@ try {
   $user = $sql_user->fetch(PDO::FETCH_ASSOC);
 
   // 2. サブスク情報 (check.php で存在確認済みだが、ID取得のために再度実行)
-  $sql_subscription = $pdo->prepare("SELECT subscription_id, product_id, start_date, end_date,status_id FROM Subscription WHERE user_id = ? ORDER BY create_date DESC LIMIT 1");
+  // 2. サブスク情報 (status_idの昇順=有効(1)を優先、その中で最新の日付を取得)
+$sql_subscription = $pdo->prepare("SELECT subscription_id, product_id, start_date, end_date,status_id FROM Subscription WHERE user_id = ? ORDER BY status_id ASC, create_date DESC LIMIT 1");
   $sql_subscription->execute([$user_id]);
   $subscription = $sql_subscription->fetch(PDO::FETCH_ASSOC);
 
@@ -90,9 +91,20 @@ try {
   }
 
 
-  $payment_jp = $user['masked_card_number'] ?
-    "{$user['card_brand']} **** **** **** " . substr($user['masked_card_number'], -4) :
-    '未登録';
+// 支払い方法の表示ロジック
+  $masked_num = $user['masked_card_number'] ?? '';
+  
+  if ($masked_num === 'PayPal') {
+      $payment_jp = 'PayPal';
+  } elseif ($masked_num === '銀行引き落とし') {
+      $payment_jp = '銀行引き落とし';
+  } elseif (!empty($masked_num)) {
+      // クレジットカード (下4桁表示)
+      $payment_jp = "{$user['card_brand']} **** **** **** " . substr($masked_num, -4);
+  } else {
+      $payment_jp = '未登録';
+  }
+
 } catch (PDOException $e) {
   echo "エラー：" . $e->getMessage();
   exit();
