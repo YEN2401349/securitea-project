@@ -26,7 +26,7 @@ function handleAutoRenewal($userId)
         $today = new DateTime();
         $expirationDate = new DateTime($subscription['end_date']);
         $startDate = new DateTime($subscription['start_date']);
-        $days = $startDate->diff($expirationDate)->days;
+        $days = $startDate->diff($expirationDate)->days+1;
 
         // まだ期限切れでない場合は自動更新しない
         if ($expirationDate >= $today) {
