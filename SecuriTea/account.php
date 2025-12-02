@@ -39,10 +39,12 @@ try {
   }
   // 3.5 契約プラン名取得
   $product = null;
-  $sql_product = $pdo->prepare("SELECT name FROM Products WHERE product_id = ?");
-  $sql_product->execute([$subscription['product_id']]);
-  $product = $sql_product->fetch(PDO::FETCH_ASSOC);
+  if ($subscription) {
 
+    $sql_product = $pdo->prepare("SELECT name FROM Products WHERE product_id = ?");
+    $sql_product->execute([$subscription['product_id']]);
+    $product = $sql_product->fetch(PDO::FETCH_ASSOC);
+  }
   // 4. order_id が取得できたら、Payments テーブルを検索
   // $payment_method = '未登録';
   // if ($order && !empty($order['order_id'])) {
@@ -134,7 +136,7 @@ try {
         <h2>利用状況</h2>
         <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
           <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
-            <?php echo $subscription['end_date']?>までご利用いただけます。</h2>
+            <?php echo $subscription['end_date'] ?>までご利用いただけます。</h2>
           <!-- 上のところは後々編集する -->
         <?php endif; ?>
         <div class="info-row">
@@ -179,7 +181,7 @@ try {
         <?php if (!empty($custom_options)): // オプションが1件以上あれば ?>
           <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
             <h2 style="color: red;">こちらは解約済みのオプションです。<br>
-              <?php echo $subscription['end_date']?>までご利用いただけます。</h2>
+              <?php echo $subscription['end_date'] ?>までご利用いただけます。</h2>
             <!-- 上のところは後々編集する -->
           <?php endif; ?>
           <?php foreach ($custom_options as $option): // ループで全部表示 ?>
