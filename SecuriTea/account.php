@@ -8,12 +8,13 @@ if (!isset($_SESSION['customer']['user_id'])) {
   exit();
 }
 
-// ユーザー情報を取得
 try {
   $pdo = $db;
   $user_id = $_SESSION['customer']['user_id'];
 
-  // 1. プロフィール情報とメールアドレスを取得
+  // =========================================================
+  // 1. ユーザー基本情報の取得
+  // =========================================================
   $sql_user = $pdo->prepare("
       SELECT p.full_name, p.gender, p.phone, u.user_email, p.card_brand, p.masked_card_number
       FROM Profiles p
@@ -23,14 +24,52 @@ try {
   $sql_user->execute([$user_id]);
   $user = $sql_user->fetch(PDO::FETCH_ASSOC);
 
-  // 2. サブスク情報 (LIMIT 1 で最新の1件だけを取得)
-  // ★重要: ここで現在の契約(または最新の予約)を1つだけ特定します
-  $sql_subscription = $pdo->prepare("SELECT subscription_id, product_id, start_date, end_date, status_id FROM Subscription WHERE user_id = ? ORDER BY create_date DESC LIMIT 1");
-  $sql_subscription->execute([$user_id]);
-  $subscription = $sql_subscription->fetch(PDO::FETCH_ASSOC);
 
-  // 3. 料金とプラン名の取得 (エラー修正箇所)
-  // ★修正: サブクエリを使わず、上で取得した $subscription['subscription_id'] を使います
+  // =========================================================
+  // 2. サブスクリプション情報の取得
+  // =========================================================
+  // すべての有効なサブスク（現在・未来・過去）を取得
+  $sql_subs = $pdo->prepare("SELECT * FROM Subscription WHERE user_id = ? AND status_id IN (1, 2) ORDER BY start_date ASC");
+  $sql_subs->execute([$user_id]);
+  $all_subs = $sql_subs->fetchAll(PDO::FETCH_ASSOC);
+
+  $current_sub = null;   // 現在進行中のプラン
+  $reserved_sub = null;  // 未来の予約プラン
+  $now = new DateTime();
+  $today = $now->format('Y-m-d');
+
+  // 振り分け処理
+  foreach ($all_subs as $sub) {
+      if ($sub['start_date'] <= $today && $sub['end_date'] >= $today) {
+          $current_sub = $sub; // 今日の日付を含むものが「現在」
+      } elseif ($sub['start_date'] > $today) {
+          $reserved_sub = $sub; // 未来の日付のものが「予約」
+      }
+  }
+
+  // 表示するメインのサブスク($subscription)を決定
+  $subscription = null;
+  $is_future_main = false; // メイン表示自体が未来プランかどうかのフラグ
+
+  if ($current_sub) {
+      // 現在進行中のプランがあればそれを表示
+      $subscription = $current_sub;
+  } elseif ($reserved_sub) {
+      // 現在がなく未来しかなければ、未来を表示（新規開始待ちなど）
+      $subscription = $reserved_sub;
+      $reserved_sub = null; // メインで表示するので、予約バナーには出さない
+      $is_future_main = true;
+  } else {
+      // どちらもなければ、過去の最後のデータを表示（解約済み表示用など）
+      if (!empty($all_subs)) {
+          $subscription = end($all_subs);
+      }
+  }
+
+
+  // =========================================================
+  // 3. メイン表示用プランの料金・名称計算
+  // =========================================================
   $price_val = 0;
   $product_name = '未登録';
 
@@ -38,11 +77,9 @@ try {
       $target_sub_id = $subscription['subscription_id'];
       $target_prod_id = $subscription['product_id'];
 
-      // (A) カスタムプランの場合 (product_id が 0)
+      // (A) カスタムプランの場合
       if ($target_prod_id == 0) {
           $product_name = 'カスタムプラン';
-          
-          // オプションの合計金額を計算
           $sql_price = $pdo->prepare("
             SELECT SUM(p.price) AS price 
             FROM SubscriptionCustoms s 
@@ -57,51 +94,58 @@ try {
       } 
       // (B) パッケージプランの場合
       else {
-          // 商品情報を取得
           $sql_prod = $pdo->prepare("SELECT name, price FROM Products WHERE product_id = ?");
           $sql_prod->execute([$target_prod_id]);
           $prod_res = $sql_prod->fetch(PDO::FETCH_ASSOC);
-          
           if ($prod_res) {
               $product_name = $prod_res['name'];
               $price_val = (int)$prod_res['price'];
           }
       }
 
-      // --- 期間に応じた金額計算 (年払いなどの倍率反映) ---
-      // 現在の期間(日数)を計算
+      // 期間倍率計算
       $start = new DateTime($subscription['start_date']);
       $end = new DateTime($subscription['end_date']);
       $diff_days = $start->diff($end)->days;
-
-      // 日数に応じて倍率をかける (月額ベースの価格が入っている前提)
-      if ($diff_days > 1000) {
-          // 3年プラン (25ヶ月分)
-          $price_val = $price_val * 25;
-      } elseif ($diff_days > 300) {
-          // 年間プラン (10ヶ月分)
-          $price_val = $price_val * 10;
-      } else {
-          // 月間プラン (1倍)
-          // そのまま
-      }
+      if ($diff_days > 1000) $price_val *= 25; // 3年
+      elseif ($diff_days > 300) $price_val *= 10; // 1年
   }
 
-  // 表示用に配列へ格納
-  $subscriptionPrice = ["price" => $price_val];
+
+  // =========================================================
+  // 4. 【予約バナー用】予約情報の詳細取得（あれば）
+  // =========================================================
+  $reserve_info = null;
+  if ($reserved_sub) {
+      $r_name = "";
+      if ($reserved_sub['product_id'] == 0) {
+          $r_name = "カスタムプラン"; // 簡易表示
+      } else {
+          $stmt = $pdo->prepare("SELECT name FROM Products WHERE product_id = ?");
+          $stmt->execute([$reserved_sub['product_id']]);
+          $r_res = $stmt->fetch();
+          $r_name = $r_res['name'] ?? "パッケージプラン";
+      }
+      $reserve_info = [
+          'name' => $r_name,
+          'start' => $reserved_sub['start_date'],
+          'end' => $reserved_sub['end_date']
+      ];
+  }
 
 
-  // 4. 【カスタム専用】契約中のオプション一覧を取得
+  // =========================================================
+  // 5. オプション一覧取得（メイン表示用）
+  // =========================================================
   $custom_options = []; 
   if ($subscription) {
-    $subscription_id = $subscription['subscription_id'];
     $sql_custom = $pdo->prepare("
           SELECT p.name 
           FROM SubscriptionCustoms sc
           JOIN Products p ON sc.product_id = p.product_id
           WHERE sc.subscription_id = ?
       ");
-    $sql_custom->execute([$subscription_id]);
+    $sql_custom->execute([$subscription['subscription_id']]);
     $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
   }
 
@@ -117,7 +161,6 @@ try {
 
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -164,23 +207,26 @@ try {
         </form>
 
         <h2>利用状況</h2>
-        <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
-          <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
-            <?php echo $subscription['end_date'] ?>までご利用いただけます。</h2>
+
+        <?php if ($reserve_info): ?>
+        <div class="reserve-banner">
+            <i class="fas fa-clock"></i>
+            <div class="reserve-content">
+                <h3>次回プラン変更の予約済み</h3>
+                <p>
+                    <strong><?= htmlspecialchars($reserve_info['name']) ?></strong> が 
+                    <strong><?= htmlspecialchars($reserve_info['start']) ?></strong> から開始されます。
+                </p>
+            </div>
+        </div>
         <?php endif; ?>
 
-        <?php 
-          // 今表示しているプランの開始日が未来なら、それは予約プランです
-          $is_future = false;
-          if ($subscription) {
-              $start_dt = new DateTime($subscription['start_date']);
-              $now = new DateTime();
-              if ($start_dt > $now) {
-                  $is_future = true;
-                  echo '<h3 style="color: #e65100; margin-bottom:10px;">※次回更新予約分のプランを表示しています</h3>';
-              }
-          }
-        ?>
+        <?php if ($is_future_main): ?>
+             <h3 style="color: #e65100;">※開始待ちのプランを表示しています</h3>
+        <?php elseif (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
+             <h3 style="color: red;">こちらは解約済みのプランです。<br>
+             <?php echo $subscription['end_date'] ?>までご利用いただけます。</h3>
+        <?php endif; ?>
 
         <div class="info-row">
           <div class="info-label">利用プラン</div>
@@ -215,10 +261,6 @@ try {
 
         <h2>基本オプション</h2>
         <?php if (!empty($custom_options)): ?>
-          <?php if (isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
-            <h2 style="color: red;">こちらは解約済みのオプションです。<br>
-              <?php echo $subscription['end_date'] ?>までご利用いただけます。</h2>
-          <?php endif; ?>
           <?php foreach ($custom_options as $option): ?>
             <div class="info-row">
               <div class="info-label">オプション</div>
@@ -234,7 +276,7 @@ try {
             <button class="btn btn-primary">プラン変更</button>
           </form>
           
-          <?php if (!$is_future && isset($subscription['status_id']) && $subscription['status_id'] == 1): ?>
+          <?php if (!$is_future_main && isset($subscription['status_id']) && $subscription['status_id'] == 1): ?>
               <form action="confirm_cancel.php" method="post">
                 <button type="submit" class="btn btn-danger">契約解除</button>
               </form>
