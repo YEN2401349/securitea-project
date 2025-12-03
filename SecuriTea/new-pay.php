@@ -5,7 +5,7 @@ $stmt = $db->prepare("SELECT card_brand,masked_card_number,payment_token FROM Pr
 $stmt->execute([$_SESSION['customer']['user_id']]);
 $card = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
-<?php if (isset($card)): ?>
+<?php if (isset($card["payment_token"])): ?>
     <form id="postForm" action="process_payment.php" method="post">
         <input type="radio" id="credit-card" name="payment-method" value="credit_card" checked>
     </form>
