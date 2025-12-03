@@ -67,7 +67,7 @@
                                         "</div>",
                                         "<div class='product-content'>",
                                             "<h3 class='product-title'>",$value["name"],"</h3>",
-                                            "<p class='product-description'>",$value["description"],"</p>",
+                                            "<p class='product-description'>",$value["eye_catch"],"</p>",
                                             "<a href='product.php' class='product-btn'>",
                                                 "<span>詳細を見る</span>",
                                                 "<i class='fas fa-arrow-right'></i>",
@@ -84,10 +84,6 @@
                         <div class="product-content">
                             <h3 class="product-title">カスタム</h3>
                             <p class="product-description">必要な分だけ</p>
-                            <div class="product-tags">
-                                <span class="tag">#表示最低限</span>
-                                <span class="tag">#お好み</span>
-                            </div>
                             <a href="custom.php" class="product-btn">
                                 <span>詳細を見る</span>
                                 <i class="fas fa-arrow-right"></i>

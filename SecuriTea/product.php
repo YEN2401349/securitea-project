@@ -76,7 +76,7 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
                                         "</div>",
                                         "<div class='product-content'>",
                                             "<h3 class='product-title'>",$value["name"],"</h3>",
-                                            "<p class='product-description'>",$value["description"],"</p>",
+                                            "<p class='product-description'>",$value["eye_catch"],"</p>",
                                             "<a href='pack.php?id=",$value["product_id"],"' class='product-btn'>",
                                                 "<span>詳細を見る</span>",
                                                 "<i class='fas fa-arrow-right'></i>",
