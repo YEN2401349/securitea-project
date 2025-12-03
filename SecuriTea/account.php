@@ -287,11 +287,6 @@ try {
           <?php endif; ?>
         </div>
       </div>
-      <div class="logout-box">
-        <form action="logout.php" method="post">
-        <button class="btn logout-btn">ログアウト</button>
-        </form>
-      </div>
     </main>
   </div>
   <?php require "./component/modify-pay.php"; ?>
