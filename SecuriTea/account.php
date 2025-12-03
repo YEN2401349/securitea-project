@@ -129,7 +129,8 @@ try {
       $reserve_info = [
           'name' => $r_name,
           'start' => $reserved_sub['start_date'],
-          'end' => $reserved_sub['end_date']
+          'end' => $reserved_sub['end_date'],
+          'status' => $reserved_sub['status_id'] // ★追加: ステータスも取得
       ];
   }
 
@@ -209,22 +210,36 @@ try {
         <h2>利用状況</h2>
 
         <?php if ($reserve_info): ?>
-        <div class="reserve-banner">
-            <i class="fas fa-clock"></i>
-            <div class="reserve-content">
-                <h3>次回プラン変更の予約済み</h3>
-                <p>
-                    <strong><?= htmlspecialchars($reserve_info['name']) ?></strong> が 
-                    <strong><?= htmlspecialchars($reserve_info['start']) ?></strong> から開始されます。
-                </p>
-            </div>
-        </div>
+            <?php if ($reserve_info['status'] == 2): ?>
+                <div class="reserve-banner" style="background-color: #f8d7da; border-color: #f5c6cb; color: #721c24;">
+                    <i class="fas fa-exclamation-circle" style="color: #dc3545;"></i>
+                    <div class="reserve-content">
+                        <h3 style="color: #721c24;">次回予約プラン（自動更新停止済み）</h3>
+                        <p>
+                            <strong><?= htmlspecialchars($reserve_info['name']) ?></strong> が 
+                            <strong><?= htmlspecialchars($reserve_info['start']) ?></strong> から開始され、期間終了までご利用いただけます。<br>
+                            <span style="font-size: 0.85rem;">※期間終了後の自動更新は行われません。</span>
+                        </p>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="reserve-banner">
+                    <i class="fas fa-clock"></i>
+                    <div class="reserve-content">
+                        <h3>次回プラン変更の予約済み</h3>
+                        <p>
+                            <strong><?= htmlspecialchars($reserve_info['name']) ?></strong> が 
+                            <strong><?= htmlspecialchars($reserve_info['start']) ?></strong> から開始されます。
+                        </p>
+                    </div>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($is_future_main): ?>
              <h3 style="color: #e65100;">※開始待ちのプランを表示しています</h3>
         <?php elseif (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
-             <h3 style="color: red;">こちらは解約済みのプランです。<br>
+             <h3 style="color: red;">こちらは自動更新停止済みのプランです。<br>
              <?php echo $subscription['end_date'] ?>までご利用いただけます。</h3>
         <?php endif; ?>
 
@@ -275,17 +290,25 @@ try {
           <form action="product.php">
             <button class="btn btn-primary">プラン変更</button>
           </form>
-          <?php
-          // 契約中のみ契約解除ボタンを表示
-          if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] != 2):
+          
+          <?php 
+          // 契約中(status=1)の場合のみ解約ボタンを表示
+          // ※解約済み(status=2)の場合は非表示
+          if (!$is_future_main && isset($subscription['status_id']) && $subscription['status_id'] == 1): 
           ?>
-          <form action="confirm_cancel.php" method="post">
-            <button type="submit" class="btn btn-danger">契約解除</button>
-          </form>
-          <?php else: ?>
-          <p style="color: red;">契約は既に解約済みです</p>
+              <form action="confirm_cancel.php" method="post">
+                <button type="submit" class="btn btn-danger">契約解除</button>
+              </form>
+          <?php elseif (isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
+              <p style="color: red;">自動更新は停止されています</p>
           <?php endif; ?>
         </div>
+        
+      </div>
+      <div class="logout-box">
+        <form action="logout.php" method="post">
+        <button class="btn logout-btn">ログアウト</button>
+        </form>
       </div>
     </main>
   </div>
