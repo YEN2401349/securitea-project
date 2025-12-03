@@ -34,10 +34,16 @@ if (isset($_SESSION['change_info']['amount'])) {
 // 4. 保存カード使用時の検証
 if (!$saved_card_used) {
     $token = bin2hex(random_bytes(16));
-    $card_number = $_POST['card-number']; 
-    $last4 = substr($card_number, -4);
-    $stmt = $db->prepare("UPDATE Profiles SET card_brand = ? , masked_card_number = ? ,payment_token = ? WHERE user_id = ?");
-    $stmt->execute(["VISA", $last4, $token, $user_id]);
+    $card_number = $_POST['card-number'] ?? null;
+    if ($card_number) {
+        $last4 = substr($card_number, -4);
+        $stmt = $db->prepare("UPDATE Profiles SET card_brand = ? , masked_card_number = ? ,payment_token = ? WHERE user_id = ?");
+        $stmt->execute(["VISA", $last4, $token, $user_id]);
+    } else {
+        $stmt = $db->prepare("UPDATE Profiles SET payment_token = ? WHERE user_id = ?");
+        $stmt->execute([$token, $user_id]);
+    }
+
 }
 
 // --- 決済処理 (スタブ) ---
@@ -102,7 +108,7 @@ try {
     } else {
         // スイッチ / 予約 / 新規: 期間タイプに応じて計算する (画像1枚目の真ん中・下のルート)
         $start_dt_calc = new DateTime($start_date_sql);
-        
+
         // プランの期間タイプを取得
         $plan_type = 'monthly';
         if (isset($_SESSION['package_plan'])) {
@@ -111,9 +117,9 @@ try {
             $plan_type = $_SESSION['custom_billing_cycle'];
         }
 
-        if($plan_type === 'triennially') {
+        if ($plan_type === 'triennially') {
             $start_dt_calc->modify('+3 years');
-        } elseif($plan_type === 'yearly') {
+        } elseif ($plan_type === 'yearly') {
             $start_dt_calc->modify('+1 year');
         } else {
             $start_dt_calc->modify('+1 month');
@@ -127,7 +133,7 @@ try {
     // ==================================================
     // Upgrade または Switch の場合、現在の契約を削除して作り直す
     if ($change_mode === 'upgrade' || $change_mode === 'switch') {
-        
+
         // (A) 現在の契約を削除
         if (isset($_SESSION['change_info']['current_sub_id'])) {
             $old_sub_id = $_SESSION['change_info']['current_sub_id'];
@@ -149,9 +155,9 @@ try {
     // 4. 新しいデータの INSERT
     // ==================================================
     // どのモードでも、最終的には新しいデータを1件 INSERT する
-    
+
     $new_pid = isset($_SESSION['package_plan']) ? $_SESSION['package_plan']['product_id'] : 0;
-    
+
     // Subscriptionテーブルへ INSERT
     $subSql = $db->prepare("INSERT INTO Subscription (user_id, product_id, start_date, end_date, status_id, create_date, update_date) VALUES (?, ?, ?, ?, 1, NOW(), NOW())");
     $subSql->execute([$user_id, $new_pid, $start_date_sql, $end_date_sql]);
@@ -162,7 +168,7 @@ try {
         $subCSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id, create_date, update_date) VALUES (?, ?, NOW(), NOW())");
         foreach ($_SESSION['custom_options'] as $opt) {
             // カート内のID等は cart.php/custom.php の保存形式に合わせる
-            $p_id = $opt['id'] ?? $opt['product_id']; 
+            $p_id = $opt['id'] ?? $opt['product_id'];
             $subCSql->execute([$new_sub_id, $p_id]);
         }
     }
