@@ -46,22 +46,46 @@ if ($hasCustomPlan) {
 
 try {
     // --------------------------------------------------
-    // A. 現在の契約情報を取得
+    // A. 現在の契約情報を取得 (ロジック修正)
     // --------------------------------------------------
+    // 以前は「一番終了日が遅いもの(ORDER BY end_date DESC)」を取っていましたが、
+    // それだと未来の予約プランを拾ってしまう可能性があります。
+    // ここでは「現在有効なプラン(今日が期間内)」を最優先で探します。
+
     $sql = "SELECT * FROM Subscription 
             WHERE user_id = ? 
             AND status_id IN (1, 2)  
             AND end_date >= NOW() 
-            ORDER BY end_date DESC LIMIT 1";
+            ORDER BY start_date ASC"; // 開始日が早い順に全件取得
             
     $stmt = $db->prepare($sql);
     $stmt->execute([$user_id]);
-    $currentSub = $stmt->fetch(PDO::FETCH_ASSOC);
+    $all_subs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $currentSub = null;
+    $today = date('Y-m-d');
+
+    if ($all_subs) {
+        // 1. まず「今日現在、利用中のプラン」を探す
+        foreach ($all_subs as $sub) {
+            if ($sub['start_date'] <= $today && $sub['end_date'] >= $today) {
+                $currentSub = $sub;
+                break; // 見つかったらループ終了
+            }
+        }
+
+        // 2. もし「利用中のプラン」がなければ（未来の予約しかない場合など）、
+        //    仕方ないので直近のプランを採用する
+        if (!$currentSub) {
+            $currentSub = $all_subs[0];
+        }
+    }
 
     if (!$currentSub) {
         header('Location: cart_register.php'); 
         exit;
     }
+    
 
     // 現在の契約詳細
     $curr_start = new DateTime($currentSub['start_date']);
