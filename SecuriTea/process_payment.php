@@ -1,7 +1,7 @@
 <?php
 session_start();
 require "../common/DBconnect.php";
-
+$saved_card_used = isset($_POST['use-saved-card']) && $_POST['use-saved-card'] == '1';
 // 1. ログインチェック
 if (!isset($_SESSION['customer']['user_id'])) {
     header('Location: login.php');
@@ -30,9 +30,17 @@ if (isset($_SESSION['change_info']['amount'])) {
         $pay_amount = $_SESSION['custom_total_price'];
     }
 }
+// 4. 保存カード使用時の検証
+if (!$saved_card_used) {
+    $token = bin2hex(random_bytes(16));
+    $card_number = $_POST['card-number']; 
+    $last4 = substr($card_number, -4);
+    $stmt = $db->prepare("UPDATE Profiles SET card_brand = ? , masked_card_number = ? ,payment_token = ? WHERE user_id = ?");
+    $stmt->execute(["VISA", $last4, $token, $user_id]);
+}
 
 // --- 決済処理 (スタブ) ---
-$payment_succeeded = true; 
+$payment_succeeded = true;
 
 if (!$payment_succeeded) {
     header('Location: payment-error.php');
@@ -100,10 +108,10 @@ try {
     // 終了日の決定
     $plan_type = $_SESSION['package_plan']['plan_type'] ?? $_SESSION['custom_billing_cycle'] ?? 'monthly';
     $end_dt = clone $start_dt;
-    
-    if($plan_type === 'triennially') {
+
+    if ($plan_type === 'triennially') {
         $end_dt->modify('+3 years');
-    } elseif($plan_type === 'yearly') {
+    } elseif ($plan_type === 'yearly') {
         $end_dt->modify('+1 year');
     } else {
         $end_dt->modify('+1 month');
@@ -137,14 +145,14 @@ try {
             $new_pid = $_SESSION['package_plan']['product_id'];
             $updSql = $db->prepare("UPDATE Subscription SET product_id = ?, status_id = 1, update_date = NOW() WHERE subscription_id = ?");
             $updSql->execute([$new_pid, $target_sub_id]);
-        
+
         } elseif (isset($_SESSION['custom_options'])) {
             $updStatusSql = $db->prepare("UPDATE Subscription SET status_id = 1, update_date = NOW() WHERE subscription_id = ?");
             $updStatusSql->execute([$target_sub_id]);
 
             $delDSql = $db->prepare("DELETE FROM SubscriptionCustoms WHERE subscription_id = ?");
             $delDSql->execute([$target_sub_id]);
-            
+
             $insDSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id, create_date, update_date) VALUES (?, ?, NOW(), NOW())");
             foreach ($_SESSION['custom_options'] as $opt) {
                 $insDSql->execute([$target_sub_id, $opt['id']]);
@@ -153,7 +161,7 @@ try {
 
     } elseif ($change_mode === 'switch') {
         // --- Switch ---
-        if(isset($_SESSION['change_info']['current_sub_id'])){
+        if (isset($_SESSION['change_info']['current_sub_id'])) {
             $old_sub_id = $_SESSION['change_info']['current_sub_id'];
             $stopSql = $db->prepare("UPDATE Subscription SET status_id = 2, end_date = NOW(), update_date = NOW() WHERE subscription_id = ?");
             $stopSql->execute([$old_sub_id]);
@@ -206,7 +214,7 @@ try {
     unset($_SESSION['custom_term_start']);
     unset($_SESSION['custom_term_end']);
     unset($_SESSION['package_plan']);
-    unset($_SESSION['change_info']); 
+    unset($_SESSION['change_info']);
 
     header('Location: pay_complete.php');
     exit;

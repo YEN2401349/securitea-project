@@ -8,6 +8,7 @@ $card = $stmt->fetch(PDO::FETCH_ASSOC);
 <?php if (isset($card["payment_token"])): ?>
     <form id="postForm" action="process_payment.php" method="post">
         <input type="radio" id="credit-card" name="payment-method" value="credit_card" checked>
+        <input type="hidden" name="use-saved-card" value="1">
     </form>
     <script>
         document.getElementById("postForm").submit();
@@ -51,7 +52,7 @@ $card = $stmt->fetch(PDO::FETCH_ASSOC);
                         </div>
                         <div class="form-group">
                             <label for="card-number">カード番号</label>
-                            <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                            <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456">
                         </div>
                         <div class="form-group">
                             <label for="card-holder">カード名義人</label>
