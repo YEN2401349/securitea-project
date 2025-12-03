@@ -1,7 +1,7 @@
 <?php
 session_start();
 require "../common/DBconnect.php";
-
+$saved_card_used = isset($_POST['use-saved-card']) && $_POST['use-saved-card'] == '1';
 // 1. ログインチェック
 if (!isset($_SESSION['customer']['user_id'])) {
     header('Location: login.php');
@@ -31,9 +31,17 @@ if (isset($_SESSION['change_info']['amount'])) {
         $pay_amount = $_SESSION['custom_total_price'];
     }
 }
+// 4. 保存カード使用時の検証
+if (!$saved_card_used) {
+    $token = bin2hex(random_bytes(16));
+    $card_number = $_POST['card-number']; 
+    $last4 = substr($card_number, -4);
+    $stmt = $db->prepare("UPDATE Profiles SET card_brand = ? , masked_card_number = ? ,payment_token = ? WHERE user_id = ?");
+    $stmt->execute(["VISA", $last4, $token, $user_id]);
+}
 
 // --- 決済処理 (スタブ) ---
-$payment_succeeded = true; 
+$payment_succeeded = true;
 
 if (!$payment_succeeded) {
     header('Location: payment-error.php');
@@ -180,7 +188,7 @@ try {
     unset($_SESSION['custom_term_start']);
     unset($_SESSION['custom_term_end']);
     unset($_SESSION['package_plan']);
-    unset($_SESSION['change_info']); 
+    unset($_SESSION['change_info']);
 
     header('Location: pay_complete.php');
     exit;
