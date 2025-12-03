@@ -8,14 +8,15 @@ if (!isset($_SESSION['customer']['user_id'])) {
   exit();
 }
 
-// ユーザー情報を取得
 try {
   $pdo = $db;
   $user_id = $_SESSION['customer']['user_id'];
 
-  // 1. プロフィール情報とメールアドレスを JOIN で一度に取得
+  // =========================================================
+  // 1. ユーザー基本情報の取得
+  // =========================================================
   $sql_user = $pdo->prepare("
-      SELECT p.full_name, p.gender, p.phone, u.user_email ,p.card_brand, p.masked_card_number
+      SELECT p.full_name, p.gender, p.phone, u.user_email, p.card_brand, p.masked_card_number
       FROM Profiles p
       JOIN Users u ON p.user_id = u.user_id
       WHERE p.user_id = ?
@@ -23,102 +24,149 @@ try {
   $sql_user->execute([$user_id]);
   $user = $sql_user->fetch(PDO::FETCH_ASSOC);
 
-  // 2. サブスク情報 (check.php で存在確認済みだが、ID取得のために再度実行)
-  // 2. サブスク情報 (status_idの昇順=有効(1)を優先、その中で最新の日付を取得)
-$sql_subscription = $pdo->prepare("SELECT subscription_id, product_id, start_date, end_date,status_id FROM Subscription WHERE user_id = ? ORDER BY status_id ASC, create_date DESC LIMIT 1");
-  $sql_subscription->execute([$user_id]);
-  $subscription = $sql_subscription->fetch(PDO::FETCH_ASSOC);
 
-  // 3. 最新の注文情報 (Orders)
-  $sql_order = $pdo->prepare("SELECT * FROM Orders WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1");
-  $sql_order->execute([$user_id]);
-  $order = $sql_order->fetch(PDO::FETCH_ASSOC);
+  // =========================================================
+  // 2. サブスクリプション情報の取得
+  // =========================================================
+  // すべての有効なサブスク（現在・未来・過去）を取得
+  $sql_subs = $pdo->prepare("SELECT * FROM Subscription WHERE user_id = ? AND status_id IN (1, 2) ORDER BY start_date ASC");
+  $sql_subs->execute([$user_id]);
+  $all_subs = $sql_subs->fetchAll(PDO::FETCH_ASSOC);
 
-  $display_plan_name = '未登録'; 
-  $display_options = [];         
-  $total_items_price = 0; // ★追加: 合計金額計算用
+  $current_sub = null;   // 現在進行中のプラン
+  $reserved_sub = null;  // 未来の予約プラン
+  $now = new DateTime();
+  $today = $now->format('Y-m-d');
 
-  if ($order && !empty($order['order_id'])) {
-      $sql_items = $pdo->prepare("SELECT product_name, price, category_id FROM Order_Items WHERE order_id = ?");
-      $sql_items->execute([$order['order_id']]);
-      $items = $sql_items->fetchAll(PDO::FETCH_ASSOC);
+  // 振り分け処理
+  foreach ($all_subs as $sub) {
+      if ($sub['start_date'] <= $today && $sub['end_date'] >= $today) {
+          $current_sub = $sub; // 今日の日付を含むものが「現在」
+      } elseif ($sub['start_date'] > $today) {
+          $reserved_sub = $sub; // 未来の日付のものが「予約」
+      }
+  }
 
-      foreach ($items as $item) {
-          // ★合計金額に加算
-          $total_items_price += (int)$item['price'];
+  // 表示するメインのサブスク($subscription)を決定
+  $subscription = null;
+  $is_future_main = false; // メイン表示自体が未来プランかどうかのフラグ
 
-          if ($item['category_id'] == 1) {
-              $display_plan_name = $item['product_name'];
-          } elseif ($item['category_id'] == 2) {
-              $display_options[] = $item;
+  if ($current_sub) {
+      // 現在進行中のプランがあればそれを表示
+      $subscription = $current_sub;
+  } elseif ($reserved_sub) {
+      // 現在がなく未来しかなければ、未来を表示（新規開始待ちなど）
+      $subscription = $reserved_sub;
+      $reserved_sub = null; // メインで表示するので、予約バナーには出さない
+      $is_future_main = true;
+  } else {
+      // どちらもなければ、過去の最後のデータを表示（解約済み表示用など）
+      if (!empty($all_subs)) {
+          $subscription = end($all_subs);
+      }
+  }
+
+
+  // =========================================================
+  // 3. メイン表示用プランの料金・名称計算
+  // =========================================================
+  $price_val = 0;
+  $product_name = '未登録';
+
+  if ($subscription) {
+      $target_sub_id = $subscription['subscription_id'];
+      $target_prod_id = $subscription['product_id'];
+
+      // (A) カスタムプランの場合
+      if ($target_prod_id == 0) {
+          $product_name = 'カスタムプラン';
+          $sql_price = $pdo->prepare("
+            SELECT SUM(p.price) AS price 
+            FROM SubscriptionCustoms s 
+            LEFT JOIN Products p ON p.product_id = s.product_id 
+            WHERE s.subscription_id = ?
+          ");
+          $sql_price->execute([$target_sub_id]);
+          $res = $sql_price->fetch(PDO::FETCH_ASSOC);
+          if ($res && $res['price']) {
+              $price_val = (int)$res['price'];
+          }
+      } 
+      // (B) パッケージプランの場合
+      else {
+          $sql_prod = $pdo->prepare("SELECT name, price FROM Products WHERE product_id = ?");
+          $sql_prod->execute([$target_prod_id]);
+          $prod_res = $sql_prod->fetch(PDO::FETCH_ASSOC);
+          if ($prod_res) {
+              $product_name = $prod_res['name'];
+              $price_val = (int)$prod_res['price'];
           }
       }
-      
-      if ($display_plan_name === '未登録' && !empty($display_options)) {
-          $display_plan_name = 'カスタムプラン';
+
+      // 期間倍率計算
+      $start = new DateTime($subscription['start_date']);
+      $end = new DateTime($subscription['end_date']);
+      $diff_days = $start->diff($end)->days;
+      if ($diff_days > 1000) $price_val *= 25; // 3年
+      elseif ($diff_days > 300) $price_val *= 10; // 1年
+  }
+
+
+  // =========================================================
+  // 4. 【予約バナー用】予約情報の詳細取得（あれば）
+  // =========================================================
+  $reserve_info = null;
+  if ($reserved_sub) {
+      $r_name = "";
+      if ($reserved_sub['product_id'] == 0) {
+          $r_name = "カスタムプラン"; // 簡易表示
+      } else {
+          $stmt = $pdo->prepare("SELECT name FROM Products WHERE product_id = ?");
+          $stmt->execute([$reserved_sub['product_id']]);
+          $r_res = $stmt->fetch();
+          $r_name = $r_res['name'] ?? "パッケージプラン";
       }
+      $reserve_info = [
+          'name' => $r_name,
+          'start' => $reserved_sub['start_date'],
+          'end' => $reserved_sub['end_date']
+      ];
   }
 
-  // 4. order_id が取得できたら、Payments テーブルを検索
-  $payment_method = '未登録';
-  if ($order && !empty($order['order_id'])) {
-    $sql_payment = $pdo->prepare("SELECT payment_method, payment_date FROM Payments WHERE order_id = ?");
-    $sql_payment->execute([$order['order_id']]);
-    $payment = $sql_payment->fetch(PDO::FETCH_ASSOC);
 
-    if ($payment) {
-      $payment_method = $payment['payment_method'];
-      $date = $payment["payment_date"];
-    }
-  }
-
-  // 5. 【カスタム専用】契約中のオプション一覧を取得
-  $custom_options = []; // オプション情報を入れるための配列を初期化
-  if ($subscription && !empty($subscription['subscription_id'])) {
-      $subscription_id = $subscription['subscription_id'];
-      
-      // CustomsテーブルとProductsテーブルをJOINして、オプションの「名前」を取得
-      $sql_custom = $pdo->prepare("
+  // =========================================================
+  // 5. オプション一覧取得（メイン表示用）
+  // =========================================================
+  $custom_options = []; 
+  if ($subscription) {
+    $sql_custom = $pdo->prepare("
           SELECT p.name 
           FROM SubscriptionCustoms sc
           JOIN Products p ON sc.product_id = p.product_id
           WHERE sc.subscription_id = ?
       ");
-      $sql_custom->execute([$subscription_id]);
-      
-      // fetchAll ですべてのオプションを取得
-      $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
+    $sql_custom->execute([$subscription['subscription_id']]);
+    $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
   }
 
-
-// 支払い方法の表示ロジック
-  $masked_num = $user['masked_card_number'] ?? '';
-  
-  if ($masked_num === 'PayPal') {
-      $payment_jp = 'PayPal';
-  } elseif ($masked_num === '銀行引き落とし') {
-      $payment_jp = '銀行引き落とし';
-  } elseif (!empty($masked_num)) {
-      // クレジットカード (下4桁表示)
-      $payment_jp = "{$user['card_brand']} **** **** **** " . substr($masked_num, -4);
-  } else {
-      $payment_jp = '未登録';
-  }
+  $payment_jp = $user['masked_card_number'] ?
+    "{$user['card_brand']} **** **** **** " . substr($user['masked_card_number'], -4) :
+    '未登録';
 
 } catch (PDOException $e) {
-  echo "エラー：" . $e->getMessage();
+  echo "エラー：" . htmlspecialchars($e->getMessage());
   exit();
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>アカウント情報</title>
   <link rel="stylesheet" href="css/account.css">
+  <link rel="stylesheet" href="css/heder-footer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -131,7 +179,7 @@ $sql_subscription = $pdo->prepare("SELECT subscription_id, product_id, start_dat
       <div class="card">
 
         <h2>個人情報</h2>
-        <span id="user-id" hidden><?= htmlspecialchars($user_id)?></span>
+        <span id="user-id" hidden><?= htmlspecialchars($user_id) ?></span>
         <div class="info-row">
           <div class="info-label">名前</div>
           <div class="info-value"><?= htmlspecialchars($user['full_name'] ?? '未登録') ?></div>
@@ -159,20 +207,36 @@ $sql_subscription = $pdo->prepare("SELECT subscription_id, product_id, start_dat
         </form>
 
         <h2>利用状況</h2>
-        <?php if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
-          <h2 style="color: red;">こちらは解約済みのセキュリティソフトです。<br>
-          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>までご利用いただけます。</h2>
-          <?php endif; ?>
+
+        <?php if ($reserve_info): ?>
+        <div class="reserve-banner">
+            <i class="fas fa-clock"></i>
+            <div class="reserve-content">
+                <h3>次回プラン変更の予約済み</h3>
+                <p>
+                    <strong><?= htmlspecialchars($reserve_info['name']) ?></strong> が 
+                    <strong><?= htmlspecialchars($reserve_info['start']) ?></strong> から開始されます。
+                </p>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($is_future_main): ?>
+             <h3 style="color: #e65100;">※開始待ちのプランを表示しています</h3>
+        <?php elseif (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] == 2): ?>
+             <h3 style="color: red;">こちらは解約済みのプランです。<br>
+             <?php echo $subscription['end_date'] ?>までご利用いただけます。</h3>
+        <?php endif; ?>
+
         <div class="info-row">
           <div class="info-label">利用プラン</div>
           <div class="info-value">
-            <?= htmlspecialchars($display_plan_name) ?>
+            <?= htmlspecialchars($product_name) ?>
           </div>
         </div>
         <div class="info-row">
           <div class="info-label">料金</div>
-          <!-- $user['billing_cycle'] 必要に応じて -->
-          <div class="info-value"><?= number_format($total_items_price) ?>円</div>
+          <div class="info-value"><?= number_format($price_val) ?>円</div>
         </div>
         <div class="info-row">
           <div class="info-label">契約期間</div>
@@ -189,23 +253,21 @@ $sql_subscription = $pdo->prepare("SELECT subscription_id, product_id, start_dat
           <div id="payment-card" class="info-value"><?= htmlspecialchars($payment_jp) ?></div>
         </div>
 
-          <div class="card-actions">
-            <button class="btn btn-primary" id="btn-primary">お支払いの変更</button>
-          </div>
+
+        <div class="card-actions">
+          <button class="btn btn-primary" id="btn-primary">お支払いの変更</button>
+        </div>
+
 
         <h2>基本オプション</h2>
-        <?php if (!empty($custom_options)): // オプションが1件以上あれば ?>
-          <?php if ($subscription['status_id'] == 2): // 解約済みならそれを ?>
-          <h2 style="color: red;">こちらは解約済みのオプションです。<br>
-          <?= htmlspecialchars($subscription['end_date'] ?? '---') ?>までご利用いただけます。</h2>
-          <?php endif; ?>
-          <?php foreach ($custom_options as $option): // ループで全部表示 ?>
+        <?php if (!empty($custom_options)): ?>
+          <?php foreach ($custom_options as $option): ?>
             <div class="info-row">
               <div class="info-label">オプション</div>
               <div class="info-value"><?= htmlspecialchars($option['name']) ?></div>
             </div>
           <?php endforeach; ?>
-        <?php else: // オプションが1件もなければ 念のため ?>
+        <?php else: ?>
           <p>オプション未契約</p>
         <?php endif; ?>
 
@@ -224,11 +286,6 @@ $sql_subscription = $pdo->prepare("SELECT subscription_id, product_id, start_dat
           <p style="color: red;">契約は既に解約済みです</p>
           <?php endif; ?>
         </div>
-      </div>
-      <div class="logout-box">
-        <form action="logout.php" method="post">
-        <button class="btn logout-btn">ログアウト</button>
-        </form>
       </div>
     </main>
   </div>

@@ -9,7 +9,24 @@ if (!isset($_SESSION['customer']['user_id'])) {
 }
 $user_id = $_SESSION['customer']['user_id'];
 
-// 2. カートの中身チェック
+// =================================================================
+// 2. フォーム送信処理
+// =================================================================
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_mode'])) {
+    $selected_data = json_decode($_POST['selected_mode'], true);
+    if ($selected_data) {
+        $_SESSION['change_info'] = [
+            'mode'             => $selected_data['mode'],
+            'amount'           => $selected_data['amount'],
+            'current_sub_id'   => $_POST['current_sub_id'],
+            'current_end_date' => $_POST['current_end_date']
+        ];
+        header("Location: new-pay.php");
+        exit;
+    }
+}
+
+// 3. カートの中身チェック
 $hasCustomPlan = isset($_SESSION['custom_options']) && !empty($_SESSION['custom_options']);
 $hasPackagePlan = isset($_SESSION['package_plan']);
 
@@ -18,7 +35,7 @@ if (!$hasCustomPlan && !$hasPackagePlan) {
     exit;
 }
 
-// 戻り先URLの決定
+// 戻り先URL
 $back_url = "product.php";
 if ($hasCustomPlan) {
     $back_url = "custom.php";
@@ -46,31 +63,23 @@ try {
         exit;
     }
 
-    // --------------------------------------------------
-    // 現在の契約コース（期間タイプ）を判定
-    // --------------------------------------------------
+    // 現在の契約詳細
     $curr_start = new DateTime($currentSub['start_date']);
     $curr_end   = new DateTime($currentSub['end_date']);
-    $curr_diff  = $curr_start->diff($curr_end)->days;
-
-    $current_duration_type = 'monthly'; 
-    if ($curr_diff > 1000) {
-        $current_duration_type = 'triennially';
-    } elseif ($curr_diff > 300) {
-        $current_duration_type = 'yearly';
-    }
-
-    // --------------------------------------------------
-    // A-1. 現在のプラン詳細 & 定価総額の計算
-    // --------------------------------------------------
-    $current_is_custom = ($currentSub['product_id'] == 0);
-    $current_total_price = 0;   
-    $current_monthly_price = 0; 
-    $current_plan_name = "";
-    $is_cancelled = ($currentSub['status_id'] == 2);
     
-    // ベース価格を取得
+    // 期間タイプ判定
+    $curr_diff  = $curr_start->diff($curr_end)->days;
+    $current_duration_type = 'monthly';
+    if ($curr_diff > 1000) $current_duration_type = 'triennially';
+    elseif ($curr_diff > 300) $current_duration_type = 'yearly';
+
+    // 価格計算
+    $current_is_custom = ($currentSub['product_id'] == 0);
     $base_price = 0;
+    $current_plan_name = "";
+
+    // ★追加: 月額換算の比較用変数
+    $current_monthly_base = 0;
 
     if ($current_is_custom) {
         $cSql = "SELECT SUM(p.price) as total, COUNT(*) as count 
@@ -83,6 +92,8 @@ try {
         
         $base_price = (int)$cData['total'];
         $current_plan_name = "カスタムプラン (" . $cData['count'] . "項目)";
+        $current_monthly_base = $base_price; // カスタムはDB価格が月額ベース
+
     } else {
         $pSql = "SELECT name, price FROM Products WHERE product_id = ?";
         $pStmt = $db->prepare($pSql);
@@ -91,29 +102,24 @@ try {
         
         $base_price = (int)$pData['price'];
         $current_plan_name = $pData['name'];
+        $current_monthly_base = $base_price; // パッケージもDB価格が月額ベース
     }
 
-    // 定価総額を期間タイプから算出
-    if ($current_duration_type === 'triennially') {
-        $current_total_price = $base_price * 25;
-    } elseif ($current_duration_type === 'yearly') {
-        $current_total_price = $base_price * 10;
-    } else {
-        $current_total_price = $base_price; 
-    }
-    
-    $current_monthly_price = $base_price;
+    $multiplier = 1;
+    if ($current_duration_type === 'triennially') $multiplier = 25;
+    elseif ($current_duration_type === 'yearly') $multiplier = 10;
+    $current_total_price = $base_price * $multiplier;
 
 
     // --------------------------------------------------
-    // B. 新しいプラン（カート）の情報を整理 & 月額換算
+    // B. 新しいプラン（カート）の情報
     // --------------------------------------------------
-    $new_total_price = 0; 
-    $new_monthly_price = 0; 
+    $new_total_price = 0;
     $new_plan_name = "";
+    $new_duration_type = 'monthly';
+    $new_monthly_base = 0; // ★追加: 比較用
     $new_is_custom = false;
-    $new_product_id = 0; 
-    $new_duration_type = 'monthly'; 
+    $new_package_id = 0;
 
     if ($hasCustomPlan) {
         $new_is_custom = true;
@@ -121,128 +127,119 @@ try {
         $new_plan_name = "カスタムプラン (変更後)";
         $new_duration_type = $_SESSION['custom_billing_cycle'] ?? 'monthly';
         
+        // カスタムの月額ベースを逆算
         if ($new_duration_type === 'yearly') {
-            $new_monthly_price = round($new_total_price / 12);
+            $new_monthly_base = round($new_total_price / 10); // 年額は10倍設定なので10で割る
         } else {
-            $new_monthly_price = $new_total_price;
+            $new_monthly_base = $new_total_price;
         }
 
     } elseif ($hasPackagePlan) {
-        $new_is_custom = false;
+        $new_package_id = $_SESSION['package_plan']['product_id'];
         $new_total_price = (int)$_SESSION['package_plan']['totalPrice'];
         $new_plan_name = $_SESSION['package_plan']['product_name'];
-        $new_product_id = (int)$_SESSION['package_plan']['product_id'];
-        $new_duration_type = $_SESSION['package_plan']['plan_type']; 
-
-        if ($new_duration_type === 'yearly') {
-            $new_monthly_price = round($new_total_price / 12);
-        } elseif ($new_duration_type === 'triennially') {
-            $new_monthly_price = round($new_total_price / 36);
+        $new_duration_type = $_SESSION['package_plan']['plan_type'];
+        
+        // パッケージの月額ベースを逆算
+        if ($new_duration_type === 'triennially') {
+            $new_monthly_base = round($new_total_price / 25);
+        } elseif ($new_duration_type === 'yearly') {
+            $new_monthly_base = round($new_total_price / 10);
         } else {
-            $new_monthly_price = $new_total_price;
+            $new_monthly_base = $new_total_price;
         }
     }
 
+
     // --------------------------------------------------
-    // C. パターン判定
+    // ★判定: 全く同じ商品内容か？（期間違いなだけか？）
     // --------------------------------------------------
-    $today = new DateTime();
-    $endDate = new DateTime($currentSub['end_date']);
-    
-    $change_mode = ""; 
-    $pay_amount = 0;
-    $message = "";
-    $note = "";
-
-    // ★判定ロジック修正★
-
-    // 1. 同一パッケージプランのチェック
-    if (!$current_is_custom && !$new_is_custom && ($currentSub['product_id'] == $new_product_id)) {
-        
-        // 全く同じコースの場合
-        if ($current_duration_type === $new_duration_type) {
-            echo "<script>alert('現在ご契約中のプラン・期間と同じ内容です。変更の必要はありません。'); location.href='product.php';</script>";
-            exit;
+    $is_same_content = false;
+    if ($current_is_custom && $new_is_custom) {
+        // カスタム同士: 月額ベースの金額が同じなら「同じ構成」とみなす
+        // (厳密には項目チェックが必要ですが、簡易判定として金額一致を使用)
+        if ($current_monthly_base == $new_monthly_base) {
+            $is_same_content = true;
         }
-
-        // 期間変更 (Reserve) 
-        // ※「同一プラン」での期間変更は通常、現契約終了後の予約になります。
-        $change_mode = "reserve";
-        $pay_amount = $new_total_price;
-        $message = "契約更新の予約";
-        $note = "現在の契約期間（{$endDate->format('Y/m/d')}）が終了した後、自動的に新しい期間の契約が開始されます。";
-
-    } elseif ($current_is_custom === $new_is_custom) {
-        // 同系統 (Custom/Custom)
-        
-        // ★修正ポイント: 期間タイプが変わる場合は、アップグレードではなく「乗り換え(Switch)」にする
-        if ($current_duration_type !== $new_duration_type) {
-            $change_mode = "switch";
-            $pay_amount = $new_total_price;
-            $message = "お支払いサイクルの変更";
-            $note = "現在の契約を終了し、本日から新しい期間で契約を開始します。<br>※現在契約中の期間に対する返金はございませんのでご注意ください。";
+    } elseif (!$current_is_custom && !$new_is_custom) {
+        // パッケージ同士: IDが同じなら同じ商品
+        if ($currentSub['product_id'] == $new_package_id) {
+            $is_same_content = true;
         }
-        else {
-            // 期間が同じならアップグレード判定
-            $change_mode = "upgrade";
-            $diff_price = $new_total_price - $current_total_price; 
-            
-            if ($diff_price > 0) {
-                $pay_amount = $diff_price;
-                $message = "プランのアップグレード";
-                $note = "現在の契約期間を引き継ぎ、プラン変更による差額をお支払いいただきます。";
-            } else {
-                // ダウンor維持の場合は乗り換え扱いで即時反映（またはReserve）
-                $change_mode = "switch"; 
-                $pay_amount = $new_total_price;
-                $message = "プラン構成の変更";
-                $note = "現在の契約を終了し、本日から新しい構成で契約を開始します。<br>※現在契約中の期間に対する返金はございませんのでご注意ください。";
-            }
-        }
-        
-        if ($is_cancelled && $change_mode === 'upgrade') { 
-            // 解約済みならUpgradeではなくSwitchで再開させる
-             $change_mode = "switch";
-             $pay_amount = $new_total_price;
-             $message = "プランの再開";
-             $note = "解約済みの契約を終了し、本日から新しい契約を開始します。";
-        }
-
-    } else {
-        // 異系統 (Package <-> Custom など) -> Switch
-        $change_mode = "switch";
-        $pay_amount = $new_total_price;
-        $message = "プランの乗り換え";
-        $note = "現在の契約を終了し、本日から新しいプランで契約を開始します。<br>※現在契約中の期間に対する返金はございませんのでご注意ください。";
     }
 
+
     // --------------------------------------------------
-    // 予約重複チェック
+    // C. 選択肢（オプション）の生成
     // --------------------------------------------------
+    $options = [];
+
+    // 1. 【アップグレード】
+    if ($new_total_price > $current_total_price && $current_duration_type === $new_duration_type) {
+        $diff = $new_total_price - $current_total_price;
+        $options[] = [
+            'id' => 'upgrade',
+            'mode' => 'upgrade',
+            'title' => '今すぐ適用（期間引継ぎ）',
+            'price' => $diff,
+            'desc' => '終了日は変わらず、機能だけをアップグレードします。<br>差額のみのお支払いです。',
+            'end_date_label' => $curr_end->format('Y年m月d日') . ' (変更なし)',
+            'badge' => 'おすすめ'
+        ];
+    }
+
+    // 2. 【スイッチ】 (即時リセット)
+    // ★変更点: 「中身が同じ」ならスイッチは出さない (予約のみにする)
+    if (!$is_same_content) {
+        $new_end_date_calc = new DateTime();
+        if ($new_duration_type === 'triennially') $new_end_date_calc->modify('+3 years');
+        elseif ($new_duration_type === 'yearly') $new_end_date_calc->modify('+1 year');
+        else $new_end_date_calc->modify('+1 month');
+
+        $options[] = [
+            'id' => 'switch',
+            'mode' => 'switch',
+            'title' => '今すぐ適用（期間リセット）',
+            'price' => $new_total_price,
+            'desc' => '現在の契約を終了し、今日から新しい期間で契約し直します。<br>※旧契約の残期間分の返金はありません。',
+            'end_date_label' => $new_end_date_calc->format('Y年m月d日') . ' (本日より開始)',
+            'badge' => ''
+        ];
+    }
+
+    // 3. 【予約】 (次回更新日に切替)
     $resSql = "SELECT COUNT(*) FROM Subscription WHERE user_id = ? AND start_date > NOW() AND status_id = 1";
     $resStmt = $db->prepare($resSql);
     $resStmt->execute([$user_id]);
     $reservedCount = $resStmt->fetchColumn();
 
-    $warning_script = ""; 
+    if ($reservedCount == 0) {
+        $reserve_start = clone $curr_end;
+        $reserve_start->modify('+1 day');
+        
+        $reserve_end = clone $reserve_start;
+        if ($new_duration_type === 'triennially') $reserve_end->modify('+3 years');
+        elseif ($new_duration_type === 'yearly') $reserve_end->modify('+1 year');
+        else $reserve_end->modify('+1 month');
 
-    if ($reservedCount > 0) {
-        if ($change_mode === 'reserve') {
-            echo "<script>alert('既に次回のプラン変更が予約されています。これ以上の変更予約はできません。'); location.href='product.php';</script>";
-            exit;
-        } else {
-            $warning_msg = "【重要】\\n現在、次回の契約更新予約（プラン予約）が入っています。\\n\\nこのままプラン変更を行うと、予約済みのプランはキャンセルされ、返金は行われません。\\n\\n本当によろしいですか？";
-            $warning_script = "return confirm('$warning_msg');";
-        }
+        $options[] = [
+            'id' => 'reserve',
+            'mode' => 'reserve',
+            'title' => '自動更新日に切替',
+            'price' => $new_total_price,
+            'desc' => '現在の契約期間が終了した後、自動的に切り替わります。<br>お支払いは先行して行われます。',
+            'end_date_label' => $reserve_end->format('Y年m月d日') . ' (次回更新後)',
+            'badge' => '予約'
+        ];
     }
 
-    // セッション保存
-    $_SESSION['change_info'] = [
-        'mode' => $change_mode,          
-        'amount' => $pay_amount,         
-        'current_sub_id' => $currentSub['subscription_id'],
-        'current_end_date' => $currentSub['end_date'] 
-    ];
+    // もし選択肢が空になってしまった場合（同じ商品・同じ期間を選んだ場合など）
+    if (empty($options)) {
+        // 同じ商品で期間も同じなら、そもそも product.php 等で弾くべきですが、
+        // 万が一ここに来たら「変更なし」のアラートを出して戻す
+        echo "<script>alert('現在と同じプラン内容です。'); location.href='product.php';</script>";
+        exit;
+    }
 
 } catch (PDOException $e) {
     echo "エラー: " . $e->getMessage();
@@ -254,18 +251,36 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>契約変更の確認 - SecuriTea</title>
+    <title>プラン変更方法の選択 - SecuriTea</title>
     <link rel="stylesheet" href="css/cart.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .comparison-container { display: flex; justify-content: center; gap: 2rem; margin: 2rem 0; flex-wrap: wrap; }
-        .plan-card { border: 1px solid #ddd; padding: 2rem; border-radius: 8px; width: 300px; background: #fff; text-align: center; }
-        .plan-card.new { border: 2px solid #4CAF50; background: #f9fff9; position: relative; }
-        .plan-card.new::after { content: "NEW"; position: absolute; top: -10px; right: -10px; background: #4CAF50; color: white; padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }
-        .arrow-icon { align-self: center; font-size: 2rem; color: #888; }
-        .payment-summary { background: #f8f9fa; padding: 2rem; border-radius: 8px; text-align: center; margin-top: 2rem; border: 1px solid #ddd; }
-        .price-highlight { font-size: 2.5rem; color: #d32f2f; font-weight: bold; margin: 10px 0; }
-        .badge-reserve { background:#ff9800; color:white; padding:4px 8px; border-radius:4px; font-size:0.8rem; vertical-align:middle; }
+        .option-label { display: block; cursor: pointer; margin-bottom: 1.5rem; position: relative; }
+        .option-card {
+            border: 2px solid #e0e0e0; border-radius: 12px; padding: 1.5rem;
+            display: flex; align-items: center; background: #fff; transition: all 0.2s;
+        }
+        .option-radio { display: none; }
+        .option-radio:checked + .option-card {
+            border-color: #4CAF50; background-color: #f9fff9;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+        .check-circle {
+            width: 24px; height: 24px; border-radius: 50%; border: 2px solid #ccc;
+            display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px; flex-shrink: 0;
+        }
+        .option-radio:checked + .option-card .check-circle { background: #4CAF50; border-color: #4CAF50; }
+        
+        .option-content { flex: 1; }
+        .option-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .option-title { font-weight: bold; font-size: 1.1rem; }
+        .option-price { font-weight: bold; font-size: 1.3rem; color: #333; }
+        .option-desc { font-size: 0.9rem; color: #666; margin-bottom: 0.5rem; line-height: 1.5; }
+        .option-date { font-size: 0.85rem; color: #2e7d32; font-weight: 600; }
+        .badge { background: #FF9800; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-left: 10px; vertical-align: middle; }
+        
+        .current-info { background: #f5f5f5; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 20px; color: #555; font-size: 0.9rem; }
+        .submit-area { text-align: center; margin-top: 2rem; }
     </style>
 </head>
 
@@ -273,73 +288,62 @@ try {
     <?php require "headerTag.php";?>
 
     <main class="main">
-        <div class="container">
-            <h2>
-                <?php echo htmlspecialchars($message); ?>
-                <?php if($change_mode === 'reserve'): ?>
-                    <span class="badge-reserve">次回予約</span>
-                <?php endif; ?>
-            </h2>
-            <p style="text-align:center;">以下の内容で契約を変更します。</p>
+        <div class="container" style="max-width: 800px;">
+            <h2>プラン変更の方法を選択</h2>
+            <p style="text-align:center; margin-bottom: 1.5rem;">ご希望の変更タイミングとお支払い方法を選択してください。</p>
 
-            <div class="comparison-container">
-                <div class="plan-card">
-                    <h3>現在のプラン</h3>
-                    <p><strong><?php echo htmlspecialchars($current_plan_name); ?></strong></p>
-                    <p>月額換算: ¥<?php echo number_format($current_monthly_price); ?></p>
-                    <p style="font-size:0.9rem; color:#666;">終了日: <?php echo $endDate->format('Y年m月d日'); ?></p>
-                    <?php if($is_cancelled): ?>
-                        <p style="color:red; font-size:0.8rem;">(解約予約済み)</p>
-                    <?php endif; ?>
-                </div>
-
-                <div class="arrow-icon"><i class="fas fa-arrow-right"></i></div>
-
-                <div class="plan-card new">
-                    <h3>変更後のプラン</h3>
-                    <p><strong><?php echo htmlspecialchars($new_plan_name); ?></strong></p>
-                    <p>月額換算: ¥<?php echo number_format($new_monthly_price); ?></p>
-                    
-                    <?php if($change_mode === 'reserve'): ?>
-                        <p style="color:#e65100; font-weight:bold; font-size:0.9rem;">
-                            開始日: <?php echo $endDate->modify('+1 day')->format('Y年m月d日'); ?>
-                        </p>
-                    <?php elseif($change_mode === 'upgrade'): ?>
-                        <p style="color:#666; font-size:0.9rem;">※契約期間は現在のまま引き継がれます</p>
-                    <?php else: ?>
-                        <p style="color:#666; font-size:0.9rem;">※本日から新しい期間で契約開始となります</p>
-                    <?php endif; ?>
-                </div>
+            <div class="current-info">
+                現在のプラン: <strong><?php echo htmlspecialchars($current_plan_name); ?></strong><br>
+                現在の契約終了日: <strong><?php echo $curr_end->format('Y年m月d日'); ?></strong>
             </div>
 
-            <div class="payment-summary">
-                <h3>今回のお支払い金額</h3>
-                <?php if ($change_mode === 'upgrade'): ?>
-                    <p>アップグレードに伴う差額をお支払いいただきます。</p>
-                <?php elseif ($change_mode === 'reserve'): ?>
-                    <p>次回契約期間分の料金を先行してお支払いいただきます。</p>
-                <?php else: ?>
-                    <p>プラン切り替えのため、新規契約として料金をお支払いいただきます。</p>
-                <?php endif; ?>
-                
-                <div class="price-highlight">¥<?php echo number_format($pay_amount); ?></div>
+            <form method="POST" action="">
+                <input type="hidden" name="current_sub_id" value="<?php echo $currentSub['subscription_id']; ?>">
+                <input type="hidden" name="current_end_date" value="<?php echo $currentSub['end_date']; ?>">
 
-                <div class="cart-actions" style="justify-content: center;">
+                <?php if (empty($options)): ?>
+                    <p style="text-align: center; color: red;">変更可能なプランが見つかりませんでした。</p>
+                <?php else: ?>
+                    <?php foreach ($options as $index => $opt): ?>
+                        <label class="option-label">
+                            <input type="radio" name="selected_mode" class="option-radio"
+                                   value='<?php echo json_encode(["mode" => $opt['mode'], "amount" => $opt['price']]); ?>'
+                                   <?php echo ($index === 0) ? 'checked' : ''; ?>>
+                            
+                            <div class="option-card">
+                                <div class="check-circle"><i class="fas fa-check"></i></div>
+                                <div class="option-content">
+                                    <div class="option-header">
+                                        <div class="option-title">
+                                            <?php echo htmlspecialchars($opt['title']); ?>
+                                            <?php if($opt['badge']): ?><span class="badge"><?php echo $opt['badge']; ?></span><?php endif; ?>
+                                        </div>
+                                        <div class="option-price">¥<?php echo number_format($opt['price']); ?></div>
+                                    </div>
+                                    <div class="option-desc"><?php echo $opt['desc']; ?></div>
+                                    <div class="option-date">
+                                        <i class="far fa-calendar-alt"></i> 終了予定日: <?php echo htmlspecialchars($opt['end_date_label']); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
+                <div class="cart-actions submit-area">
                     <a href="<?php echo htmlspecialchars($back_url); ?>" class="product-btn secondary-btn">
                         <i class="fas fa-arrow-left"></i>
-                        <span>戻る</span> 
+                        <span>戻る</span>
                     </a>
                     
-                    <a href="new-pay.php" class="product-btn" onclick="<?php echo $warning_script; ?>">
-                        <span>支払い手続きへ</span>
+                    <?php if (!empty($options)): ?>
+                    <button type="submit" class="product-btn">
+                        <span>次へ進む</span>
                         <i class="fas fa-arrow-right"></i>
-                    </a>
+                    </button>
+                    <?php endif; ?>
                 </div>
-            </div>
-            
-            <p style="text-align:center; color:#d32f2f; margin-top:10px; font-size:0.9rem; font-weight:500;">
-                <?php echo $note; ?>
-            </p>
+            </form>
         </div>
     </main>
     
