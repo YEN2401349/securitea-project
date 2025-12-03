@@ -27,7 +27,6 @@
                 <p class="hero-description">
                     最先端のセキュリティソフトが、あなたのパソコンを守ります
                 </p>
-                <!--検索機能（未完成）-->
                 <div class="search-section">
                     <div class="search-container"> 
                         <div class="search-bar">
@@ -39,14 +38,12 @@
                     </div>
                 </div>
             </section>
-            <!--hero-title-sub商品項目パッケージ３つ表示（未完成）-->
             <section class="products">
                 <h2 class="section-title">商品一例</h2>
                 <div class="products-grid">
                     <?php
                         $count = 0;
-                        // Get all product IDs for the category
-                        $stmt = $db->prepare("SELECT product_id FROM Products WHERE category_id = 1");
+                        $stmt = $db->prepare("SELECT product_id FROM Products WHERE category_id = 1 AND product_id != 0");
                         $stmt->execute();
                         $product_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
