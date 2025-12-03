@@ -275,14 +275,17 @@ try {
           <form action="product.php">
             <button class="btn btn-primary">プラン変更</button>
           </form>
-          
-          <?php if (!$is_future_main && isset($subscription['status_id']) && $subscription['status_id'] == 1): ?>
-              <form action="confirm_cancel.php" method="post">
-                <button type="submit" class="btn btn-danger">契約解除</button>
-              </form>
+          <?php
+          // 契約中のみ契約解除ボタンを表示
+          if (!empty($subscription) && isset($subscription['status_id']) && $subscription['status_id'] != 2):
+          ?>
+          <form action="confirm_cancel.php" method="post">
+            <button type="submit" class="btn btn-danger">契約解除</button>
+          </form>
+          <?php else: ?>
+          <p style="color: red;">契約は既に解約済みです</p>
           <?php endif; ?>
         </div>
-
       </div>
     </main>
   </div>
