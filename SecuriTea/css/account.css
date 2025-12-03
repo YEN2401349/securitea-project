@@ -330,3 +330,32 @@ body {
 .error-box p {
   margin: 0.5rem 0 0 0;
 }
+
+/* --- 次回予約バナー用 --- */
+.reserve-banner {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.reserve-banner i {
+    font-size: 1.5rem;
+    color: #ff9800;
+}
+
+.reserve-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    color: #856404;
+}
+
+.reserve-content p {
+    margin: 0;
+    font-size: 0.9rem;
+}
