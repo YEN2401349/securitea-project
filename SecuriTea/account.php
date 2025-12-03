@@ -150,9 +150,16 @@ try {
     $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  $payment_jp = $user['masked_card_number'] ?
-    "{$user['card_brand']} **** **** **** " . substr($user['masked_card_number'], -4) :
-    '未登録';
+  $payment_jp = '未登録';
+
+  if (!empty($user['masked_card_number'])) {
+      if (!empty($user['card_brand'])) {
+          $payment_jp = $user['card_brand'] . " **** **** **** " . substr($user['masked_card_number'], -4);
+      }
+      else {
+          $payment_jp = $user['masked_card_number'];
+      }
+  }
 
 } catch (PDOException $e) {
   echo "エラー：" . htmlspecialchars($e->getMessage());
