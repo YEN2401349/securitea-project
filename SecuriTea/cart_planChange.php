@@ -167,12 +167,19 @@ try {
         !$is_same_content) {
         
         $diff = $new_total_price - $current_total_price;
+
+        $upgrade_desc = '終了日は変わらず、機能だけをアップグレードします。<br>差額のみのお支払いです。';
+        
+        if ($reservedCount > 0) {
+            $upgrade_desc .= '<br><strong style="color:#d32f2f;">【重要】このオプションを選ぶと、現在予約中のプランはキャンセルされ、返金は行われません。</strong>';
+        }
+
         $options[] = [
             'id' => 'upgrade',
             'mode' => 'upgrade',
             'title' => '今すぐ適用（期間引継ぎ）',
             'price' => $diff,
-            'desc' => '終了日は変わらず、機能だけをアップグレードします。<br>差額のみのお支払いです。',
+            'desc' => $upgrade_desc,
             'end_date_label' => $curr_end->format('Y年m月d日') . ' (変更なし)',
             'badge' => 'おすすめ'
         ];
