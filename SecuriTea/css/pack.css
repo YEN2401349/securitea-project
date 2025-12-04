@@ -51,7 +51,7 @@ html {
 
 body {
     font-family: var(--font-family);
-    background: var(--bg-secondary);
+    background: #98fb98;
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;

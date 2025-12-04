@@ -73,12 +73,12 @@ $yearly_checked = ($existing_cycle === 'yearly') ? 'checked' : '';
                     // 1. SubscriptionCustoms から product_id を配列で取得
                     $stmt = $db->prepare(
                         "SELECT product_id  
-     FROM SubscriptionCustoms  
-     WHERE subscription_id = (
-         SELECT subscription_id 
-         FROM Subscription 
-         WHERE user_id = ?
-     )"
+                    FROM SubscriptionCustoms  
+                    WHERE subscription_id IN (
+                        SELECT subscription_id 
+                        FROM Subscription 
+                        WHERE user_id = ?
+                    )"
                     );
                     $stmt->execute([$_SESSION['customer']['user_id']]);
                     $existingProducts = $stmt->fetchAll(PDO::FETCH_COLUMN); // product_id の配列
