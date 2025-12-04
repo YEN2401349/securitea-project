@@ -70,36 +70,12 @@ $yearly_checked = ($existing_cycle === 'yearly') ? 'checked' : '';
             <section class="mini-products">
                 <div class="mini-products-grid">
                     <?php
-                    // 1. SubscriptionCustoms から product_id を配列で取得
-                    $stmt = $db->prepare(
-                        "SELECT product_id  
-                    FROM SubscriptionCustoms  
-                    WHERE subscription_id IN (
-                        SELECT subscription_id 
-                        FROM Subscription 
-                        WHERE user_id = ?
-                    )"
-                    );
-                    $stmt->execute([$_SESSION['customer']['user_id']]);
-                    $existingProducts = $stmt->fetchAll(PDO::FETCH_COLUMN); // product_id の配列
-                    
-                    // 空配列の場合は 0 を入れて SQL エラーを回避
-                    if (empty($existingProducts)) {
-                        $existingProducts = [0];
-                    }
-
-                    // 2. プレースホルダーを作成
-                    $placeholders = implode(',', array_fill(0, count($existingProducts), '?'));
-
-                    // 3. Products テーブルから NOT IN で取得
                     $sql = "SELECT product_id, name, description, image_path, price 
-        FROM Products 
-        WHERE category_id = 2 
-          AND product_id != 0 
-          AND product_id NOT IN ($placeholders)";
+                            FROM Products 
+                            WHERE category_id = 2 
+                            AND product_id != 0 ";
 
-                    $stmt = $db->prepare($sql);
-                    $stmt->execute($existingProducts);
+                    $stmt = $db->query($sql);
                     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     foreach ($data as $value) {
                         $monthly_price = (int) $value["price"];

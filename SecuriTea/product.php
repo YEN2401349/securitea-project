@@ -50,7 +50,7 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
                         // $data=$db->query("select * FROM Products where category_id = 1");
 
                         // (変更後)
-                        $sql = "SELECT * FROM Products WHERE category_id = 1";
+                        $sql = "SELECT * FROM Products WHERE category_id = 1 AND product_id != 0";
                         $params = []; // SQLに渡すパラメータ配列
 
                         // 検索キーワードがある場合
@@ -76,7 +76,7 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
                                         "</div>",
                                         "<div class='product-content'>",
                                             "<h3 class='product-title'>",$value["name"],"</h3>",
-                                            "<p class='product-description'>",$value["description"],"</p>",
+                                            "<p class='product-description'>",$value["eye_catch"],"</p>",
                                             "<a href='pack.php?id=",$value["product_id"],"' class='product-btn'>",
                                                 "<span>詳細を見る</span>",
                                                 "<i class='fas fa-arrow-right'></i>",
@@ -93,10 +93,6 @@ if (isset($_GET['search']) && !empty(trim($_GET['search']))) {
                         <div class="product-content">
                             <h3 class="product-title">カスタム</h3>
                             <p class="product-description">必要な分だけ</p>
-                            <div class="product-tags">
-                                <span class="tag">#玄人向け</span>
-                                <span class="tag">#必要最低限</span>
-                            </div>
                             <a href="custom.php" class="product-btn">
                                 <span>詳細を見る</span>
                                 <i class="fas fa-arrow-right"></i>
