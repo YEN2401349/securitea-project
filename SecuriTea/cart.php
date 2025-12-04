@@ -2,11 +2,11 @@
 session_start();
 require "../common/DBconnect.php";
 
-// 1. ログインしているか確認
+// ログインチェック
 if (isset($_SESSION['customer']['user_id'])) {
     $user_id = $_SESSION['customer']['user_id'];
 
-    // 2. カートテーブル(Cart)を取得
+    //  Cartテーブル
     $sql_cart = $db->prepare("SELECT cart_id, total_amount FROM Cart WHERE user_id = ?");
     $sql_cart->execute([$user_id]);
     $cart = $sql_cart->fetch(PDO::FETCH_ASSOC);
@@ -15,7 +15,7 @@ if (isset($_SESSION['customer']['user_id'])) {
         $cart_id = $cart['cart_id'];
         $db_total_price = (int)$cart['total_amount'];
 
-        // 3. カート明細(Cart_Items)と商品(Products)を結合して取得
+        // Cart_ItemsとProducts
         $sql_items = $db->prepare("
             SELECT ci.product_id, ci.price as item_price, p.name, p.category_id, p.price as base_price 
             FROM Cart_Items ci
@@ -25,42 +25,44 @@ if (isset($_SESSION['customer']['user_id'])) {
         $sql_items->execute([$cart_id]);
         $items = $sql_items->fetchAll(PDO::FETCH_ASSOC);
 
-        // 4. データの中身を見て「パッケージ」か「カスタム」か判定し、セッションを再構築
+        // パッケージ型かカスタム型かチェック
         if (!empty($items)) {
             $is_package = false;
             $package_item = null;
             $custom_options = [];
-            $custom_base_total = 0; // 期間係数をかける前の合計
+            $custom_base_total = 0;
 
             foreach ($items as $item) {
+                //0番はカスタムプランだからそのまま続ける
+                if ($item['product_id'] == 0) {
+                    continue; 
+                }
+
                 if ($item['category_id'] == 1) {
-                    // カテゴリ1はパッケージ
                     $is_package = true;
                     $package_item = $item;
                 } elseif ($item['category_id'] == 2) {
-                    // カテゴリ2はカスタムオプション
                     $custom_options[] = [
                         'id' => $item['product_id'],
                         'label' => $item['name'],
-                        'price' => (int)$item['base_price'] // 基本単価
+                        'price' => (int)$item['base_price']
                     ];
                     $custom_base_total += (int)$item['base_price'];
                 }
             }
 
-            // --- A. パッケージプランの場合の復元 ---
+            // パッケージ型
             if ($is_package && $package_item) {
-                // 期間(monthly/yearly/triennially)を金額から逆算判定
                 $base = (int)$package_item['base_price'];
                 $total = $db_total_price;
                 $plan_type = 'monthly';
                 $term_label = '/月';
 
                 if ($base > 0) {
-                    if ($total >= $base * 20) { // おおよそ3年(25倍)
+                    if ($total >= $base * 20) {
                         $plan_type = 'triennially';
                         $term_label = '/3年';
-                    } elseif ($total >= $base * 9) { // おおよそ1年(10倍)
+                    } elseif ($total >= $base * 9) {
                         $plan_type = 'yearly';
                         $term_label = '/年';
                     }
@@ -73,7 +75,6 @@ if (isset($_SESSION['customer']['user_id'])) {
                 elseif ($plan_type === 'triennially') $end_dt->modify('+3 years');
                 else $end_dt->modify('+1 month');
 
-                // セッションに書き戻す (これで次のページも動く)
                 $_SESSION['package_plan'] = [
                     'product_id' => $package_item['product_id'],
                     'product_name' => $package_item['name'],
@@ -81,17 +82,14 @@ if (isset($_SESSION['customer']['user_id'])) {
                     'plan_name' => ($plan_type == 'monthly' ? '月間' : ($plan_type == 'yearly' ? '年間' : '3年')) . 'プラン',
                     'totalPrice' => $total,
                     'termLabel' => $term_label,
-                    'termStart' => $start_dt->format('Y年m月d日'), // 曜日は省略
+                    'termStart' => $start_dt->format('Y年m月d日'),
                     'termEnd' => $end_dt->format('Y年m月d日')
                 ];
-                // 競合するカスタムプランは消す
                 unset($_SESSION['custom_options']);
             }
             
-            // --- B. カスタムプランの場合の復元 ---
+            // カスタム型
             elseif (!empty($custom_options)) {
-                // 期間を金額から逆算
-                // DBのtotal_amount が custom_base_total の何倍かで判定
                 $cycle = 'monthly';
                 if ($custom_base_total > 0 && $db_total_price >= $custom_base_total * 9) {
                     $cycle = 'yearly';
@@ -103,28 +101,23 @@ if (isset($_SESSION['customer']['user_id'])) {
                 if ($cycle === 'yearly') $end_dt->modify('+1 year');
                 else $end_dt->modify('+1 month');
 
-                // セッションに書き戻す
                 $_SESSION['custom_options'] = $custom_options;
                 $_SESSION['custom_total_price'] = $db_total_price;
                 $_SESSION['custom_billing_cycle'] = $cycle;
                 $_SESSION['custom_term_start'] = $start_dt->format('Y年m月d日');
                 $_SESSION['custom_term_end'] = $end_dt->format('Y年m月d日');
                 
-                // 競合するパッケージプランは消す
                 unset($_SESSION['package_plan']);
             }
         }
     }
 }
 
-// -------------------------------------------------------------------
-// ここから表示ロジック (セッション変数を使うが、上で復元済みなので安心)
-// -------------------------------------------------------------------
 
-// (A) カスタムプランのチェック
+// カスタムプランのチェック
 $hasCustomPlan = isset($_SESSION['custom_options']) && !empty($_SESSION['custom_options']);
 
-// (B) パッケージプランのチェック
+// パッケージプランのチェック
 $hasPackagePlan = isset($_SESSION['package_plan']);
 
 // 変数の初期化
@@ -211,11 +204,8 @@ if ($hasCustomPlan) {
                     <span>プランを変更する</span>
                 </a>
                 
-                <?php 
-                    // デフォルトは決済画面へ
+                <?php
                     $next_action = "new-pay.php";
-                    
-                    // ログインしていないならログイン確認へ
                     if (!isset($_SESSION['customer']['user_id'])) {
                         $next_action = "login.php";
                     }
