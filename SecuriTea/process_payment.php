@@ -2,29 +2,27 @@
 session_start();
 require "../common/DBconnect.php";
 
-// 1. ログインチェック
+// ログインチェック
 if (!isset($_SESSION['customer']['user_id'])) {
     header('Location: login.php');
     exit;
 }
 
-// 2. POSTデータチェック
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['payment-method'])) {
     header('Location: new-pay.php');
     exit;
 }
 
 $user_id = $_SESSION['customer']['user_id'];
-$payment_method = $_POST['payment-method']; // credit_card, paypal, bank_transfer
+$payment_method = $_POST['payment-method'];
+// credit_card, paypal, bank_transfer
 
-// 3. 支払い金額と変更モードの取得
 $change_mode = $_SESSION['change_info']['mode'] ?? 'new';
 $pay_amount = 0;
 
 if (isset($_SESSION['change_info']['amount'])) {
     $pay_amount = $_SESSION['change_info']['amount'];
 } else {
-    // 通常購入(新規)の場合
     if (isset($_SESSION['package_plan'])) {
         $pay_amount = $_SESSION['package_plan']['totalPrice'];
     } elseif (isset($_SESSION['custom_options'])) {
@@ -32,8 +30,6 @@ if (isset($_SESSION['change_info']['amount'])) {
     }
 }
 
-// --- 決済処理 (スタブ) ---
-// ※本来はここでStripe等の決済APIを実行し、成功を確認します
 $payment_succeeded = true; 
 
 if (!$payment_succeeded) {
@@ -44,10 +40,7 @@ if (!$payment_succeeded) {
 try {
     $db->beginTransaction();
 
-    // ==================================================
-    // 1. Profilesテーブル（支払い方法）の更新
-    // ==================================================
-    // 次回以降の自動引き落としや、アカウント画面表示のために情報を更新します
+    // profiles
     $card_brand_val = null;
     $masked_number_val = '';
 
@@ -65,12 +58,6 @@ try {
 
     $profSql = $db->prepare("UPDATE Profiles SET card_brand = ?, masked_card_number = ? WHERE user_id = ?");
     $profSql->execute([$card_brand_val, $masked_number_val, $user_id]);
-
-
-    // ==================================================
-    // 2. 注文履歴・決済履歴の登録 (共通処理)
-    // ==================================================
-    // 契約テーブル(Subscription)とは別に、お金の動きは全て記録します
     
     // Orders
     $orderSql = $db->prepare("INSERT INTO Orders (user_id, total_amount, status, created_at, updated_at) VALUES (?, ?, 'paid', NOW(), NOW())");
@@ -94,14 +81,12 @@ try {
     $paymentSql->execute([$order_id, $pay_amount, $payment_method]);
 
 
-    // ==================================================
-    // 3. 日付の計算 (モードごとの終了日決定)
-    // ==================================================
+    // 日付計算
     $start_date_sql = "";
     $end_date_sql = "";
     $today = new DateTime();
 
-    // (A) 開始日
+    // 開始日
     if ($change_mode === 'reserve') {
         // 予約: 現在の終了日の翌日から
         $current_end_date = $_SESSION['change_info']['current_end_date'];
@@ -113,7 +98,7 @@ try {
         $start_date_sql = $today->format('Y-m-d');
     }
 
-    // (B) 終了日
+    // 終了日
     if ($change_mode === 'upgrade') {
         // Upgrade: 現在の終了日を維持 (期間引継ぎ)
         $end_date_sql = $_SESSION['change_info']['current_end_date'];
@@ -139,25 +124,17 @@ try {
     }
 
 
-    // ==================================================
-    // 4. 古いデータの削除処理 (物理削除)
-    // ==================================================
-    // 「即時切り替え(Switch)」や「アップグレード(Upgrade)」の場合、
-    // 現在の契約を削除して、新しい契約に置き換えます。
+    // 古い契約について
     if ($change_mode === 'upgrade' || $change_mode === 'switch') {
         
-        // (A) 現在の契約を削除
+        // 現在の契約を削除
         if (isset($_SESSION['change_info']['current_sub_id'])) {
-            $old_sub_id = $_SESSION['change_info']['current_sub_id'];
-            
-            // 外部キー制約があるため、先に子テーブル(Customs)を削除
+            $old_sub_id = $_SESSION['change_info']['current_sub_id'];   
             $db->prepare("DELETE FROM SubscriptionCustoms WHERE subscription_id = ?")->execute([$old_sub_id]);
-            // 親テーブル(Subscription)を削除
             $db->prepare("DELETE FROM Subscription WHERE subscription_id = ?")->execute([$old_sub_id]);
         }
 
-        // (B) 矛盾を防ぐため、未来の予約データも削除
-        // (例: 来月の予約がある状態で、今日から年払いにスイッチした場合など)
+        //  予約も削除
         $futureSql = $db->prepare("SELECT subscription_id FROM Subscription WHERE user_id = ? AND start_date > NOW()");
         $futureSql->execute([$user_id]);
         $futures = $futureSql->fetchAll(PDO::FETCH_COLUMN);
@@ -171,30 +148,26 @@ try {
     }
 
 
-    // ==================================================
-    // 5. 新しいデータの INSERT
-    // ==================================================
+    // 新しい契約をインサートする
     $new_pid = isset($_SESSION['package_plan']) ? $_SESSION['package_plan']['product_id'] : 0;
+    // 予約か新規・更新かで分ける
+    $new_status_id = ($change_mode === 'reserve') ? 5 : 1;
     
-    // 親テーブル(Subscription)
-    $subSql = $db->prepare("INSERT INTO Subscription (user_id, product_id, start_date, end_date, status_id, create_date, update_date) VALUES (?, ?, ?, ?, 1, NOW(), NOW())");
-    $subSql->execute([$user_id, $new_pid, $start_date_sql, $end_date_sql]);
+    // Subscription
+    $subSql = $db->prepare("INSERT INTO Subscription (user_id, product_id, start_date, end_date, status_id, create_date, update_date) VALUES (?, ?, ?, ?, ?, NOW(), NOW())");
+    $subSql->execute([$user_id, $new_pid, $start_date_sql, $end_date_sql, $new_status_id]);
     $new_sub_id = $db->lastInsertId();
 
-    // 子テーブル(SubscriptionCustoms) - カスタムプランの場合のみ
+    // SubscriptionCustoms
     if (isset($_SESSION['custom_options'])) {
         $subCSql = $db->prepare("INSERT INTO SubscriptionCustoms (subscription_id, product_id, create_date, update_date) VALUES (?, ?, NOW(), NOW())");
         foreach ($_SESSION['custom_options'] as $opt) {
-            // cart.php等の保存形式に対応 (idキーかproduct_idキーか)
             $p_id = $opt['id'] ?? $opt['product_id']; 
             $subCSql->execute([$new_sub_id, $p_id]);
         }
     }
 
 
-    // ==================================================
-    // 6. カート情報のクリア
-    // ==================================================
     // 購入完了したのでカートを空にする
     $cartSql = $db->prepare("SELECT cart_id FROM Cart WHERE user_id = ?");
     $cartSql->execute([$user_id]);
