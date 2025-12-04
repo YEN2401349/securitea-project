@@ -30,7 +30,7 @@ FROM
 WHERE 
     u.role = 'user'
 GROUP BY 
-    u.user_id, s.subscription_id
+    u.user_id
 ORDER BY 
     u.update_date DESC;
 
