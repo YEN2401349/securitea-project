@@ -40,10 +40,10 @@ if ($hasCustomPlan) {
 }
 
 try {
-    $sql = "SELECT * FROM Subscription
-            WHERE user_id = ?
-            AND status_id IN (1, 2)
-            AND end_date >= NOW()
+    $sql = "SELECT * FROM Subscription 
+            WHERE user_id = ? 
+            AND status_id IN (1, 2, 5, 6)  
+            AND end_date >= NOW() 
             ORDER BY start_date ASC";
             
     $stmt = $db->prepare($sql);
@@ -51,13 +51,13 @@ try {
     $all_subs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $currentSub = null;
-    $today = date('Y-m-d');
+    $today_str = date('Y-m-d');
 
     if ($all_subs) {
         foreach ($all_subs as $sub) {
-            if ($sub['start_date'] <= $today && $sub['end_date'] >= $today) {
+            if ($sub['start_date'] <= $today_str && $sub['end_date'] >= $today_str) {
                 $currentSub = $sub;
-                break;
+                break; 
             }
         }
         if (!$currentSub) {
@@ -69,13 +69,18 @@ try {
         header('Location: cart_register.php'); 
         exit;
     }
-    
 
-    // 現在の契約の開始日と終了日
+    // 予約があるか
+    $resSql = "SELECT COUNT(*) FROM Subscription WHERE user_id = ? AND start_date > NOW() AND status_id IN (5, 6)";
+    $resStmt = $db->prepare($resSql);
+    $resStmt->execute([$user_id]);
+    $reservedCount = $resStmt->fetchColumn();
+
+
+    // 現在の契約詳細
     $curr_start = new DateTime($currentSub['start_date']);
     $curr_end   = new DateTime($currentSub['end_date']);
     
-    // 期間タイプ判定
     $curr_diff  = $curr_start->diff($curr_end)->days;
     $current_duration_type = 'monthly';
     if ($curr_diff > 1000) $current_duration_type = 'triennially';
@@ -85,9 +90,6 @@ try {
     $current_is_custom = ($currentSub['product_id'] == 0);
     $base_price = 0;
     $current_plan_name = "";
-
-    // 月額換算
-    $current_monthly_base = 0;
 
     if ($current_is_custom) {
         $cSql = "SELECT SUM(p.price) as total, COUNT(*) as count 
@@ -100,8 +102,6 @@ try {
         
         $base_price = (int)$cData['total'];
         $current_plan_name = "カスタムプラン (" . $cData['count'] . "項目)";
-        $current_monthly_base = $base_price;
-
     } else {
         $pSql = "SELECT name, price FROM Products WHERE product_id = ?";
         $pStmt = $db->prepare($pSql);
@@ -110,7 +110,6 @@ try {
         
         $base_price = (int)$pData['price'];
         $current_plan_name = $pData['name'];
-        $current_monthly_base = $base_price;
     }
 
     $multiplier = 1;
@@ -118,11 +117,9 @@ try {
     elseif ($current_duration_type === 'yearly') $multiplier = 10;
     $current_total_price = $base_price * $multiplier;
 
-    // 新規プランについて
     $new_total_price = 0;
     $new_plan_name = "";
     $new_duration_type = 'monthly';
-    $new_monthly_base = 0;
     $new_is_custom = false;
     $new_package_id = 0;
 
@@ -131,30 +128,14 @@ try {
         $new_total_price = (int)$_SESSION['custom_total_price'];
         $new_plan_name = "カスタムプラン (変更後)";
         $new_duration_type = $_SESSION['custom_billing_cycle'] ?? 'monthly';
-        
-        if ($new_duration_type === 'yearly') {
-            $new_monthly_base = round($new_total_price / 10);
-        } else {
-            $new_monthly_base = $new_total_price;
-        }
 
     } elseif ($hasPackagePlan) {
         $new_package_id = $_SESSION['package_plan']['product_id'];
         $new_total_price = (int)$_SESSION['package_plan']['totalPrice'];
         $new_plan_name = $_SESSION['package_plan']['product_name'];
         $new_duration_type = $_SESSION['package_plan']['plan_type'];
-        
-        if ($new_duration_type === 'triennially') {
-            $new_monthly_base = round($new_total_price / 25);
-        } elseif ($new_duration_type === 'yearly') {
-            $new_monthly_base = round($new_total_price / 10);
-        } else {
-            $new_monthly_base = $new_total_price;
-        }
     }
 
-
-    // 既に契約しているプランとカートの中身が同じ商品かどうか判断
     $is_same_content = false;
 
     if ($current_is_custom && $new_is_custom) {
@@ -165,7 +146,6 @@ try {
 
         $current_opt_ids = array_map('intval', $current_opt_ids);
         $new_opt_ids     = array_map('intval', $new_opt_ids);
-        
         sort($current_opt_ids);
         sort($new_opt_ids);
 
@@ -179,12 +159,13 @@ try {
         }
     }
 
-
-    // 選択肢
     $options = [];
 
-    // 1. 【アップグレード】（終了日は変わらず）
-    if ($new_total_price > $current_total_price && $current_duration_type === $new_duration_type) {
+    // アップグレード
+    if ($new_total_price > $current_total_price && 
+        $current_duration_type === $new_duration_type && 
+        !$is_same_content) {
+        
         $diff = $new_total_price - $current_total_price;
         $options[] = [
             'id' => 'upgrade',
@@ -193,35 +174,35 @@ try {
             'price' => $diff,
             'desc' => '終了日は変わらず、機能だけをアップグレードします。<br>差額のみのお支払いです。',
             'end_date_label' => $curr_end->format('Y年m月d日') . ' (変更なし)',
-            'badge' => ''
+            'badge' => 'おすすめ'
         ];
     }
 
-    // 2. 【スイッチ】（新規契約）
-    // 同じ商品の場合はスイッチ不可能
+    // スイッチ
     if (!$is_same_content) {
         $new_end_date_calc = new DateTime();
         if ($new_duration_type === 'triennially') $new_end_date_calc->modify('+3 years');
         elseif ($new_duration_type === 'yearly') $new_end_date_calc->modify('+1 year');
         else $new_end_date_calc->modify('+1 month');
 
+        $switch_desc = '現在の契約を終了し、今日から新しい期間で契約し直します。<br>※旧契約の残期間分の返金はありません。';
+        
+        if ($reservedCount > 0) {
+            $switch_desc .= '<br><strong style="color:#d32f2f;">【重要】このオプションを選ぶと、現在予約中のプランはキャンセルされ、返金は行われません。</strong>';
+        }
+
         $options[] = [
             'id' => 'switch',
             'mode' => 'switch',
             'title' => '今すぐ適用（期間リセット）',
             'price' => $new_total_price,
-            'desc' => '現在の契約を終了し、今日から新しい期間で契約し直します。<br>※旧契約の残期間分の返金はありません。',
+            'desc' => $switch_desc,
             'end_date_label' => $new_end_date_calc->format('Y年m月d日') . ' (本日より開始)',
             'badge' => ''
         ];
     }
 
-    // 3. 【予約】 (次回更新日に切替)
-    $resSql = "SELECT COUNT(*) FROM Subscription WHERE user_id = ? AND start_date > NOW() AND status_id = 1";
-    $resStmt = $db->prepare($resSql);
-    $resStmt->execute([$user_id]);
-    $reservedCount = $resStmt->fetchColumn();
-
+    // 予約
     if ($reservedCount == 0) {
         $reserve_start = clone $curr_end;
         $reserve_start->modify('+1 day');
@@ -243,7 +224,7 @@ try {
     }
 
     if (empty($options)) {
-        echo "<script>alert('現在と同じプラン内容です。'); location.href='product.php';</script>";
+        echo "<script>alert('現在と同じプラン内容です。変更の必要はありません。'); location.href='product.php';</script>";
         exit;
     }
 
