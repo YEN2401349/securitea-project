@@ -21,8 +21,8 @@
         <div class="container">
             <section class="hero">
                 <h1 class="hero-title">
-                    <span class="hero-title-main">パソコン初心者の</span>
-                    <span class="hero-title-sub">あなたへ</span>
+                    <span class="hero-title-main">あなたにあった</span>
+                    <span class="hero-title-sub">セキュリティソフトを</span>
                 </h1>
                 <p class="hero-description">
                     最先端のセキュリティソフトが、あなたのパソコンを守ります
