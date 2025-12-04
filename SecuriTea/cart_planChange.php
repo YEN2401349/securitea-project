@@ -18,12 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_mode'])) {
             'current_sub_id'   => $_POST['current_sub_id'],
             'current_end_date' => $_POST['current_end_date']
         ];
-        header("Location: new-pay.php");
+        header("Location: paymentChange.php");
         exit;
     }
 }
 
-// カートの中身がなければ前の画面へ戻す
 $hasCustomPlan = isset($_SESSION['custom_options']) && !empty($_SESSION['custom_options']);
 $hasPackagePlan = isset($_SESSION['package_plan']);
 
