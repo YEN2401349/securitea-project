@@ -352,6 +352,7 @@ body {
     font-size: 0.9rem;
 }
 
+/* お支払い方法変更関連 */
 #modify-pay {
     position: fixed;
     top: 0;
@@ -387,4 +388,29 @@ body {
     #modify-pay {
         align-items: flex-start;
     }
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.form-group-half {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.form-group-half input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.form-group input {
+    width: 100%;
+    box-sizing: border-box;
 }
