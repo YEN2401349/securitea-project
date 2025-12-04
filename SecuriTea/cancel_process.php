@@ -14,16 +14,18 @@ try {
 
   $pdo->beginTransaction();
 
-  // 現在有効(status=1)なものをすべて解約予約(status=2)
+  // 1. 現在のプラン (status=1) を 解約予約 (status=2) に変更
+  $sqlCurrent = "UPDATE Subscription
+                 SET status_id = 2, canceled_date = NOW(), update_date = NOW()
+                 WHERE user_id = ? AND status_id = 1";
+  $stmt = $pdo->prepare($sqlCurrent);
+  $stmt->execute([$user_id]);
 
-  $sql = "UPDATE Subscription
-          SET status_id = 2,
-              canceled_date = NOW(),
-              update_date = NOW()
-          WHERE user_id = ?
-          AND status_id = 1";
-
-  $stmt = $pdo->prepare($sql);
+  // 2. 予約中のプラン (status=5) を 予約解約 (status=6) に変更
+  $sqlFuture = "UPDATE Subscription
+                SET status_id = 6, canceled_date = NOW(), update_date = NOW()
+                WHERE user_id = ? AND status_id = 5";
+  $stmt = $pdo->prepare($sqlFuture);
   $stmt->execute([$user_id]);
 
   $pdo->commit();

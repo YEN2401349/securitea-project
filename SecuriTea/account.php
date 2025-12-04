@@ -12,9 +12,6 @@ try {
   $pdo = $db;
   $user_id = $_SESSION['customer']['user_id'];
 
-  // =========================================================
-  // 1. ユーザー基本情報の取得
-  // =========================================================
   $sql_user = $pdo->prepare("
       SELECT p.full_name, p.gender, p.phone, u.user_email, p.card_brand, p.masked_card_number
       FROM Profiles p
@@ -24,52 +21,41 @@ try {
   $sql_user->execute([$user_id]);
   $user = $sql_user->fetch(PDO::FETCH_ASSOC);
 
-
-  // =========================================================
-  // 2. サブスクリプション情報の取得
-  // =========================================================
-  // すべての有効なサブスク（現在・未来・過去）を取得
-  $sql_subs = $pdo->prepare("SELECT * FROM Subscription WHERE user_id = ? AND status_id IN (1, 2) ORDER BY start_date ASC");
+  $sql_subs = $pdo->prepare("SELECT * FROM Subscription WHERE user_id = ? AND status_id IN (1, 2, 5, 6) ORDER BY start_date ASC");
   $sql_subs->execute([$user_id]);
   $all_subs = $sql_subs->fetchAll(PDO::FETCH_ASSOC);
 
-  $current_sub = null;   // 現在進行中のプラン
-  $reserved_sub = null;  // 未来の予約プラン
+  $current_sub = null;
+  $reserved_sub = null;
   $now = new DateTime();
   $today = $now->format('Y-m-d');
 
-  // 振り分け処理
+  // 振り分け
   foreach ($all_subs as $sub) {
       if ($sub['start_date'] <= $today && $sub['end_date'] >= $today) {
-          $current_sub = $sub; // 今日の日付を含むものが「現在」
+          $current_sub = $sub;
       } elseif ($sub['start_date'] > $today) {
-          $reserved_sub = $sub; // 未来の日付のものが「予約」
+          $reserved_sub = $sub;
       }
   }
 
-  // 表示するメインのサブスク($subscription)を決定
   $subscription = null;
-  $is_future_main = false; // メイン表示自体が未来プランかどうかのフラグ
+  $is_future_main = false;
 
   if ($current_sub) {
-      // 現在進行中のプランがあればそれを表示
       $subscription = $current_sub;
   } elseif ($reserved_sub) {
-      // 現在がなく未来しかなければ、未来を表示（新規開始待ちなど）
       $subscription = $reserved_sub;
-      $reserved_sub = null; // メインで表示するので、予約バナーには出さない
+      $reserved_sub = null;
       $is_future_main = true;
   } else {
-      // どちらもなければ、過去の最後のデータを表示（解約済み表示用など）
       if (!empty($all_subs)) {
           $subscription = end($all_subs);
       }
   }
 
 
-  // =========================================================
-  // 3. メイン表示用プランの料金・名称計算
-  // =========================================================
+  // 表示用
   $price_val = 0;
   $product_name = '未登録';
 
@@ -77,7 +63,7 @@ try {
       $target_sub_id = $subscription['subscription_id'];
       $target_prod_id = $subscription['product_id'];
 
-      // (A) カスタムプランの場合
+      // カスタムプラン
       if ($target_prod_id == 0) {
           $product_name = 'カスタムプラン';
           $sql_price = $pdo->prepare("
@@ -92,7 +78,7 @@ try {
               $price_val = (int)$res['price'];
           }
       } 
-      // (B) パッケージプランの場合
+      // パッケージプラン
       else {
           $sql_prod = $pdo->prepare("SELECT name, price FROM Products WHERE product_id = ?");
           $sql_prod->execute([$target_prod_id]);
@@ -103,7 +89,7 @@ try {
           }
       }
 
-      // 期間倍率計算
+      // 期間の計算
       $start = new DateTime($subscription['start_date']);
       $end = new DateTime($subscription['end_date']);
       $diff_days = $start->diff($end)->days;
@@ -112,14 +98,13 @@ try {
   }
 
 
-  // =========================================================
-  // 4. 【予約バナー用】予約情報の詳細取得（あれば）
-  // =========================================================
+
+  // 予約
   $reserve_info = null;
   if ($reserved_sub) {
       $r_name = "";
       if ($reserved_sub['product_id'] == 0) {
-          $r_name = "カスタムプラン"; // 簡易表示
+          $r_name = "カスタムプラン";
       } else {
           $stmt = $pdo->prepare("SELECT name FROM Products WHERE product_id = ?");
           $stmt->execute([$reserved_sub['product_id']]);
@@ -130,14 +115,12 @@ try {
           'name' => $r_name,
           'start' => $reserved_sub['start_date'],
           'end' => $reserved_sub['end_date'],
-          'status' => $reserved_sub['status_id'] // ★追加: ステータスも取得
+          'status' => $reserved_sub['status_id']
       ];
   }
 
 
-  // =========================================================
-  // 5. オプション一覧取得（メイン表示用）
-  // =========================================================
+  // オプション
   $custom_options = []; 
   if ($subscription) {
     $sql_custom = $pdo->prepare("
@@ -150,6 +133,7 @@ try {
     $custom_options = $sql_custom->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  // =支払い方法
   $payment_jp = '未登録';
 
   if (!empty($user['masked_card_number'])) {
@@ -217,7 +201,7 @@ try {
         <h2>利用状況</h2>
 
         <?php if ($reserve_info): ?>
-            <?php if ($reserve_info['status'] == 2): ?>
+            <?php if ($reserve_info['status'] == 6): ?>
                 <div class="reserve-banner" style="background-color: #f8d7da; border-color: #f5c6cb; color: #721c24;">
                     <i class="fas fa-exclamation-circle" style="color: #dc3545;"></i>
                     <div class="reserve-content">

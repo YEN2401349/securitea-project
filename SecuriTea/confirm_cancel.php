@@ -14,8 +14,8 @@ $has_reservation = false;
 try {
     $pdo = $db;
     
-    // 未来の予約プラン(status=1)があるかチェック
-    $sql = "SELECT COUNT(*) FROM Subscription WHERE user_id = ? AND start_date > NOW() AND status_id = 1";
+    // 予約(status=5)があるか
+    $sql = "SELECT COUNT(*) FROM Subscription WHERE user_id = ? AND start_date > NOW() AND status_id = 5";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$user_id]);
     $count = $stmt->fetchColumn();
@@ -25,7 +25,6 @@ try {
     }
 
 } catch (PDOException $e) {
-    // エラー時は通常の表示で進める
 }
 ?>
 <!DOCTYPE html>
@@ -36,7 +35,6 @@ try {
   <link rel="stylesheet" href="css/account.css">
   <link rel="stylesheet" href="css/heder-footer.css">
   <style>
-      /* 警告メッセージ用のスタイル */
       .warning-box {
           background-color: #fff3cd;
           border: 1px solid #ffeeba;
