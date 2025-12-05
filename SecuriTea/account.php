@@ -266,6 +266,7 @@ try {
         </div>
 
         <?php 
+        // プラン登録がある場合のみお支払い方法とボタンを表示
         if (!empty($subscription)): 
         ?>
             <div class="info-row">
@@ -273,11 +274,16 @@ try {
               <div id="payment-card" class="info-value"><?= htmlspecialchars($payment_jp) ?></div>
             </div>
 
-            <div class="card-actions">
-              <button class="btn btn-primary" id="btn-primary">お支払いの変更</button>
+            <div class="card-actions" style="align-items: center;">
+              <span style="font-size: 0.9rem; color: #5f6368; margin-right: 0.5rem;">
+                  購入したプランはこちらからダウンロードできます
+              </span>
+              
               <button class="btn btn-success" onclick="alert('ダウンロード中です')">
                   <i class="fas fa-download"></i> ダウンロード
               </button>
+
+              <button class="btn btn-primary" id="btn-primary">お支払いの変更</button>
             </div>
         <?php endif; ?>
 
@@ -300,6 +306,8 @@ try {
           </form>
           
           <?php 
+          // 契約中(status=1)の場合のみ解約ボタンを表示
+          // ※解約済み(status=2)の場合は非表示
           if (!$is_future_main && isset($subscription['status_id']) && $subscription['status_id'] == 1): 
           ?>
               <form action="confirm_cancel.php" method="post">
