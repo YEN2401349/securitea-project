@@ -138,9 +138,9 @@ try {
                     <div class="form-group"> 
                         <label for="phone1">電話</label> 
                         <div class="phone-inputs">
-                        <input type="tel" id="phone1" name="phone1" value="<?= htmlspecialchars($phone1_val) ?>" placeholder="090" maxlength="4" pattern="\d{2,4}" required> <span>-</span> 
-                        <input type="tel" id="phone2" name="phone2" value="<?= htmlspecialchars($phone2_val) ?>" placeholder="1234" maxlength="4" pattern="\d{2,4}" required> <span>-</span> 
-                        <input type="tel" id="phone3" name="phone3" value="<?= htmlspecialchars($phone3_val) ?>" placeholder="5678" maxlength="4" pattern="\d{4}" required> </div>
+                        <input type="tel" id="phone1" name="phone1" value="<?= htmlspecialchars($phone1_val) ?>" placeholder="090" maxlength="4" pattern="[0-9]{2,4}" required> <span>-</span> 
+                        <input type="tel" id="phone2" name="phone2" value="<?= htmlspecialchars($phone2_val) ?>" placeholder="1234" maxlength="4" pattern="[0-9]{2,4}" required> <span>-</span> 
+                        <input type="tel" id="phone3" name="phone3" value="<?= htmlspecialchars($phone3_val) ?>" placeholder="5678" maxlength="4" pattern="[0-9]{2,4}" required> </div>
                     </div>
 
 
