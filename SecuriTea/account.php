@@ -33,9 +33,11 @@ try {
   // 振り分け
   foreach ($all_subs as $sub) {
       if ($sub['start_date'] <= $today && $sub['end_date'] >= $today) {
-          $current_sub = $sub;
+          if ($current_sub === null || ($current_sub['status_id'] == 2 && $sub['status_id'] == 1)) {
+              $current_sub = $sub; 
+          }    
       } elseif ($sub['start_date'] > $today) {
-          $reserved_sub = $sub;
+          $reserved_sub = $sub; 
       }
   }
 
