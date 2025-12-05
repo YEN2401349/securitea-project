@@ -224,15 +224,22 @@ try {
                     </div>
                 </div>
             <?php else: ?>
-                <div class="reserve-banner">
-                    <i class="fas fa-clock"></i>
-                    <div class="reserve-content">
-                        <h3>次回プラン変更の予約済み</h3>
-                        <p>
-                            <strong><?= htmlspecialchars($reserve_info['name']) ?></strong> が 
-                            <strong><?= htmlspecialchars($reserve_info['start']) ?></strong> から開始されます。
-                        </p>
+                <div class="reserve-banner" style="justify-content: space-between;"> <div style="display:flex; align-items:center; gap:15px;">
+                        <i class="fas fa-clock"></i>
+                        <div class="reserve-content">
+                            <h3>次回プラン変更の予約済み</h3>
+                            <p>
+                                <strong><?= htmlspecialchars($reserve_info['name']) ?></strong> が 
+                                <strong><?= htmlspecialchars($reserve_info['start']) ?></strong> から開始されます。
+                            </p>
+                        </div>
                     </div>
+                    
+                    <form action="confirm_cancel.php" method="post">
+                        <button type="submit" class="btn btn-danger" style="font-size: 0.8rem; padding: 5px 10px;">
+                            予約キャンセル
+                        </button>
+                    </form>
                 </div>
             <?php endif; ?>
         <?php endif; ?>
