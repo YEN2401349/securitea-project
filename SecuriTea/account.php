@@ -33,11 +33,9 @@ try {
   // 振り分け
   foreach ($all_subs as $sub) {
       if ($sub['start_date'] <= $today && $sub['end_date'] >= $today) {
-          if ($current_sub === null || ($current_sub['status_id'] == 2 && $sub['status_id'] == 1)) {
-              $current_sub = $sub; 
-          }    
+          $current_sub = $sub;
       } elseif ($sub['start_date'] > $today) {
-          $reserved_sub = $sub; 
+          $reserved_sub = $sub;
       }
   }
 
@@ -163,6 +161,16 @@ try {
   <link rel="stylesheet" href="css/heder-footer.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+      /* 追加のボタン用スタイル */
+      .btn-success {
+          background-color: #28a745;
+          color: white;
+      }
+      .btn-success:hover {
+          background-color: #218838;
+      }
+  </style>
 </head>
 
 <body>
@@ -256,15 +264,28 @@ try {
           <div class="info-label">次回更新日</div>
           <div class="info-value"><?= htmlspecialchars($subscription['end_date'] ?? '---') ?></div>
         </div>
-        <div class="info-row">
-          <div class="info-label">お支払い方法</div>
-          <div id="payment-card" class="info-value"><?= htmlspecialchars($payment_jp) ?></div>
-        </div>
 
+        <?php 
+        // プラン登録がある場合のみお支払い方法とボタンを表示
+        if (!empty($subscription)): 
+        ?>
+            <div class="info-row">
+              <div class="info-label">お支払い方法</div>
+              <div id="payment-card" class="info-value"><?= htmlspecialchars($payment_jp) ?></div>
+            </div>
 
-        <div class="card-actions">
-          <button class="btn btn-primary" id="btn-primary">お支払いの変更</button>
-        </div>
+            <div class="card-actions" style="align-items: center;">
+              <span style="font-size: 0.9rem; color: #5f6368; margin-right: 0.5rem;">
+                  購入したプランはこちらからダウンロードできます
+              </span>
+              
+              <button class="btn btn-success" onclick="alert('ダウンロード中です')">
+                  <i class="fas fa-download"></i> ダウンロード
+              </button>
+
+              <button class="btn btn-primary" id="btn-primary">お支払いの変更</button>
+            </div>
+        <?php endif; ?>
 
 
         <h2>基本オプション</h2>
