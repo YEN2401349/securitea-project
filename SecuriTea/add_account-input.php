@@ -65,13 +65,13 @@
             <label for="tel">電話番号</label>
             <div class="form-row">
                 <input type="tel" id="tel1" name="tel1" required placeholder="090" class="tel-part" maxlength="4"
-                inputmode="numeric" pattern="\d{1,4}">
+                inputmode="numeric" pattern="[0-9]{2,4}">
                 <span>-</span>
                 <input type="tel" id="tel2" name="tel2" required placeholder="1234" class="tel-part" maxlength="4"
-                inputmode="numeric" pattern="\d{1,4}">
+                inputmode="numeric" pattern="[0-9]{2,4}">
                 <span>-</span>
                 <input type="tel" id="tel3" name="tel3" required placeholder="5678" class="tel-part" maxlength="4"
-                inputmode="numeric" pattern="\d{1,4}">
+                inputmode="numeric" pattern="[0-9]{2,4}">
             </div>
         </div>
 
