@@ -66,7 +66,7 @@ function handleAutoRenewal($userId)
             $subscription['status_id'] = $finalStatus;
 
             // ⭐★ 重要：2件の場合 **自動更新は行わない**
-            $db->commit(); 
+            $db->commit();
             return false;  // 整理のみ、自動更新なし
         }
 
@@ -76,12 +76,14 @@ function handleAutoRenewal($userId)
 
         $today = new DateTime();
         $expirationDate = new DateTime($subscription['end_date']);
+        $startDate = new DateTime($subscription['start_date']);
+        $days = $startDate->diff($expirationDate)->days + 1;
 
         // 有効期限前 → 自動更新しない
         if ($expirationDate >= $today) {
-            $db->rollBack();
             return false;
         }
+
 
         // 商品データを取得
         $stmt = $db->prepare("
@@ -145,6 +147,19 @@ function handleAutoRenewal($userId)
                 $custom['price']
             ]);
         }
+
+        // サブスクリプション期間を延長
+        $newExpirationDate = (clone $expirationDate)->modify("+{$days} days")->format('Y-m-d');
+        $stmt = $db->prepare("
+            UPDATE Subscription
+            SET end_date = ?, start_date = ?
+            WHERE subscription_id = ?
+        ");
+        $stmt->execute([
+            $newExpirationDate,
+            $today->format('Y-m-d'),
+            $subscription['subscription_id']
+        ]);
 
         $db->commit();
         return true; // 自動更新成功
