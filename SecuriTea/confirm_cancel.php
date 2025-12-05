@@ -87,7 +87,5 @@ try {
       </div>
     </main>
   </div>
-  
-  <?php require "footer.php"; ?>
 </body>
 </html>
