@@ -38,7 +38,7 @@ function handleAutoRenewal($userId)
         else if (count($subs) == 2) {
 
             foreach ($subs as $s) {
-                if ($s['status_id'] == 1) {
+                if ($s['status_id'] == 1 || $s['status_id'] == 2) {
                     $deleteSub = $s;
                 } else {
                     $keepSub = $s;
