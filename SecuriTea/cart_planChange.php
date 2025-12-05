@@ -186,7 +186,9 @@ try {
     }
 
     // スイッチ
-    if (!$is_same_content) {
+    $is_cancelled = in_array($currentSub['status_id'], [2, 6]);
+
+    if (!$is_same_content || $is_cancelled) {
         $new_end_date_calc = new DateTime();
         if ($new_duration_type === 'triennially') $new_end_date_calc->modify('+3 years');
         elseif ($new_duration_type === 'yearly') $new_end_date_calc->modify('+1 year');
