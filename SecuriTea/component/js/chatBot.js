@@ -256,34 +256,21 @@ function getCurrentTime() {
 
 // Function to call Gemini API
 async function callGeminiAPI(message) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBxcmFcgmSBtO2nzH3rxkJ1QrTo0ffQEoc`;
-
-    const requestBody = {
-        contents: [
-            {
-                parts: [
-                    {
-                        text: message
-                    }
-                ]
-            }
-        ]
-    };
-
-    const response = await fetch(url, {
+    const response = await fetch('./component/api/chat_api.php', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({ prompt: message })
     });
 
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API Error: ${errorText}`);
+    const json = await response.json();
+
+    if (json.error) {
+        throw new Error(json.error);
     }
 
-    const data = await response.json();
-    return data.candidates[0].content.parts[0].text;
+    return json.candidates[0].content.parts[0].text;
 }
+
 
 
 document.addEventListener('keydown', function (e) {
