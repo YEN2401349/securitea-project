@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../env.php';
-loadEnv(__DIR__ . '/../../.env');
+loadEnv(__DIR__ . '/../../../.env');
 
 $apiKey = $_ENV['API_KEY']; // 從 .env 讀取
 
