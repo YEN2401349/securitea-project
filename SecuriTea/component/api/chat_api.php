@@ -1,11 +1,19 @@
 <?php
-require_once __DIR__ . '/../../env.php';
-loadEnv(__DIR__ . '/../../../.env');
+require_once __DIR__ . '/../../env.php';  
 
-$apiKey = $_ENV['API_KEY']; // 從 .env 讀取
+loadEnv(__DIR__ . '/../../../.env');
 
 header('Content-Type: application/json');
 
+// 取 API KEY
+$apiKey = $_ENV['API_KEY'] ?? '';
+
+if (!$apiKey) {
+    echo json_encode(['error' => 'API key missing']);
+    exit;
+}
+
+// 接前端 JSON
 $input = json_decode(file_get_contents('php://input'), true);
 $prompt = $input['prompt'] ?? '';
 
@@ -40,6 +48,7 @@ if (curl_errno($ch)) {
     echo json_encode(['error' => curl_error($ch)]);
     exit;
 }
+
 curl_close($ch);
 
 echo $response;
